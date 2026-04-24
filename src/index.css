@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --netflix-red: #e50914;
+  --netflix-red-hover: #f40612;
+  --bg-dark: #141414;
+  --bg-header: rgba(10, 10, 10, 0.97);
+  --bg-footer: #141414;
+  --bg-card: #1f1f1f;
+  --bg-dropdown: #181818;
+  --text-primary: #e5e5e5;
+  --text-secondary: #ababab;
+  --text-muted: #737373;
+  --border-color: #2a2a2a;
+  --accent: #e50914;
+  --green-active: #46d369;
+  --header-height: 60px;
+  --header-height-tv: 80px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e50914;
+}
+
+/* ── SKELETON LOADER ────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -600px 0;
+  }
+
+  100% {
+    background-position: 600px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      #1e1e1e 25%,
+      #2a2a2a 50%,
+      #1e1e1e 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+  display: block;
+}
+
+/* Slightly lighter variant for use on dark cards */
+.skeleton--light {
+  background: linear-gradient(90deg,
+      #2a2a2a 25%,
+      #363636 50%,
+      #2a2a2a 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+  display: block;
+}
+
+/* ── UTILITY ───────────────────────────────── */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
