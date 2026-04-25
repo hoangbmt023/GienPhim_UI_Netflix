@@ -27,7 +27,7 @@ const IconFilm = () => (
   </svg>
 );
 const IconStar = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="#f5c518">
+  <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
   </svg>
 );
@@ -165,10 +165,12 @@ export default function MovieDetailPage() {
   const watchUrl    = firstEp ? `/xem-phim/${slug}?ep=${firstEp.slug}&server=0` : null;
 
   /* ── Image URLs ── */
-  /* Use thumb_url (landscape) as cinematic backdrop */
-  const backdrop = imgUrl(movie.thumb_url || movie.poster_url);
-  /* Use poster_url (portrait) for the poster card */
-  const posterImg = imgUrl(movie.poster_url || movie.thumb_url);
+  /* backdrop (landscape) */
+  const backdrop = imgUrl(movie.poster_url || movie.thumb_url);
+  /* portrait (vertical) */
+  const verticalImg = imgUrl(movie.thumb_url || movie.poster_url);
+  /* landscape (horizontal) */
+  const horizontalImg = imgUrl(movie.poster_url || movie.thumb_url);
 
   /* ── Ratings ── */
   const imdbScore = movie.imdb?.vote_average;
@@ -208,7 +210,8 @@ export default function MovieDetailPage() {
         <div className="md-hero__content">
           {/* Poster */}
           <div className="md-hero__poster">
-            <img src={posterImg} alt={movie.name} />
+            <img src={verticalImg} alt={movie.name} className="md-hero__poster-desktop" />
+            <img src={horizontalImg} alt={movie.name} className="md-hero__poster-mobile" />
             {movie.quality && <span className="md-quality-badge">{movie.quality}</span>}
             {movie.chieurap && <span className="md-cinema-badge">Chiếu rạp</span>}
           </div>
