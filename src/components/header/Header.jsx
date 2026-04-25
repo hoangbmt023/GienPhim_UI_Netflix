@@ -281,7 +281,7 @@ export default function Header() {
       <header className={`header ${scrolled ? "scrolled" : ""}`}>
         <div className="header__inner">
           {/* LOGO */}
-          <Link to="/home" className="header__logo" aria-label="GienPhim">
+          <Link to="/home" className="header__logo" aria-label="GienPhim" onClick={closeDropdown}>
             <span className="header__logo-text">GIENPHIM</span>
           </Link>
 

@@ -72,6 +72,7 @@ export default function FranchiseSection({ franchise }) {
                 title="Xem phim"
               >
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                Xem ngay
               </button>
             </div>
 
@@ -86,8 +87,12 @@ export default function FranchiseSection({ franchise }) {
                       className={`fs-card ${isActive ? 'active' : ''}`}
                       onMouseEnter={() => setActiveMovie(m)}
                       onClick={() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        navigate(`/phim/${m.slug}`);
+                        if (isActive) {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          navigate(`/phim/${m.slug}`);
+                        } else {
+                          setActiveMovie(m);
+                        }
                       }}
                     >
                       <img src={imgUrl(m.poster_url)} alt={m.name} />

@@ -33,6 +33,13 @@ const MapPinSvg = () => (
   </svg>
 );
 
+const ClockSvg = () => (
+  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
 const AUTO_INTERVAL = 6500;
 
 /**
@@ -63,13 +70,18 @@ export default function HeroBanner({ movies = [], loading = false }) {
   /* Touch handlers */
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].screenX;
+    touchEndX.current = e.changedTouches[0].screenX; // Reset on new touch
   };
   const handleTouchMove = (e) => {
     touchEndX.current = e.changedTouches[0].screenX;
   };
-  const handleTouchEnd = () => {
-    if (touchStartX.current - touchEndX.current > 50) next();
-    if (touchEndX.current - touchStartX.current > 50) prev();
+  const handleTouchEnd = (e) => {
+    // Check if the user clicked on a button or link
+    if (e.target.closest('a') || e.target.closest('button')) return;
+
+    const distance = touchStartX.current - touchEndX.current;
+    if (distance > 80) next();
+    else if (distance < -80) prev();
   };
 
   /* Auto-advance – luôn chạy, không pause khi hover */
@@ -171,7 +183,7 @@ export default function HeroBanner({ movies = [], loading = false }) {
             <div className="hero__meta">
               {movie.time && (
                 <span className="hero__meta-item hero__meta-item--time">
-                  ⏱ {movie.time}
+                  <ClockSvg /> {movie.time}
                 </span>
               )}
               {countries && (

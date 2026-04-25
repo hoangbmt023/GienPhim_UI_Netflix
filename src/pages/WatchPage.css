@@ -103,6 +103,7 @@
   position: absolute;
   inset: 0;
   cursor: pointer;
+  background: #000;
 }
 .wp-player__cover img {
   width: 100%;
