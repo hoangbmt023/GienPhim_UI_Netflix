@@ -54,7 +54,7 @@
   width: 100%;
   padding: 40px;
   gap: 40px;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .franchise-section__info {
@@ -104,25 +104,7 @@
   overflow: hidden;
 }
 .franchise-section__play {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #f5c518;
-  border: none;
-  color: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.franchise-section__play svg {
-  width: 28px;
-  height: 28px;
-  margin-left: 4px;
-}
-.franchise-section__play:hover {
-  transform: scale(1.1);
+  display: none;
 }
 
 .franchise-section__list-wrapper {
@@ -208,6 +190,32 @@
   }
   .franchise-section__info {
     padding-bottom: 0;
+    width: 100%;
+  }
+  .franchise-section__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 44px;
+    background: #f5c518;
+    border-radius: 6px;
+    color: #000;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(245, 197, 24, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .franchise-section__play svg {
+    width: 22px;
+    height: 22px;
+  }
+  .franchise-section__play:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 28px rgba(245, 197, 24, 0.6);
   }
 }
 @media (max-width: 767px) {

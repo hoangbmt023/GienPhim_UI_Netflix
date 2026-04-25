@@ -37,7 +37,22 @@ export default function WatchPage() {
   const [loading, setLoading] = useState(true);
   const [selServer, setSelServer] = useState(serverIdx);
   const [epSearch, setEpSearch] = useState('');
-  const [isPlaying, setIsPlaying] = useState(() => window.innerWidth <= 767);
+  const isMobile = useMemo(() => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 1024, []);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    // When the iframe is tapped on mobile, it receives focus.
+    // This removes focus from the main window, triggering a 'blur' event.
+    const handleBlur = () => {
+      setTimeout(() => {
+        if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
+          setIsPlaying(true);
+        }
+      }, 100);
+    };
+    window.addEventListener('blur', handleBlur);
+    return () => window.removeEventListener('blur', handleBlur);
+  }, []);
 
   const loadRelatedByKeywords = useCallback(async (slug, currentSlug) => {
     try {
@@ -91,10 +106,10 @@ export default function WatchPage() {
         }
 
         /* Franchise related */
-        const baseSlug = slug.replace(/-phan-\d+$/i, '').replace(/-season-\d+$/i, '').replace(/-\d{1,2}$/, '');
-        if (baseSlug) {
-          searchMovies(baseSlug.replace(/-/g, ' '), 1).then(rF => {
-            const items = parseItems(rF).filter(m => m.slug !== slug && m.slug.startsWith(baseSlug));
+        const tmdbId = item.tmdb?.id;
+        if (tmdbId) {
+          searchMovies(tmdbId, 1).then(rF => {
+            const items = parseItems(rF).filter(m => m.slug !== slug);
             if (items.length > 0) setFranchise(items);
           }).catch(() => {});
         }
@@ -178,25 +193,36 @@ export default function WatchPage() {
       <div className="wp-player-wrapper">
         <div className="wp-player">
           {embedUrl ? (
-            isPlaying ? (
-              <iframe
-                key={embedUrl}
-                src={`${embedUrl}${embedUrl.includes('?') ? '&' : '?'}autoplay=1`}
-                title={movie.name}
-                allowFullScreen
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="wp-player__cover" onClick={() => setIsPlaying(true)}>
-                <img src={imgUrl(movie.thumb_url || movie.poster_url)} alt="Cover" />
-                <div className="wp-player__overlay">
-                  <button className="wp-player__play-btn">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  </button>
+            <>
+              {(isPlaying || isMobile) && (
+                <iframe
+                  key={embedUrl}
+                  src={isMobile ? embedUrl : `${embedUrl}${embedUrl.includes('?') ? '&' : '?'}autoplay=1`}
+                  title={movie.name}
+                  allowFullScreen
+                  allow={isMobile ? "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" : "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"}
+                  referrerPolicy="no-referrer"
+                  style={{ zIndex: 1 }}
+                />
+              )}
+              {!isPlaying && (
+                <div 
+                  className="wp-player__cover" 
+                  onClick={() => setIsPlaying(true)}
+                  style={{ 
+                    pointerEvents: isMobile ? 'none' : 'auto', 
+                    zIndex: 2 
+                  }}
+                >
+                  <img src={imgUrl(movie.thumb_url || movie.poster_url)} alt="Cover" />
+                  <div className="wp-player__overlay">
+                    <button className="wp-player__play-btn">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )
+              )}
+            </>
           ) : (
             <div className="wp-player__empty">
               <p>Không có nguồn phát.</p>

@@ -31,6 +31,13 @@ const MapPinSvg = () => (
   </svg>
 );
 
+const ClockSvg = () => (
+  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
 /**
  * SpotlightSection
  * Layout: [Info LEFT] [Thumb Grid RIGHT]
@@ -129,8 +136,8 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
             {/* Meta */}
             {(movie?.time || countries || imdb > 0 || tmdb > 0) && (
               <div className="spotlight-section__meta">
-                {movie?.time && <span>⏱ {movie.time}</span>}
-                {countries   && <span><MapPinSvg /> {countries}</span>}
+                {movie?.time && <span className="spotlight-section__meta-item"><ClockSvg /> {movie.time}</span>}
+                {countries   && <span className="spotlight-section__meta-item"><MapPinSvg /> {countries}</span>}
                 {imdb > 0    && (
                   <span className="spotlight-section__meta-imdb">
                     <StarIcon /> {imdb.toFixed(1)}
