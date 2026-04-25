@@ -130,6 +130,10 @@
   border-radius: 14px;
 }
 
+.md-hero__poster-mobile {
+  display: none !important;
+}
+
 .md-quality-badge {
   position: absolute;
   top: 8px;
@@ -715,12 +719,33 @@
     object-position: top;
   }
 
+  .md-hero__poster-desktop {
+    display: none !important;
+  }
+  
+  .md-hero__poster-mobile {
+    display: block !important;
+  }
+
   .md-hero__title {
     font-size: 24px;
   }
 
   .md-hero__desc {
     font-size: 13px;
+  }
+
+  .md-hero__actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .md-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 15px;
   }
 
   .md-body {
