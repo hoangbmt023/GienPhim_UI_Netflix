@@ -76,8 +76,10 @@ export const getHome = () => get('/v1/api/home');
  *                        phim-sap-chieu | subteam | phim-chieu-rap
  * @param {object} opts  { page, limit, sort_field, sort_type, category, country, year, type }
  */
-export const getMovieList = (slug = 'phim-moi', opts = {}) =>
-  get(`/v1/api/danh-sach/${slug}${qs({ page: 1, ...opts })}`);
+export const getMovieList = (slug = 'phim-moi', opts = {}) => {
+  const q = qs({ page: 1, ...opts });
+  return get(`/v1/api/danh-sach/${slug}${slug.includes('?') ? q.replace('?', '&') : q}`);
+};
 
 /**
  * Tìm kiếm phim
@@ -96,8 +98,10 @@ export const getCategories = () => get('/v1/api/the-loai');
  * Phim theo thể loại
  * GET /v1/api/the-loai/{slug}?page=&limit=&...
  */
-export const getByCategory = (slug, opts = {}) =>
-  get(`/v1/api/the-loai/${slug}${qs({ page: 1, ...opts })}`);
+export const getByCategory = (slug, opts = {}) => {
+  const q = qs({ page: 1, ...opts });
+  return get(`/v1/api/the-loai/${slug}${slug.includes('?') ? q.replace('?', '&') : q}`);
+};
 
 /**
  * Danh sách quốc gia
@@ -109,8 +113,10 @@ export const getCountries = () => get('/v1/api/quoc-gia');
  * Phim theo quốc gia
  * GET /v1/api/quoc-gia/{slug}?page=&limit=&...
  */
-export const getByCountry = (slug, opts = {}) =>
-  get(`/v1/api/quoc-gia/${slug}${qs({ page: 1, ...opts })}`);
+export const getByCountry = (slug, opts = {}) => {
+  const q = qs({ page: 1, ...opts });
+  return get(`/v1/api/quoc-gia/${slug}${slug.includes('?') ? q.replace('?', '&') : q}`);
+};
 
 /**
  * Danh sách năm phát hành
@@ -122,8 +128,11 @@ export const getYears = () => get('/v1/api/nam');
  * Phim theo năm phát hành
  * GET /v1/api/nam/{year}?page=&...
  */
-export const getByYear = (year, opts = {}) =>
-  get(`/v1/api/nam/${year}${qs({ page: 1, ...opts })}`);
+export const getByYear = (year, opts = {}) => {
+  const q = qs({ page: 1, ...opts });
+  const yearStr = String(year);
+  return get(`/v1/api/nam/${yearStr}${yearStr.includes('?') ? q.replace('?', '&') : q}`);
+};
 
 /**
  * Thông tin chi tiết phim + episodes
