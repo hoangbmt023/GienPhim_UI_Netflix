@@ -109,9 +109,11 @@ export default function WatchPage() {
         const tmdbId = item.tmdb?.id;
         if (tmdbId) {
           searchMovies(tmdbId, 1).then(rF => {
-            const items = parseItems(rF).filter(m => m.slug !== slug);
+            const items = parseItems(rF).filter(m =>
+              m.slug !== slug && String(m.tmdb?.id) === String(tmdbId)
+            );
             if (items.length > 0) setFranchise(items);
-          }).catch(() => {});
+          }).catch(() => { });
         }
 
         loadRelatedByKeywords(slug, slug);
@@ -120,8 +122,8 @@ export default function WatchPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  useEffect(() => { 
-    setSelServer(serverIdx); 
+  useEffect(() => {
+    setSelServer(serverIdx);
     setIsPlaying(false);
   }, [serverIdx, epSlug]);
 
@@ -148,6 +150,7 @@ export default function WatchPage() {
     next.set('ep', ep.slug);
     next.set('server', si);
     setSP(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const embedUrl = currentEp?.link_embed || '';
@@ -206,18 +209,18 @@ export default function WatchPage() {
                 />
               )}
               {!isPlaying && (
-                <div 
-                  className="wp-player__cover" 
+                <div
+                  className="wp-player__cover"
                   onClick={() => setIsPlaying(true)}
-                  style={{ 
-                    pointerEvents: isMobile ? 'none' : 'auto', 
-                    zIndex: 2 
+                  style={{
+                    pointerEvents: isMobile ? 'none' : 'auto',
+                    zIndex: 2
                   }}
                 >
                   <img src={imgUrl(movie.thumb_url || movie.poster_url)} alt="Cover" />
                   <div className="wp-player__overlay">
                     <button className="wp-player__play-btn">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                     </button>
                   </div>
                 </div>
