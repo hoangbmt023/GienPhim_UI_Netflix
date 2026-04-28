@@ -1,0 +1,209 @@
+/* ============================================
+   ANNOUNCEMENT SYSTEM - DUAL MODE (BAR & BOX)
+   ============================================ */
+
+/* ---------- 1. BAR STYLE (Top Marquee) ---------- */
+.ann-bar {
+  position: relative;
+  margin-top: var(--header-height);
+  z-index: 99;
+  width: 100%;
+  color: #fff;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  overflow: hidden;
+  animation: slideDown 0.4s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ann-bar--danger { background: linear-gradient(90deg, #e50914 0%, #b20710 100%); }
+.ann-bar--info { background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); }
+.ann-bar--success { background: linear-gradient(90deg, #10b981 0%, #059669 100%); }
+
+.ann-bar__content {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+.ann-bar__marquee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  animation: barMarquee 15s linear infinite;
+  padding-left: 100%;
+}
+
+@keyframes barMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.ann-bar__badge {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ann-bar__text {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.ann-bar__close {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* ---------- 2. BOX STYLE (Modal) ---------- */
+.ann-box-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.ann-box {
+  width: 100%;
+  max-width: 440px;
+  background: #141414;
+  border-radius: 16px; /* Bo tròn hơn như ý bạn */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  animation: boxZoom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+@keyframes boxZoom {
+  from { transform: scale(0.9) translateY(10px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.ann-box__header { 
+  padding: 35px 30px 10px; /* Thu hẹp khoảng cách dưới */
+  text-align: center; 
+}
+
+.ann-box__badge { 
+  display: inline-block;
+  padding: 8px 22px;
+  border-radius: 4px;
+  font-size: 15px; 
+  font-weight: 900; 
+  letter-spacing: -0.5px; /* Cho chữ dính lại 1 xíu như ý bạn */
+  text-transform: uppercase;
+  /* Màu đỏ rượu sâu (Deep Maroon) cực kỳ sang trọng, hết cảm giác nhựa */
+  background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
+}
+
+.ann-box__body { 
+  padding: 0 40px 30px; 
+  text-align: center; 
+}
+
+.ann-box__text { 
+  font-size: 15px; 
+  line-height: 1.7; 
+  color: #efefef; 
+  font-weight: 500;
+}
+
+.ann-box__footer { 
+  padding: 0 40px 40px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+.ann-box__btn { 
+  padding: 14px; 
+  border-radius: 4px; 
+  font-size: 14px; 
+  font-weight: 800; 
+  cursor: pointer; 
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+
+.ann-box__btn--primary { 
+  background: #e50914; 
+  color: #fff; 
+  border: none; 
+}
+
+.ann-box__btn--primary:hover {
+  background: #f40612;
+  transform: scale(1.02);
+}
+
+.ann-box__btn--outline { 
+  background: rgba(255, 255, 255, 0.05); 
+  color: #ababab; 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+}
+
+.ann-box__btn--outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.ann-box__close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 32px; /* To hẳn lên */
+  font-weight: 300; /* Thanh mảnh nhưng to */
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+
+.ann-box__close:hover {
+  opacity: 1;
+}
+
+@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Mobile Adjustment */
+@media (max-width: 768px) {
+  .ann-bar { margin-top: 60px; min-height: 38px; padding: 0 34px 0 12px; }
+  .ann-bar__text { font-size: 12px; }
+  .ann-box { max-width: 90%; }
+}

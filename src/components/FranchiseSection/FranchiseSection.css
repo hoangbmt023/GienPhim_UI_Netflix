@@ -38,7 +38,13 @@
   object-fit: cover;
   opacity: 0.35;
   filter: blur(2px);
-  transition: opacity 0.5s ease;
+  transition: opacity 0.3s ease-out;
+  animation: franchise-bg-pulse 8s infinite alternate ease-in-out;
+}
+
+@keyframes franchise-bg-pulse {
+  0% { transform: scale(1.0); }
+  100% { transform: scale(1.08); }
 }
 .franchise-section__overlay {
   position: absolute;
@@ -60,6 +66,18 @@
 .franchise-section__info {
   flex: 1;
   max-width: 480px;
+  animation: slideFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 .franchise-section__title {
   font-size: 36px;
@@ -191,6 +209,17 @@
   .franchise-section__info {
     padding-bottom: 0;
     width: 100%;
+    animation: slideUpFadeIn 0.35s ease-out forwards;
+  }
+  @keyframes slideUpFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   .franchise-section__play {
     display: flex;

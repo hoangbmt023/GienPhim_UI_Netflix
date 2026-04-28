@@ -55,7 +55,7 @@ export default function FranchiseSection({ franchise }) {
 
           <div className="franchise-section__content">
             {/* Left Info */}
-            <div className="franchise-section__info">
+            <div className="franchise-section__info" key={movie.slug}>
               <h4 className="franchise-section__title">{movie.name}</h4>
               <p className="franchise-section__origin">{movie.origin_name}</p>
 

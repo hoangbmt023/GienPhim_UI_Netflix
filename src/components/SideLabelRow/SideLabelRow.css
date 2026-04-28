@@ -109,7 +109,7 @@
     flex-direction: column;
     padding-left: 16px;
     padding-right: 16px;
-    padding-bottom: 24px;
+    padding-bottom: 40px;
     gap: 8px;
   }
 
@@ -117,19 +117,20 @@
     width: 100%;
     padding: 0;
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
   }
 
-  .side-row__title   { font-size: 15px; margin-bottom: 0; }
-  .side-row__see-all { font-size: 11px; }
+  .side-row__title   { font-size: 22px; margin-bottom: 0; }
+  .side-row__see-all { font-size: 13px; padding: 4px 0 4px 8px; }
 
   .side-row__movies  { width: 100%; }
-  .side-row__list    { gap: 8px; }
+  .side-row__list    { gap: 10px; }
   .side-row__nav     { display: none; }
 
-  /* Smaller cards on mobile via container width */
-  .side-row__list > * { width: 110px !important; }
+  /* 3 cards on mobile */
+  .side-row__list > * { width: calc((100% - 20px) / 3) !important; }
 }
 
 /* Small mobile ≤480 */
@@ -137,11 +138,11 @@
   .side-row {
     padding-left: 12px;
     padding-right: 12px;
-    padding-bottom: 18px;
+    padding-bottom: 32px;
   }
-  .side-row__list { gap: 6px; }
-  .side-row__list > * { width: 100px !important; }
-  .side-row__title { font-size: 14px; }
+  .side-row__list { gap: 8px; }
+  .side-row__list > * { width: calc((100% - 16px) / 3) !important; }
+  .side-row__title { font-size: 20px; }
 }
 
 /* TV ≥1920 */

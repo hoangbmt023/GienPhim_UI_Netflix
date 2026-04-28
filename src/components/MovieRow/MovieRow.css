@@ -97,9 +97,12 @@
 }
 
 @media (max-width: 767px) {
-  .movie-row { padding-left: 16px; padding-right: 16px; }
+  .movie-row { padding-left: 16px; padding-right: 16px; padding-bottom: 40px; }
   .movie-row__nav { display: none; }
-  .movie-row__list { gap: 10px; }
+  .movie-row__list { gap: 12px; }
+  .movie-row__list > * { width: calc((100% - 24px) / 2.5) !important; }
+  .movie-row__title { font-size: 22px; }
+  .movie-row__see-all { font-size: 14px; padding: 4px 0 4px 8px; }
 }
 
 @media (min-width: 1920px) {
