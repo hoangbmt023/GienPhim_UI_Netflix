@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { imgUrl } from '@/services/ophimApi';
+import { imgUrl, getMovieImages } from '@/services/ophimApi';
 import './HeroBanner.css';
 
 const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
@@ -51,9 +51,33 @@ const AUTO_INTERVAL = 6500;
 export default function HeroBanner({ movies = [], loading = false }) {
   const items = movies.slice(0, 8);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [backdropCache, setBackdropCache] = useState({});
   const timerRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+
+  // Fetch hình ảnh bổ sung nếu thiếu hình ngang hoặc trên Desktop
+  useEffect(() => {
+    if (!items.length) return;
+
+    items.forEach(movie => {
+      if (backdropCache[movie.slug]) return;
+
+      // Gọi API cho mọi phim trong Hero Banner để đảm bảo chất lượng hình ảnh tốt nhất
+      getMovieImages(movie.slug)
+        .then(res => {
+          if (res.success && res.data?.images) {
+            const backdrop = res.data.images.find(img => img.type === 'backdrop');
+            if (backdrop) {
+              const baseUrl = res.data.image_sizes?.backdrop?.original || 'https://image.tmdb.org/t/p/original';
+              const fullUrl = `${baseUrl}${backdrop.file_path}`;
+              setBackdropCache(prev => ({ ...prev, [movie.slug]: fullUrl }));
+            }
+          }
+        })
+        .catch(err => console.error("Lỗi lấy ảnh TMDB:", err));
+    });
+  }, [items, backdropCache]);
 
   const goTo = useCallback((idx) => {
     setActiveIdx(idx);
@@ -105,8 +129,11 @@ export default function HeroBanner({ movies = [], loading = false }) {
 
   const movie = items[activeIdx];
 
-  /* poster_url for backdrop (landscape/portrait poster), fallback to thumb_url */
-  const posterSrc = (m) => imgUrl(m?.poster_url || m?.thumb_url);
+  /* Ưu tiên ảnh từ TMDB Cache -> thumb_url -> poster_url */
+  const posterSrc = (m) => {
+    if (backdropCache[m.slug]) return backdropCache[m.slug];
+    return imgUrl(m?.thumb_url || m?.poster_url);
+  };
 
   /* Meta info */
   const countries = movie?.country?.map(c => c.name).join(', ') || '';

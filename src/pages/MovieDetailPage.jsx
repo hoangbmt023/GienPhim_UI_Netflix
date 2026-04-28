@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
-  getMovieDetail, getMovieKeywords, getMovieImages,
+  getMovieDetail, getMovieKeywords, getMovieImages, getMoviePeoples,
   getByCategory, getByCountry, searchMovies,
   parseItems, imgUrl, getYouTubeEmbed,
 } from '@/services/ophimApi';
 import MovieRow from '@/components/MovieRow/MovieRow';
+import EpisodeList from '@/components/EpisodeList/EpisodeList';
 import './MovieDetailPage.css';
 
 /* ─── Netflix-style Icons ─── */
@@ -59,6 +60,8 @@ export default function MovieDetailPage() {
   const [movie,       setMovie]       = useState(null);
   const [breadcrumb,  setBreadcrumb]  = useState([]);
   const [images,      setImages]      = useState([]);
+  const [cast,        setCast]        = useState([]);
+  const [profileBaseUrl, setProfileBaseUrl] = useState('');
   const [kwRelated,      setKwRelated]      = useState([]);
   const [catRelated,     setCatRelated]     = useState([]);
   const [countryRelated, setCountryRelated] = useState([]);
@@ -130,6 +133,16 @@ export default function MovieDetailPage() {
         /* Images */
         getMovieImages(slug)
           .then(r3 => setImages(r3?.data?.items ?? []))
+          .catch(() => {});
+
+        /* Peoples (Actors) */
+        getMoviePeoples(slug)
+          .then(rP => {
+            if (rP.success && rP.data) {
+              setCast(rP.data.peoples || []);
+              setProfileBaseUrl(rP.data.profile_sizes?.original || 'https://image.tmdb.org/t/p/original');
+            }
+          })
           .catch(() => {});
       })
       .catch(() => {})
@@ -367,15 +380,50 @@ export default function MovieDetailPage() {
             {/* Diễn viên */}
             {tab === 'cast' && (
               <div className="md-cast">
-                {movie.actor?.length > 0 ? movie.actor.map((name, i) => (
+                {cast.length > 0 ? cast.map((person, i) => (
                   <div key={i} className="md-cast__item">
-                    <div className="md-cast__avatar">
-                      {name.trim().charAt(0).toUpperCase()}
+                    <div 
+                      className="md-cast__avatar" 
+                      onClick={() => {
+                        if (person.profile_path) {
+                          setLightbox(`${profileBaseUrl}${person.profile_path}`);
+                        }
+                      }}
+                      style={{ cursor: person.profile_path ? 'pointer' : 'default' }}
+                    >
+                      {person.profile_path ? (
+                        <img 
+                          src={`${profileBaseUrl}${person.profile_path}`} 
+                          alt={person.name} 
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.opacity = '0';
+                            e.currentTarget.parentElement.classList.add('no-img');
+                          }}
+                        />
+                      ) : (
+                        <span>{person.name.trim().charAt(0).toUpperCase()}</span>
+                      )}
                     </div>
-                    <p className="md-cast__name">{name}</p>
+                    <div className="md-cast__info">
+                      <p className="md-cast__name">{person.name}</p>
+                      {person.character && <p className="md-cast__char">{person.character}</p>}
+                    </div>
                   </div>
                 )) : (
-                  <p className="md-empty">Chưa có thông tin diễn viên.</p>
+                  /* Fallback to basic names if API has no people data */
+                  movie.actor?.length > 0 ? movie.actor.map((name, i) => (
+                    <div key={i} className="md-cast__item">
+                      <div className="md-cast__avatar">
+                        <span>{name.trim().charAt(0).toUpperCase()}</span>
+                      </div>
+                      <div className="md-cast__info">
+                        <p className="md-cast__name">{name}</p>
+                      </div>
+                    </div>
+                  )) : (
+                    <p className="md-empty">Chưa có thông tin diễn viên.</p>
+                  )
                 )}
               </div>
             )}
@@ -425,29 +473,10 @@ export default function MovieDetailPage() {
         )}
 
         {/* ── EPISODES ── */}
-        {movie.episodes?.length > 0 && (
-          <section className="md-episodes">
-            <h2 className="md-section-title">Danh sách tập</h2>
-            {movie.episodes.map((server, si) => (
-              <div key={si} className="md-server">
-                {movie.episodes.length > 1 && (
-                  <p className="md-server__name">{server.server_name}</p>
-                )}
-                <div className="md-ep-grid">
-                  {server.server_data.map(ep => (
-                    <Link
-                      key={ep.slug}
-                      to={`/xem-phim/${slug}?ep=${ep.slug}&server=${si}`}
-                      className="md-ep-btn"
-                    >
-                      {ep.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
+        <EpisodeList
+          movie={movie}
+          onEpClick={(ep, si) => navigate(`/xem-phim/${slug}?ep=${ep.slug}&server=${si}`)}
+        />
 
         {/* ── RELATED – Keyword-based ── */}
         {kwRelated.length > 0 && (

@@ -302,8 +302,8 @@
   }
 
   .ranked-card__rank {
-    font-size: 44px;
-    bottom: 28px;
+    font-size: 72px;
+    bottom: 22px;
   }
 
   .skeleton-card {
@@ -315,11 +315,15 @@
   }
 
   .movie-card__name {
-    font-size: 11.5px;
+    font-size: 16px;
+  }
+
+  .movie-card__origin {
+    font-size: 12.5px;
   }
 
   .ranked-card__name {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 
@@ -334,7 +338,7 @@
   }
 
   .ranked-card__rank {
-    font-size: 50px;
+    font-size: 85px;
   }
 
   .skeleton-card {

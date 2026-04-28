@@ -258,7 +258,15 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  /* NOTE: do NOT set overflow:hidden — it clips the dropdown */
+  /* Hỗ trợ cuộn ngang nếu menu quá dài trên màn hình nhỏ/xoay ngang */
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+}
+
+.header__nav::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .nav__item {

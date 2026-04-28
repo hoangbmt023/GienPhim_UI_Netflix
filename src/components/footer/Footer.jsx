@@ -165,7 +165,7 @@ export default function Footer() {
           </div>
 
           <p className="footer__copyright">
-            © {year} GiênPhim. Tất cả quyền được bảo lưu.
+            © {year} GiênPhim. Tất cả quyền được bảo lưu. {import.meta.env.VITE_APP_VERSION && `(v${import.meta.env.VITE_APP_VERSION})`}
           </p>
         </div>
       </div>

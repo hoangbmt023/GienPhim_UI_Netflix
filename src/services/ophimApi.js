@@ -5,8 +5,8 @@
  * CDN   : https://img.ophim.live/uploads/movies/{filename}
  */
 
-export const BASE_URL  = import.meta.env.VITE_API_BASE ;
-export const CDN_IMAGE = 'https://img.ophim.live/uploads/movies';
+export const BASE_URL  = import.meta.env.VITE_API_BASE || 'https://ophim1.com';
+export const CDN_IMAGE = import.meta.env.VITE_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
 
 /* ─── Helpers ──────────────────────────────────────── */
 
@@ -144,12 +144,14 @@ export const getMovieDetail = (slug) => get(`/v1/api/phim/${slug}`);
  * Hình ảnh phim
  * GET /v1/api/hinh-anh/{slug}
  */
-export const getMovieImages = (slug) => get(`/v1/api/hinh-anh/${slug}`);
+export const getMovieImages = (slug) => get(`/v1/api/phim/${slug}/images`);
 
 /**
- * Diễn viên
- * GET /v1/api/dien-vien/{slug}
+ * Diễn viên và đoàn làm phim (Peoples)
+ * GET /v1/api/phim/{slug}/peoples
  */
+export const getMoviePeoples = (slug) => get(`/v1/api/phim/${slug}/peoples`);
+
 export const getActor = (slug) => get(`/v1/api/dien-vien/${slug}`);
 
 /**

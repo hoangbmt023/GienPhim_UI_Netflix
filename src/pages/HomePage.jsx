@@ -22,7 +22,7 @@ export default function HomePage() {
   const [japanMovies, setJapanMovies] = useState([]);
   const [vietnamMovies, setVietnamMovies] = useState([]);
   const [theaterMovies, setTheaterMovies] = useState([]);
-  
+
   const [upcomingMovies, setUpcomingMovies] = useState([]);
   const [dubbedMovies, setDubbedMovies] = useState([]);
   const [vietsubMovies, setVietsubMovies] = useState([]);
@@ -77,7 +77,7 @@ export default function HomePage() {
       .then((r) => setTheaterMovies(parseItems(r)))
       .catch(() => {})
       .finally(() => done("theater"));
-      
+
     /* Sắp chiếu */
     getMovieList("phim-sap-chieu", { page: 1 })
       .then((r) => setUpcomingMovies(parseItems(r)))
@@ -85,7 +85,7 @@ export default function HomePage() {
       .finally(() => done("upcoming"));
 
     /* Lồng tiếng */
-    getMovieList("phim-long-tien", { page: 1 })
+    getMovieList("phim-long-tieng", { page: 1 })
       .then((r) => setDubbedMovies(parseItems(r)))
       .catch(() => {})
       .finally(() => done("dubbed"));
@@ -142,7 +142,7 @@ export default function HomePage() {
         loading={loading.theater}
         seeAllLink="/danh-sach/phim-chieu-rap"
       />
-      
+
       {/* Phim Sắp Chiếu */}
       <MovieRow
         title="Phim Sắp Chiếu"
@@ -168,7 +168,7 @@ export default function HomePage() {
         seeAllLink="/danh-sach/phim-le"
         ranked
       />
-      
+
       {/* Phim Vietsub */}
       <SideLabelRow
         title="Tuyển tập Vietsub"
@@ -176,13 +176,13 @@ export default function HomePage() {
         loading={loading.vietsub}
         seeAllLink="/danh-sach/phim-vietsub"
       />
-      
+
       {/* Phim Lồng Tiếng */}
       <SideLabelRow
         title="Phim Lồng Tiếng"
         items={dubbedMovies}
         loading={loading.dubbed}
-        seeAllLink="/danh-sach/phim-long-tien"
+        seeAllLink="/danh-sach/phim-long-tieng"
       />
 
       {/* 6. ĐIỆN ẢNH HÀN QUỐC */}

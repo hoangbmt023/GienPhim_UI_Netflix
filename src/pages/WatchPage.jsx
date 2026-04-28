@@ -4,6 +4,7 @@ import { getMovieDetail, getByCategory, getByCountry, getMovieKeywords, searchMo
 import Header from '@/components/header/Header';
 import MovieRow from '@/components/MovieRow/MovieRow';
 import FranchiseSection from '@/components/FranchiseSection/FranchiseSection';
+import EpisodeList from '@/components/EpisodeList/EpisodeList';
 import './WatchPage.css';
 
 /* ── Icons ── */
@@ -16,6 +17,11 @@ const ListIcon = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
     <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+  </svg>
+);
+const BookmarkIcon = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
   </svg>
 );
 
@@ -36,7 +42,6 @@ export default function WatchPage() {
   const [franchise, setFranchise] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selServer, setSelServer] = useState(serverIdx);
-  const [epSearch, setEpSearch] = useState('');
   const isMobile = useMemo(() => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 1024, []);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -82,7 +87,6 @@ export default function WatchPage() {
 
   useEffect(() => {
     setLoading(true);
-    setEpSearch('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     getMovieDetail(slug)
       .then(res => {
@@ -134,16 +138,6 @@ export default function WatchPage() {
     if (!server) return null;
     return server.server_data.find(e => e.slug === epSlug) || server.server_data[0];
   }, [movie, selServer, epSlug]);
-
-  /* Filtered episode list */
-  const filteredEps = useMemo(() => {
-    const server = movie?.episodes?.[selServer];
-    if (!server) return [];
-    if (!epSearch.trim()) return server.server_data;
-    return server.server_data.filter(ep =>
-      ep.name.toLowerCase().includes(epSearch.toLowerCase())
-    );
-  }, [movie, selServer, epSearch]);
 
   const goEp = (ep, si = selServer) => {
     const next = new URLSearchParams();
@@ -253,9 +247,14 @@ export default function WatchPage() {
               )}
             </div>
           </div>
-          <Link to={`/phim/${slug}`} className="wp-btn wp-btn--detail">
-            Chi tiết phim
-          </Link>
+          <div className="wp-info__actions">
+            <button className="wp-btn wp-btn--ghost">
+              <BookmarkIcon /> Yêu thích
+            </button>
+            <Link to={`/phim/${slug}`} className="wp-btn wp-btn--detail">
+              Chi tiết phim
+            </Link>
+          </div>
         </div>
 
         {/* Description */}
@@ -268,73 +267,15 @@ export default function WatchPage() {
         )}
 
         {/* ── EPISODE LIST ── */}
-        {movie.episodes?.length > 0 && (
-          <div className="wp-episodes">
-            <div className="wp-episodes__head">
-              <div className="wp-episodes__left">
-                <ListIcon />
-                <h2 className="wp-episodes__title">Danh sách tập</h2>
-                {hasMultiEp && (
-                  <span className="wp-episodes__count">
-                    {movie.episodes[selServer]?.server_data?.length} tập
-                  </span>
-                )}
-              </div>
-
-              <div className="wp-episodes__right">
-                {/* Server tabs */}
-                {movie.episodes.length > 1 && (
-                  <div className="wp-servers">
-                    {movie.episodes.map((sv, si) => (
-                      <button
-                        key={si}
-                        className={`wp-server-btn${selServer === si ? ' active' : ''}`}
-                        onClick={() => {
-                          setSelServer(si);
-                          const ep0 = sv.server_data[0];
-                          if (ep0) goEp(ep0, si);
-                        }}
-                      >
-                        {sv.server_name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Episode search */}
-                {hasMultiEp && (
-                  <input
-                    className="wp-ep-search"
-                    type="text"
-                    placeholder="Tìm tập..."
-                    value={epSearch}
-                    onChange={e => setEpSearch(e.target.value)}
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Episode grid */}
-            <div className="wp-ep-grid">
-              {filteredEps.map(ep => {
-                const isActive = ep.slug === currentEp?.slug;
-                return (
-                  <button
-                    key={ep.slug}
-                    className={`wp-ep-btn${isActive ? ' active' : ''}`}
-                    onClick={() => goEp(ep, selServer)}
-                    title={`Tập ${ep.name}`}
-                  >
-                    {ep.name}
-                  </button>
-                );
-              })}
-              {filteredEps.length === 0 && (
-                <p className="wp-ep-empty">Không tìm thấy tập.</p>
-              )}
-            </div>
-          </div>
-        )}
+        <EpisodeList
+          movie={movie}
+          currentEpSlug={currentEp?.slug}
+          onEpClick={(ep, si) => {
+            setSelServer(si);
+            goEp(ep, si);
+          }}
+          initialServer={selServer}
+        />
       </div>
 
       {/* ── RELATED – FRANCHISE (Phim trong bộ) ── */}

@@ -1,7 +1,8 @@
 {
-  "name": "GienPhim - Xem Phim Online",
+  "name": "GienPhim",
   "short_name": "GienPhim",
-  "description": "Xem phim trực tuyến miễn phí chất lượng cao, cập nhật phim mới nhanh nhất.",
+  "id": "/",
+  "description": "Xem phim trực tuyến miễn phí chất lượng cao.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#141414",
@@ -10,13 +11,33 @@
     {
       "src": "/logo_vuong.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/logo_vuong.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/logo_vuong.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/logo_vuong.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/logo_vuong.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
