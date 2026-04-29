@@ -24,7 +24,7 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
 
   const filteredEps = useMemo(() => {
     if (!server?.server_data) return [];
-    
+
     // De-duplicate by slug and filter by search
     const seen = new Set();
     const unique = server.server_data.filter(ep => {
@@ -34,10 +34,10 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
     });
 
     if (!epSearch.trim()) return unique;
-    
+
     const searchLower = epSearch.toLowerCase();
-    return unique.filter(ep => 
-      ep.name.toLowerCase().includes(searchLower) || 
+    return unique.filter(ep =>
+      ep.name.toLowerCase().includes(searchLower) ||
       ep.slug.toLowerCase().includes(searchLower)
     );
   }, [server, epSearch]);
@@ -111,8 +111,18 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
             </button>
           );
         })}
-        {filteredEps.length === 0 && (
-          <p className="ep-empty">Không tìm thấy tập.</p>
+        {filteredEps.length === 0 && epSearch.trim() && (
+          <p className="ep-empty">Không tìm thấy tập «{epSearch}».</p>
+        )}
+        {filteredEps.length === 0 && !epSearch.trim() && (
+          <div className="ep-empty ep-empty--no-data">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" strokeWidth="2.5" />
+            </svg>
+            <p>Chưa có tập nào &mdash; đang cập nhật...</p>
+          </div>
         )}
       </div>
     </div>

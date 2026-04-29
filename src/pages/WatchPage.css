@@ -6,6 +6,7 @@
 .watch-page {
   min-height: 100vh;
   background: #0a0a0a;
+  overflow-x: hidden;
 }
 
 .watch-page--error {
@@ -29,13 +30,11 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 10px 32px;
-  background: #0e0e0e;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: sticky;
-  top: var(--header-height);
-  z-index: 90;
-  margin-top: var(--header-height);
+  padding: 10px 0;
+  background: transparent;
+  position: relative;
+  z-index: 100; /* Đảm bảo luôn nằm trên video iframe (z-index 10) */
+  margin-bottom: 10px;
 }
 
 .wp-back {
@@ -64,6 +63,8 @@
 .wp-topnav__center {
   flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
 }
 
 .wp-topnav__title {
@@ -73,6 +74,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .wp-topnav__ep {
@@ -80,33 +83,38 @@
   font-weight: 400;
   margin-left: 6px;
   font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ── PLAYER – matching content width ── */
 .wp-player-wrapper {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px 40px 0;
+  padding: calc(var(--header-height) + 20px) 40px 0;
 }
 
 .wp-player {
   position: relative;
-  width: 100%;
+  /* Giữ tỷ lệ 16:9 chuẩn: giới hạn width để height không vượt 85vh */
+  width: min(100%, calc(85vh * 16 / 9));
+  margin: 0 auto;
   aspect-ratio: 16 / 9;
   background: #000;
   overflow: hidden;
-  max-height: 85vh;
   border-radius: 12px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
 }
 
-.wp-player iframe {
+.wp-player iframe,
+.wp-player__slot {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   border: none;
+  background: #000;
 }
 
 .wp-player__cover {
@@ -114,13 +122,16 @@
   inset: 0;
   cursor: pointer;
   background: #000;
+  touch-action: manipulation; /* Loại bỏ delay 300ms trên iPhone */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .wp-player__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.5; /* Darker banner */
+  opacity: 0.5;
+  /* Darker banner */
   transition: all 0.4s ease;
 }
 
@@ -144,7 +155,9 @@
     transform: translate(-50%, -50%) scale(0.1);
     opacity: 0.8;
   }
-  50%, 100% {
+
+  50%,
+  100% {
     transform: translate(-50%, -50%) scale(15);
     opacity: 0;
   }
@@ -183,8 +196,17 @@
 }
 
 @keyframes wp-play-glow {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(229, 9, 20, 0.4); }
-  50% { transform: scale(1.12); box-shadow: 0 0 40px 10px rgba(229, 9, 20, 0.6); }
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+  }
+
+  50% {
+    transform: scale(1.12);
+    box-shadow: 0 0 40px 10px rgba(229, 9, 20, 0.6);
+  }
 }
 
 .wp-player__play-btn svg {
@@ -316,8 +338,11 @@
 .wp-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  padding: 9px 20px;
+  height: 38px; /* Fixed height for consistency */
+  padding: 0 20px;
+  box-sizing: border-box;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -327,9 +352,10 @@
   border: 1px solid rgba(255, 255, 255, 0.13);
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.18s;
+  transition: all 0.18s ease;
   flex-shrink: 0;
   white-space: nowrap;
+  line-height: 1;
 }
 
 .wp-btn:hover {
@@ -534,10 +560,15 @@
 
 @media (max-width: 767px) {
   .wp-player-wrapper {
-    padding: 0;
+    padding: var(--header-height) 0 0; /* Để chừa chỗ cho main header */
+  }
+
+  .wp-topnav {
+    padding: 10px 16px;
   }
 
   .wp-player {
+    width: 100%; /* Mobile: full width luôn, bỏ min() constraint */
     border-radius: 0;
     box-shadow: none;
   }
@@ -584,19 +615,31 @@
   }
 
   .wp-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .wp-info__thumb {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .wp-info__title {
+    font-size: 16px;
   }
 
   .wp-info__actions {
     width: 100%;
     margin-left: 0;
     gap: 10px;
+    display: flex;
   }
 
   .wp-info__actions .wp-btn {
     flex: 1;
+    height: 36px;
+    font-size: 12px;
     justify-content: center;
   }
 
