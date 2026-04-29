@@ -166,6 +166,26 @@
   font-size: 14px;
 }
 
+.ep-empty--no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.ep-empty--no-data svg {
+  opacity: 0.4;
+}
+
+.ep-empty--no-data p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* ── Responsive ── */
 @media (max-width: 767px) {
   .episode-list-comp {

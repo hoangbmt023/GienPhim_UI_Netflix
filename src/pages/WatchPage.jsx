@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { getMovieDetail, getByCategory, getByCountry, getMovieKeywords, searchMovies, parseItems, imgUrl } from '@/services/ophimApi';
 import Header from '@/components/header/Header';
 import MovieRow from '@/components/MovieRow/MovieRow';
 import FranchiseSection from '@/components/FranchiseSection/FranchiseSection';
 import EpisodeList from '@/components/EpisodeList/EpisodeList';
+import { useWakeLock } from '@/hooks/useWakeLock';
+import { usePiP } from '@/contexts/PiPContext';
 import './WatchPage.css';
 
 /* ── Icons ── */
@@ -13,15 +15,9 @@ const BackIcon = () => (
     <polyline points="15 18 9 12 15 6" />
   </svg>
 );
-const ListIcon = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
-    <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
-  </svg>
-);
 const BookmarkIcon = () => (
   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+    <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
   </svg>
 );
 
@@ -42,21 +38,43 @@ export default function WatchPage() {
   const [franchise, setFranchise] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selServer, setSelServer] = useState(serverIdx);
-  const isMobile = useMemo(() => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 1024, []);
-  const [isPlaying, setIsPlaying] = useState(false);
 
+  /* PiPContext API mới */
+  const { registerVideo, registerSlot, startVideo, startPiP,
+    hasStarted, isPiP, expandPiP } = usePiP();
+
+  /**
+   * Callback ref cho slot div.
+   * React gọi hàm này với DOM element khi div MOUNT (sau khi data load xong),
+   * và với null khi div UNMOUNT.
+   * Giải quyết vấn đề timing: slot chưa tồn tại khi WatchPage lần đầu mount (loading).
+   */
+  const slotCallbackRef = useCallback((node) => {
+    registerSlot(node); // node = DOM element hoặc null
+  }, [registerSlot]);
+
+  const wakeLock = useWakeLock();
+
+  /* Giữ màn hình sáng khi đang xem */
   useEffect(() => {
-    // When the iframe is tapped on mobile, it receives focus.
-    // This removes focus from the main window, triggering a 'blur' event.
-    const handleBlur = () => {
-      setTimeout(() => {
-        if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
-          setIsPlaying(true);
-        }
-      }, 100);
+    if (hasStarted) { wakeLock.acquire(); }
+    else { wakeLock.release(); }
+    return () => wakeLock.release();
+  }, [hasStarted]);
+
+  /* Mount: nếu PiP đang active (user navigate trực tiếp, không qua expand button) → tắt PiP */
+  useEffect(() => {
+    if (isPiP) expandPiP();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* Cleanup khi rời trang → bật PiP (chỉ khi hasStarted) */
+  useEffect(() => {
+    return () => {
+      startPiP();
+      wakeLock.release();
     };
-    window.addEventListener('blur', handleBlur);
-    return () => window.removeEventListener('blur', handleBlur);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadRelatedByKeywords = useCallback(async (slug, currentSlug) => {
@@ -126,9 +144,9 @@ export default function WatchPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  /* Chuyển tập / server */
   useEffect(() => {
     setSelServer(serverIdx);
-    setIsPlaying(false);
   }, [serverIdx, epSlug]);
 
   /* Current episode */
@@ -148,6 +166,13 @@ export default function WatchPage() {
   };
 
   const embedUrl = currentEp?.link_embed || '';
+
+  /* Đăng ký video vào PiPContext */
+  useEffect(() => {
+    if (embedUrl && movie?.name) {
+      registerVideo(embedUrl, movie.name, slug, currentEp?.name || '');
+    }
+  }, [embedUrl, movie?.name, slug, currentEp?.name, registerVideo]);
 
   if (loading) return (
     <div className="watch-page">
@@ -173,42 +198,40 @@ export default function WatchPage() {
     <div className="watch-page">
       <Header />
 
-      {/* ── TOPNAV ── */}
-      <div className="wp-topnav">
-        <button className="wp-back" onClick={() => navigate(`/phim/${slug}`)}>
-          <BackIcon /> Chi tiết phim
-        </button>
-        <div className="wp-topnav__center">
-          <span className="wp-topnav__title">{movie.name}</span>
-          {currentEp && currentEp.name !== 'Full' && (
-            <span className="wp-topnav__ep">– Tập {currentEp.name}</span>
-          )}
-        </div>
-      </div>
-
-      {/* ── PLAYER – matching content width ── */}
+      {/* ── PLAYER SECTION ── */}
       <div className="wp-player-wrapper">
+        <div className="wp-topnav">
+          <button className="wp-back" onClick={() => navigate(`/phim/${slug}`)}>
+            <BackIcon /> Chi tiết phim
+          </button>
+          <div className="wp-topnav__center">
+            <span className="wp-topnav__title">{movie.name}</span>
+            {currentEp && currentEp.name !== 'Full' && (
+              <span className="wp-topnav__ep">– Tập {currentEp.name}</span>
+            )}
+          </div>
+        </div>
+
         <div className="wp-player">
           {embedUrl ? (
             <>
-              {(isPlaying || isMobile) && (
-                <iframe
-                  key={embedUrl}
-                  src={isMobile ? embedUrl : `${embedUrl}${embedUrl.includes('?') ? '&' : '?'}autoplay=1`}
-                  title={movie.name}
-                  allowFullScreen
-                  allow={isMobile ? "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" : "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"}
-                  referrerPolicy="no-referrer"
-                  style={{ zIndex: 1 }}
-                />
-              )}
-              {!isPlaying && (
+              {/*
+                Slot placeholder: PersistentPlayer (trong App.jsx) sẽ tự đođạc
+                và overlay iframe fixed lên đây. Không bao giờ có iframe trực tiếp.
+              */}
+              <div
+                ref={slotCallbackRef}
+                className="wp-player__slot"
+              />
+
+              {/* Overlay: chỉ hiện trước khi user bấm play lần đầu */}
+              {!hasStarted && (
                 <div
                   className="wp-player__cover"
-                  onClick={() => setIsPlaying(true)}
+                  onClick={startVideo}
                   style={{
-                    pointerEvents: isMobile ? 'none' : 'auto',
-                    zIndex: 2
+                    zIndex: 20,
+                    pointerEvents: 'auto'
                   }}
                 >
                   <img src={imgUrl(movie.thumb_url || movie.poster_url)} alt="Cover" />

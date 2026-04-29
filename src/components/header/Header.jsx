@@ -175,15 +175,20 @@ export default function Header() {
   useEffect(() => {
     getCategories()
       .then((r) => {
-        const items = parseItems(r);
-        if (items.length > 0) setCategories(items);
+        // Log để debug nếu cần: console.log("[Header] Categories API:", r);
+        const items = r?.data?.items || r?.items || [];
+        if (Array.isArray(items) && items.length > 0) {
+          setCategories(items);
+        }
       })
       .catch((err) => console.warn("[Header] getCategories failed:", err));
 
     getCountries()
       .then((r) => {
-        const items = parseItems(r);
-        if (items.length > 0) setCountries(items);
+        const items = r?.data?.items || r?.items || [];
+        if (Array.isArray(items) && items.length > 0) {
+          setCountries(items);
+        }
       })
       .catch((err) => console.warn("[Header] getCountries failed:", err));
   }, []);
@@ -332,8 +337,8 @@ export default function Header() {
               </div>
             ))}
 
-            {/* The Loai – click-only dropdown */}
-            <div className="nav__item" style={{ position: "relative" }}>
+            {/* Thể loại – click-only dropdown */}
+            <div className={`nav__item ${openNav === "genre" ? "open" : ""}`} style={{ position: "relative" }}>
               <span
                 className={`nav__link${openNav === "genre" ? " active" : ""}`}
                 onClick={() =>
@@ -369,8 +374,8 @@ export default function Header() {
               )}
             </div>
 
-            {/* Quoc Gia – click-only dropdown */}
-            <div className="nav__item" style={{ position: "relative" }}>
+            {/* Quốc gia – click-only dropdown */}
+            <div className={`nav__item ${openNav === "country" ? "open" : ""}`} style={{ position: "relative" }}>
               <span
                 className={`nav__link${openNav === "country" ? " active" : ""}`}
                 onClick={() =>

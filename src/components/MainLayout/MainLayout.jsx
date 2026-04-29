@@ -1,5 +1,5 @@
 import Header from '@/components/header/Header'
-import Footer  from '@/components/footer/Footer'
+import Footer from '@/components/footer/Footer'
 import AnnouncementBar from '@/components/AnnouncementBar/AnnouncementBar'
 import { Outlet, useLocation, matchPath } from 'react-router-dom'
 import { useEffect } from 'react'
@@ -15,7 +15,7 @@ const HERO_PATHS = [
   '/the-loai/:slug',
   '/danh-sach/:slug',
   '/nam/:slug',
-  '/phim/:slug',     /* MovieDetailPage – tự lo padding */
+  '/phim/:slug',
 ];
 
 export default function MainLayout() {
@@ -29,11 +29,9 @@ export default function MainLayout() {
   /* Sửa lỗi zoom khi xoay màn hình và lỗi 100vh trên mobile */
   useEffect(() => {
     const handleFixLayout = () => {
-      // 1. Sửa lỗi 100vh trên mobile
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
 
-      // 2. Ép trình duyệt reset lại viewport để tránh kẹt zoom
       const viewport = document.querySelector('meta[name="viewport"]');
       if (viewport) {
         const content = viewport.getAttribute('content');
