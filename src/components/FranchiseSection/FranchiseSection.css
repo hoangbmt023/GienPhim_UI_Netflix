@@ -3,6 +3,7 @@
   margin: 40px auto;
   padding: 0 40px;
 }
+
 .franchise-section__heading {
   font-size: 20px;
   font-weight: 700;
@@ -12,12 +13,14 @@
   align-items: center;
   gap: 8px;
 }
+
 .franchise-section__heading svg {
   color: #888;
   border: 1px solid #555;
   border-radius: 50%;
   padding: 2px;
 }
+
 .franchise-section__container {
   position: relative;
   border-radius: 12px;
@@ -25,6 +28,7 @@
   display: flex;
   min-height: 400px;
 }
+
 .franchise-section__bg {
   position: absolute;
   inset: 0;
@@ -32,6 +36,7 @@
   border-radius: 12px;
   overflow: hidden;
 }
+
 .franchise-section__bg img {
   width: 100%;
   height: 100%;
@@ -49,8 +54,8 @@
 .franchise-section__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(20,20,20,0.95) 30%, rgba(20,20,20,0.5) 60%, transparent),
-              linear-gradient(to top, rgba(20,20,20,0.9) 0%, rgba(20,20,20,0) 40%);
+  background: linear-gradient(to right, rgba(20, 20, 20, 0.95) 30%, rgba(20, 20, 20, 0.5) 60%, transparent),
+    linear-gradient(to top, rgba(20, 20, 20, 0.9) 0%, rgba(20, 20, 20, 0) 40%);
 }
 
 .franchise-section__content {
@@ -74,43 +79,53 @@
     opacity: 0;
     transform: translateX(-15px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
   }
 }
+
 .franchise-section__title {
   font-size: 36px;
   font-weight: 800;
   color: #fff;
   margin-bottom: 4px;
 }
+
 .franchise-section__origin {
   font-size: 15px;
   color: #4caf50;
   margin-bottom: 12px;
   font-weight: 500;
 }
+
 .franchise-section__badges {
   display: flex;
   gap: 8px;
   align-items: center;
   margin-bottom: 16px;
 }
+
 .fc-badge {
   background: transparent;
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 11px;
 }
+
 .fc-badge--imdb {
   border: 1px solid #f5c518;
   color: #f5c518;
 }
-.fc-badge--year, .fc-badge--ep, .fc-badge--quality {
-  border: 1px solid rgba(255,255,255,0.4);
+
+.fc-badge--year,
+.fc-badge--ep,
+.fc-badge--quality {
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: #ccc;
 }
+
 .franchise-section__desc {
   font-size: 14px;
   color: #ccc;
@@ -121,6 +136,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 .franchise-section__play {
   display: none;
 }
@@ -140,11 +156,13 @@
   padding: 8px 4px 14px;
   max-width: 100%;
 }
+
 .franchise-section__list::-webkit-scrollbar {
   height: 6px;
 }
+
 .franchise-section__list::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
@@ -158,32 +176,39 @@
   position: relative;
   cursor: pointer;
 }
+
 .fs-card.active {
   border-color: #f5c518;
 }
+
 .fs-card:hover {
   transform: translateY(-6px);
   border-color: #fff;
 }
+
 .fs-card img {
   width: 100%;
   aspect-ratio: 2/3;
   object-fit: cover;
   display: block;
 }
+
 .fs-card__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 60%);
   display: flex;
   align-items: flex-end;
   padding: 10px;
   opacity: 0;
   transition: opacity 0.2s;
 }
-.fs-card:hover .fs-card__overlay, .fs-card.active .fs-card__overlay {
+
+.fs-card:hover .fs-card__overlay,
+.fs-card.active .fs-card__overlay {
   opacity: 1;
 }
+
 .fs-card__overlay p {
   color: #fff;
   font-size: 12px;
@@ -198,29 +223,35 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
   .franchise-section__list-wrapper {
     width: 100%;
     justify-content: flex-start;
     margin-bottom: 0;
   }
+
   .franchise-section__overlay {
-    background: linear-gradient(to top, rgba(20,20,20,0.95) 40%, transparent);
+    background: linear-gradient(to top, rgba(20, 20, 20, 0.95) 40%, transparent);
   }
+
   .franchise-section__info {
     padding-bottom: 0;
     width: 100%;
     animation: slideUpFadeIn 0.35s ease-out forwards;
   }
+
   @keyframes slideUpFadeIn {
     from {
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
+
   .franchise-section__play {
     display: flex;
     align-items: center;
@@ -238,22 +269,36 @@
     transition: transform 0.2s, box-shadow 0.2s;
     width: 100%;
   }
+
   .franchise-section__play svg {
     width: 22px;
     height: 22px;
   }
+
   .franchise-section__play:hover {
     transform: scale(1.02);
     box-shadow: 0 8px 28px rgba(245, 197, 24, 0.6);
   }
 }
+
 @media (max-width: 767px) {
   .franchise-section {
     padding: 0 14px;
   }
+
   .franchise-section__content {
     padding: 24px 14px;
   }
-  .fs-card { width: 110px; }
-  .franchise-section__title { font-size: 24px; }
+
+  .fs-card {
+    width: 110px;
+  }
+
+  .franchise-section__title {
+    font-size: 24px;
+  }
+
+  .fs-card__overlay p {
+    display: none;
+  }
 }

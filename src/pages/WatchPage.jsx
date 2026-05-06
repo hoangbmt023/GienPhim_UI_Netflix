@@ -170,9 +170,9 @@ export default function WatchPage() {
   /* Đăng ký video vào PiPContext */
   useEffect(() => {
     if (embedUrl && movie?.name) {
-      registerVideo(embedUrl, movie.name, slug, currentEp?.name || '');
+      registerVideo(embedUrl, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
     }
-  }, [embedUrl, movie?.name, slug, currentEp?.name, registerVideo]);
+  }, [embedUrl, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
 
   if (loading) return (
     <div className="watch-page">

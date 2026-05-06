@@ -200,7 +200,7 @@ export default function MovieDetailPage() {
     <div className="movie-detail">
 
       {/* ── HERO ── */}
-      <div className="md-hero" style={{ '--bd': `url("${backdrop}")` }}>
+      <div className="md-hero" style={{ '--bd-desktop': `url("${backdrop}")`, '--bd-mobile': `url("${verticalImg}")` }}>
         <div className="md-hero__bg" />
         <div className="md-hero__overlay" />
 

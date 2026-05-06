@@ -26,7 +26,7 @@
   min-height: 600px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   overflow: hidden;
   padding-top: var(--header-height);
 }
@@ -40,7 +40,7 @@
 .md-hero__bg {
   position: absolute;
   inset: 0;
-  background-image: var(--bd);
+  background-image: var(--bd-desktop);
   background-size: cover;
   background-position: center 20%;
   filter: brightness(0.45);
@@ -70,7 +70,7 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 18px 40px 0;
+  padding: 22px 40px 16px;
   font-size: 12px;
   color: var(--text-muted);
 }
@@ -108,7 +108,7 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 40px 56px;
+  padding: 12px 40px 40px;
 }
 
 /* Poster card */
@@ -547,7 +547,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  text-align: center; /* Đảm bảo chữ luôn căn giữa */
+  text-align: center;
+  /* Đảm bảo chữ luôn căn giữa */
   width: 100%;
 }
 
@@ -557,7 +558,8 @@
   color: #fff;
   line-height: 1.2;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+  -webkit-line-clamp: 2;
+  /* Giới hạn tối đa 2 dòng */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -746,6 +748,12 @@
 @media (max-width: 767px) {
   .md-hero {
     min-height: 480px;
+    justify-content: flex-end;
+  }
+
+  .md-hero__bg {
+    background-image: var(--bd-mobile);
+    background-position: center top;
   }
 
   .md-hero__content {
@@ -767,7 +775,7 @@
   .md-hero__poster-desktop {
     display: none !important;
   }
-  
+
   .md-hero__poster-mobile {
     display: block !important;
   }

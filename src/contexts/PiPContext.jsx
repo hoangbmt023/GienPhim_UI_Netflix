@@ -15,7 +15,7 @@ const PiPContext = createContext(null);
 
 export function PiPProvider({ children }) {
   const [video, setVideoState] = useState({
-    embedUrl: '', movieName: '', movieSlug: '', epName: '',
+    embedUrl: '', movieName: '', movieSlug: '', epName: '', epSlug: '', serverIdx: 0,
   });
   const [isPiP, setIsPiP] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
@@ -33,15 +33,17 @@ export function PiPProvider({ children }) {
     setPlayerSlot(el instanceof Element ? el : null);
   }, []);
 
+  const prevEmbedUrlRef = useRef('');
+
   /* ── Video registration ── */
-  const registerVideo = useCallback((embedUrl, movieName, movieSlug, epName = '') => {
-    setVideoState(prev => {
-      // Reset banner Play mỗi khi đổi tập hoặc đổi phim
-      if (prev.embedUrl !== embedUrl) {
-        setHasStarted(false);
-      }
-      return { embedUrl, movieName, movieSlug, epName };
-    });
+  const registerVideo = useCallback((embedUrl, movieName, movieSlug, epName = '', epSlug = '', serverIdx = 0) => {
+    // Reset banner Play mỗi khi đổi phim hoặc đổi tập (embedUrl thay đổi)
+    if (prevEmbedUrlRef.current && prevEmbedUrlRef.current !== embedUrl) {
+      setHasStarted(false);
+    }
+    prevEmbedUrlRef.current = embedUrl;
+
+    setVideoState({ embedUrl, movieName, movieSlug, epName, epSlug, serverIdx });
   }, []);
 
   /** WatchPage overlay click → bắt đầu phát */
@@ -61,7 +63,7 @@ export function PiPProvider({ children }) {
   const stopPiP = useCallback(() => {
     setIsPiP(false);
     setHasStarted(false);
-    setVideoState({ embedUrl: '', movieName: '', movieSlug: '', epName: '' });
+    setVideoState({ embedUrl: '', movieName: '', movieSlug: '', epName: '', epSlug: '', serverIdx: 0 });
   }, []);
 
   /**

@@ -558,8 +558,8 @@
   }
 }
 
-/* ------ MOBILE (< 768px) ------ */
-@media (max-width: 767px) {
+/* ------ MOBILE & TABLET (< 1024px) ------ */
+@media (max-width: 1023px) {
 
   .header__nav,
   .header__search {

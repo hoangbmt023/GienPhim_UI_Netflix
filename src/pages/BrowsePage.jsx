@@ -372,7 +372,7 @@ export default function BrowsePage({ type = 'list' }) {
               <div className="browse-card__img-wrap">
                 <img
                   className="browse-card__img"
-                  src={imgUrl(m.poster_url || m.thumb_url)}
+                  src={imgUrl(m.thumb_url ?? m.poster_url)}
                   alt={m.name}
                   loading="lazy"
                   onError={(e) => {

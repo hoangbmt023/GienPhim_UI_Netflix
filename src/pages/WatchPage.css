@@ -33,7 +33,8 @@
   padding: 10px 0;
   background: transparent;
   position: relative;
-  z-index: 100; /* Đảm bảo luôn nằm trên video iframe (z-index 10) */
+  z-index: 100;
+  /* Đảm bảo luôn nằm trên video iframe (z-index 10) */
   margin-bottom: 10px;
 }
 
@@ -122,7 +123,8 @@
   inset: 0;
   cursor: pointer;
   background: #000;
-  touch-action: manipulation; /* Loại bỏ delay 300ms trên iPhone */
+  touch-action: manipulation;
+  /* Loại bỏ delay 300ms trên iPhone */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -340,7 +342,8 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  height: 38px; /* Fixed height for consistency */
+  height: 38px;
+  /* Fixed height for consistency */
   padding: 0 20px;
   box-sizing: border-box;
   border-radius: 8px;
@@ -545,7 +548,7 @@
 
 @media (max-width: 1023px) {
   .wp-player-wrapper {
-    padding: 20px 24px 0;
+    padding: calc(var(--header-height) + 20px) 24px 0;
   }
 
   .wp-content {
@@ -560,7 +563,8 @@
 
 @media (max-width: 767px) {
   .wp-player-wrapper {
-    padding: var(--header-height) 0 0; /* Để chừa chỗ cho main header */
+    padding: var(--header-height) 0 0;
+    /* Để chừa chỗ cho main header */
   }
 
   .wp-topnav {
@@ -568,7 +572,8 @@
   }
 
   .wp-player {
-    width: 100%; /* Mobile: full width luôn, bỏ min() constraint */
+    width: 100%;
+    /* Mobile: full width luôn, bỏ min() constraint */
     border-radius: 0;
     box-shadow: none;
   }
@@ -671,6 +676,30 @@
   .wp-ep-search {
     flex: 1;
     width: auto;
+  }
+}
+
+@media (max-width: 950px) and (orientation: landscape) {
+  .wp-player-wrapper {
+    padding: var(--header-height) 0 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .wp-player {
+    /* Điều chỉnh để video cân đối ở giữa màn hình khi quay ngang */
+    width: min(100%, calc((100vh - var(--header-height) - 10px) * 16 / 9));
+    border-radius: 8px;
+    margin: 0 auto;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  }
+
+  .wp-topnav {
+    margin-bottom: 8px;
+    padding: 0 16px;
   }
 }
 

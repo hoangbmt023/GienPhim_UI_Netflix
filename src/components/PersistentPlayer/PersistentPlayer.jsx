@@ -142,8 +142,12 @@ export default function PersistentPlayer() {
    * Chỉ navigate. Khi WatchPage mount → slot register → effectiveIsPiP=false tự động.
    * Không cần gọi expandPiP() vì playerSlot != null sẽ override isPiP. */
   const handleExpand = useCallback(() => {
-    navigate(`/xem-phim/${video.movieSlug}`);
-  }, [navigate, video.movieSlug]);
+    let url = `/xem-phim/${video.movieSlug}`;
+    if (video.epSlug) {
+      url += `?ep=${video.epSlug}&server=${video.serverIdx || 0}`;
+    }
+    navigate(url);
+  }, [navigate, video.movieSlug, video.epSlug, video.serverIdx]);
 
   /* ══════════════════════════════════════════
      Tính style container theo mode
