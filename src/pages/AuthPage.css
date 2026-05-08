@@ -1,0 +1,428 @@
+/* ============================================================
+   AUTH PAGE — BASE LAYOUT
+   ============================================================ */
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* mobile browser chrome aware */
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #fff;
+}
+
+/* Fixed background so it always covers full viewport regardless of zoom/scroll */
+.auth-page__bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.auth-page__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+
+.auth-page__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.25) 35%,
+      rgba(0, 0, 0, 0.25) 65%,
+      rgba(0, 0, 0, 0.75) 100%);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.auth-page__header {
+  position: relative;
+  z-index: 2;
+  padding: 18px 56px;
+  flex-shrink: 0;
+}
+
+.auth-page__logo {
+  font-family: 'Arial Black', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: #e50914;
+  margin: 0;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);
+  user-select: none;
+}
+
+/* ============================================================
+   FORM WRAPPER — centers card vertically
+   ============================================================ */
+.auth-container {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 20px 60px;
+}
+
+.auth-container .auth-alert {
+  width: 100%;
+  max-width: 440px;
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   FORM CARD — glassmorphism
+   ============================================================ */
+.auth-form {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 48px 60px 36px;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6);
+  animation: formFadeIn 0.3s ease forwards;
+}
+
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.auth-form h2 {
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.auth-desc {
+  color: #b3b3b3;
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ALERT BANNERS
+   ============================================================ */
+.auth-alert {
+  padding: 14px 18px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-alert--error {
+  background: #e87c03;
+  color: #fff;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.auth-alert--success {
+  background: #2b9e2b;
+  color: #fff;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================
+   BUTTON
+   ============================================================ */
+.auth-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 20px;
+  background: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.auth-btn:hover {
+  background: #c11119;
+  box-shadow: 0 4px 14px rgba(229, 9, 20, 0.45);
+}
+
+.auth-btn:disabled {
+  background: #c61a22;
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* ============================================================
+   FORM FOOTER LINKS
+   ============================================================ */
+.auth-form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  color: #b3b3b3;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.auth-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #b3b3b3;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.auth-link:hover,
+.auth-link:focus {
+  text-decoration: underline;
+  color: #fff;
+  outline: none;
+}
+
+.auth-link:focus-visible {
+  outline: 2px solid #e50914;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   CHECKBOX
+   ============================================================ */
+.auth-checkbox-group {
+  margin-top: 18px;
+  margin-bottom: 4px;
+}
+
+.auth-checkbox-group label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #b3b3b3;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.auth-checkbox-group input[type="checkbox"] {
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #e50914;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.auth-checkbox-group a {
+  color: #e50914;
+  text-decoration: none;
+}
+
+.auth-checkbox-group a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   SIGN UP / SIGN IN SWITCH
+   ============================================================ */
+.auth-switch {
+  color: #b3b3b3;
+  font-size: 15px;
+  margin-top: 36px;
+}
+
+.auth-switch button,
+.auth-switch span {
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.auth-switch button:hover,
+.auth-switch button:focus,
+.auth-switch span:hover,
+.auth-switch span:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+.auth-switch button:focus-visible,
+.auth-switch span:focus-visible {
+  outline: 2px solid #e50914;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   FIELD ERROR
+   ============================================================ */
+.field-error {
+  color: #e87c03;
+  font-size: 12.5px;
+  display: block;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+/* ============================================================
+   TABLET  (≤ 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  .auth-page__header {
+    padding: 20px 28px;
+  }
+
+  .auth-page__logo {
+    font-size: 34px;
+  }
+
+  .auth-form {
+    padding: 36px 36px 28px;
+  }
+
+  .auth-form h2 {
+    font-size: 24px;
+  }
+}
+
+/* ============================================================
+   MOBILE  (≤ 480px)
+
+   Design intent:
+   • Giống Netflix app: không có card, form full-width, chữ to,
+     logo căn giữa ở trên, nền mờ đủ để đọc chữ.
+   • Không scroll ngang, font đủ lớn để không zoom.
+   ============================================================ */
+@media (max-width: 480px) {
+
+  /* Dim background heavily so text is always legible */
+  .auth-page__bg img {
+    opacity: 0.4;
+  }
+
+  /* Overlay thêm để vùng form đọc được */
+  .auth-page__overlay {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .auth-page__header {
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .auth-page__logo {
+    font-size: 32px;
+  }
+
+  /* Container: đưa form thấp xuống thêm xíu nữa, tự đẩy lên khi bàn phím mở */
+  .auth-container {
+    padding: 60px 0 40px;
+    justify-content: flex-start;
+    min-height: calc(100dvh - 70px);
+  }
+
+  .auth-container .auth-alert {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  /* Card becomes flat full-width panel, no card border */
+  .auth-form {
+    max-width: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.82);
+    border: none;
+    border-radius: 0;
+    padding: 28px 24px 32px;
+    box-shadow: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .auth-form h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .auth-desc {
+    font-size: 15px;
+  }
+
+  /* Larger inputs for mobile */
+  .auth-btn {
+    padding: 16px;
+    font-size: 17px;
+    margin-top: 18px;
+    border-radius: 6px;
+  }
+
+  .auth-form-footer {
+    margin-top: 20px;
+    font-size: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .auth-link {
+    padding: 8px 0;
+    /* Increase touch area */
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  .auth-switch {
+    font-size: 15px;
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .auth-switch button,
+  .auth-switch span {
+    padding: 8px 4px;
+    /* Increase touch area */
+    display: inline-block;
+  }
+
+  .auth-checkbox-group label {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+}

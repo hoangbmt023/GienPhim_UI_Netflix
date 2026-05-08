@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MovieCard } from '@/components/MovieCard/MovieCard';
 import { SkeletonRow } from '@/components/MovieCard/MovieCard';
 import './SideLabelRow.css';
+import { useLang } from '@/utils/lang';
 
 const ChevronRight = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -30,6 +31,7 @@ export default function SideLabelRow({
   seeAllLink,
   skeletonCount = 6,
 }) {
+  const { t } = useLang();
   const listRef = useRef(null);
 
   const scroll = (dir) => {
@@ -45,7 +47,7 @@ export default function SideLabelRow({
         <h2 className="side-row__title">{title}</h2>
         {seeAllLink && (
           <Link to={seeAllLink} className="side-row__see-all">
-            Xem toàn bộ <ChevronRight />
+            {t.common.seeAll} <ChevronRight />
           </Link>
         )}
       </div>

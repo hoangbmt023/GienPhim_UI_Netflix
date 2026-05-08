@@ -1,6 +1,3 @@
-# Câu Hỏi Thường Gặp (FAQ) - GienPhim
-
-Dưới đây là một số thắc mắc phổ biến của người dùng trong quá trình trải nghiệm GienPhim.
 
 ## 1. GienPhim là gì?
 GienPhim là một nền tảng website phi lợi nhuận, được thiết kế với giao diện chuẩn điện ảnh nhằm mang lại trải nghiệm tra cứu và xem phim tốt nhất. Toàn bộ dữ liệu của GienPhim được tự động lấy từ các API chia sẻ phim miễn phí trên Internet.

@@ -379,6 +379,25 @@
   border-color: rgba(255, 255, 255, 0.35);
 }
 
+.md-btn.saved {
+  animation: md-btn-pop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 20px rgba(245, 197, 24, 0.25);
+  color: #f5c518 !important;
+  border-color: #f5c518 !important;
+}
+
+.md-btn.saved:hover {
+  background: rgba(245, 197, 24, 0.1) !important;
+  box-shadow: 0 0 30px rgba(245, 197, 24, 0.4);
+  transform: translateY(-1px);
+}
+
+@keyframes md-btn-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 .md-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;

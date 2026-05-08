@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { getMovieDetail, getByCategory, getByCountry, getMovieKeywords, searchMovies, parseItems, imgUrl } from '@/services/ophimApi';
+import { getMovieDetail, getByCategory, getByCountry, searchMovies, parseItems, imgUrl } from '@/services/ophimApi';
+import { movieApi } from '@/services/movieApi';
+import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/header/Header';
 import MovieRow from '@/components/MovieRow/MovieRow';
 import FranchiseSection from '@/components/FranchiseSection/FranchiseSection';
@@ -8,6 +10,7 @@ import EpisodeList from '@/components/EpisodeList/EpisodeList';
 import { useWakeLock } from '@/hooks/useWakeLock';
 import { usePiP } from '@/contexts/PiPContext';
 import './WatchPage.css';
+import { getPath, useLang } from '@/utils/lang';
 
 /* ── Icons ── */
 const BackIcon = () => (
@@ -20,10 +23,20 @@ const BookmarkIcon = () => (
     <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
   </svg>
 );
-
-const TYPE_MAP = { series: 'Phim Bộ', single: 'Phim Lẻ', hoathinh: 'Hoạt Hình', tvshows: 'TV Shows' };
+const SkipNextIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="5 4 15 12 5 20 5 4" /><line x1="19" y1="5" x2="19" y2="19" />
+  </svg>
+);
+const HistoryIcon = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
 
 export default function WatchPage() {
+  const { t } = useLang();
+  const TYPE_MAP = { series: t.movieDetail.typeSeries, single: t.movieDetail.typeSingle, hoathinh: t.movieDetail.typeHoatHinh, tvshows: t.movieDetail.typeTvshows };
   const { slug } = useParams();
   const [searchParams, setSP] = useSearchParams();
   const navigate = useNavigate();
@@ -31,7 +44,11 @@ export default function WatchPage() {
   const epSlug = searchParams.get('ep') || '';
   const serverIdx = parseInt(searchParams.get('server') || '0', 10);
 
+  const { isAuthenticated, selectedProfile } = useAuth();
   const [movie, setMovie] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null);
   const [catRelated, setCatRelated] = useState([]);
   const [countryRelated, setCountryRelated] = useState([]);
   const [kwRelated, setKwRelated] = useState([]);
@@ -43,65 +60,80 @@ export default function WatchPage() {
   const { registerVideo, registerSlot, startVideo, startPiP,
     hasStarted, isPiP, expandPiP } = usePiP();
 
-  /**
-   * Callback ref cho slot div.
-   * React gọi hàm này với DOM element khi div MOUNT (sau khi data load xong),
-   * và với null khi div UNMOUNT.
-   * Giải quyết vấn đề timing: slot chưa tồn tại khi WatchPage lần đầu mount (loading).
-   */
   const slotCallbackRef = useCallback((node) => {
-    registerSlot(node); // node = DOM element hoặc null
+    registerSlot(node);
   }, [registerSlot]);
 
   const wakeLock = useWakeLock();
 
-  /* Giữ màn hình sáng khi đang xem */
   useEffect(() => {
     if (hasStarted) { wakeLock.acquire(); }
     else { wakeLock.release(); }
     return () => wakeLock.release();
   }, [hasStarted]);
 
-  /* Mount: nếu PiP đang active (user navigate trực tiếp, không qua expand button) → tắt PiP */
   useEffect(() => {
     if (isPiP) expandPiP();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* Cleanup khi rời trang → bật PiP (chỉ khi hasStarted) */
   useEffect(() => {
     return () => {
       startPiP();
       wakeLock.release();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadRelatedByKeywords = useCallback(async (slug, currentSlug) => {
     try {
-      const r = await getMovieKeywords(slug);
-      const keywords = r?.data?.keywords ?? [];
-      if (!keywords.length) return;
-
-      /* Take up to 3 most meaningful keywords */
-      const terms = keywords
-        .filter(k => k.name_vn && k.name_vn.length > 3)
-        .slice(0, 3)
-        .map(k => k.name_vn || k.name);
-
-      const results = await Promise.all(
-        terms.map(kw => searchMovies(kw, 1, 10).then(parseItems).catch(() => []))
-      );
-
-      const seen = new Set([currentSlug]);
-      const merged = results.flat().filter(m => {
-        if (seen.has(m.slug)) return false;
-        seen.add(m.slug);
-        return true;
-      });
-      setKwRelated(merged.slice(0, 18));
+      const r = await searchMovies(slug, 1, 10);
+      const items = parseItems(r);
+      setKwRelated(items.filter(m => m.slug !== currentSlug).slice(0, 18));
     } catch (_) { }
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && selectedProfile && slug) {
+      checkFavoriteStatus();
+    }
+  }, [isAuthenticated, selectedProfile, slug]);
+
+  const checkFavoriteStatus = async () => {
+    try {
+      const res = await movieApi.checkFavorite(slug);
+      if (res.data.success && res.data.data.isFavorited) {
+        setIsSaved(true);
+        if (res.data.data.favoriteId) setFavoriteId(res.data.data.favoriteId);
+      } else {
+        setIsSaved(false);
+      }
+    } catch (err) {
+      console.error('Failed to check favorite status', err);
+    }
+  };
+
+  const handleSaveMovie = async () => {
+    if (!isAuthenticated || !selectedProfile) {
+      navigate(getPath('login'));
+      return;
+    }
+
+    setSaveLoading(true);
+    try {
+      if (isSaved) {
+        await movieApi.removeFavorite(favoriteId || slug);
+        setIsSaved(false);
+        setFavoriteId(null);
+      } else {
+        const res = await movieApi.addFavorite(slug);
+        setIsSaved(true);
+        if (res.data.data?.id) setFavoriteId(res.data.data.id);
+      }
+    } catch (err) {
+      console.error('Lỗi khi lưu/bỏ lưu phim:', err);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -127,7 +159,6 @@ export default function WatchPage() {
             .catch(() => { });
         }
 
-        /* Franchise related */
         const tmdbId = item.tmdb?.id;
         if (tmdbId) {
           searchMovies(tmdbId, 1).then(rF => {
@@ -144,12 +175,10 @@ export default function WatchPage() {
       .finally(() => setLoading(false));
   }, [slug]);
 
-  /* Chuyển tập / server */
   useEffect(() => {
     setSelServer(serverIdx);
   }, [serverIdx, epSlug]);
 
-  /* Current episode */
   const currentEp = useMemo(() => {
     if (!movie?.episodes) return null;
     const server = movie.episodes[selServer];
@@ -157,22 +186,42 @@ export default function WatchPage() {
     return server.server_data.find(e => e.slug === epSlug) || server.server_data[0];
   }, [movie, selServer, epSlug]);
 
+  const nextEp = useMemo(() => {
+    if (!movie?.episodes || !currentEp) return null;
+    const serverData = movie.episodes[selServer]?.server_data || [];
+    const currentIndex = serverData.findIndex(e => e.slug === currentEp.slug);
+    if (currentIndex !== -1 && currentIndex < serverData.length - 1) {
+      return serverData[currentIndex + 1];
+    }
+    return null;
+  }, [movie, currentEp, selServer]);
+
   const goEp = (ep, si = selServer) => {
     const next = new URLSearchParams();
     next.set('ep', ep.slug);
     next.set('server', si);
     setSP(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (hasStarted && isAuthenticated && selectedProfile && slug) {
+      movieApi.saveHistory(slug, ep.name, 0).catch(e => console.error('Failed to save history', e));
+    }
   };
 
   const embedUrl = currentEp?.link_embed || '';
 
-  /* Đăng ký video vào PiPContext */
   useEffect(() => {
     if (embedUrl && movie?.name) {
       registerVideo(embedUrl, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
     }
   }, [embedUrl, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
+
+  const handlePlayClick = () => {
+    startVideo();
+    if (isAuthenticated && selectedProfile && slug && currentEp) {
+      movieApi.saveHistory(slug, currentEp.name, 0).catch(e => console.error('Failed to save history', e));
+    }
+  };
 
   if (loading) return (
     <div className="watch-page">
@@ -185,29 +234,27 @@ export default function WatchPage() {
     <div className="watch-page watch-page--error">
       <Header />
       <div className="wp-error-body">
-        <p>Không tìm thấy phim.</p>
-        <Link to="/home" className="wp-btn">Về trang chủ</Link>
+        <p>{t.watch?.movieNotFound || 'Không tìm thấy phim.'}</p>
+        <Link to={getPath('home')} className="wp-btn">{t.watch?.backHome || 'Về trang chủ'}</Link>
       </div>
     </div>
   );
 
   const thumbSrc = imgUrl(movie.thumb_url || movie.poster_url);
-  const hasMultiEp = (movie.episodes?.[selServer]?.server_data?.length || 0) > 1;
 
   return (
     <div className="watch-page">
       <Header />
 
-      {/* ── PLAYER SECTION ── */}
       <div className="wp-player-wrapper">
         <div className="wp-topnav">
-          <button className="wp-back" onClick={() => navigate(`/phim/${slug}`)}>
-            <BackIcon /> Chi tiết phim
+          <button className="wp-back" onClick={() => navigate(`${getPath('movie')}/${slug}`)}>
+            <BackIcon /> {t.watch?.movieDetail || 'Chi tiết phim'}
           </button>
           <div className="wp-topnav__center">
             <span className="wp-topnav__title">{movie.name}</span>
             {currentEp && currentEp.name !== 'Full' && (
-              <span className="wp-topnav__ep">– Tập {currentEp.name}</span>
+              <span className="wp-topnav__ep">– {t.watch?.episode || 'Tập'} {currentEp.name}</span>
             )}
           </div>
         </div>
@@ -215,25 +262,9 @@ export default function WatchPage() {
         <div className="wp-player">
           {embedUrl ? (
             <>
-              {/*
-                Slot placeholder: PersistentPlayer (trong App.jsx) sẽ tự đođạc
-                và overlay iframe fixed lên đây. Không bao giờ có iframe trực tiếp.
-              */}
-              <div
-                ref={slotCallbackRef}
-                className="wp-player__slot"
-              />
-
-              {/* Overlay: chỉ hiện trước khi user bấm play lần đầu */}
+              <div ref={slotCallbackRef} className="wp-player__slot" />
               {!hasStarted && (
-                <div
-                  className="wp-player__cover"
-                  onClick={startVideo}
-                  style={{
-                    zIndex: 20,
-                    pointerEvents: 'auto'
-                  }}
-                >
+                <div className="wp-player__cover" onClick={handlePlayClick} style={{ zIndex: 20, pointerEvents: 'auto' }}>
                   <img src={imgUrl(movie.thumb_url || movie.poster_url)} alt="Cover" />
                   <div className="wp-player__overlay">
                     <button className="wp-player__play-btn">
@@ -245,16 +276,13 @@ export default function WatchPage() {
             </>
           ) : (
             <div className="wp-player__empty">
-              <p>Không có nguồn phát.</p>
+              <p>{t.watch?.noSource || 'Không có nguồn phát.'}</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── CONTENT BELOW PLAYER ── */}
       <div className="wp-content">
-
-        {/* Movie info strip */}
         <div className="wp-info">
           <img src={thumbSrc} alt={movie.name} className="wp-info__thumb" />
           <div className="wp-info__meta">
@@ -271,16 +299,27 @@ export default function WatchPage() {
             </div>
           </div>
           <div className="wp-info__actions">
-            <button className="wp-btn wp-btn--ghost">
-              <BookmarkIcon /> Yêu thích
+            {nextEp && (
+              <button className="wp-btn wp-btn--next" onClick={() => goEp(nextEp)}>
+                <SkipNextIcon /> {t.watch?.nextEpisode || 'Tập tiếp theo'}
+              </button>
+            )}
+            <button 
+              className={`wp-btn wp-btn--ghost ${isSaved ? 'saved' : ''}`}
+              onClick={handleSaveMovie}
+              disabled={saveLoading}
+            >
+              <BookmarkIcon /> {isSaved ? t.movieDetail.saved : t.movieDetail.save}
             </button>
-            <Link to={`/phim/${slug}`} className="wp-btn wp-btn--detail">
-              Chi tiết phim
+            <Link to={getPath('myList')} className="wp-btn wp-btn--ghost">
+              <HistoryIcon /> {t.watch.history}
+            </Link>
+            <Link to={`${getPath('movie')}/${slug}`} className="wp-btn wp-btn--detail">
+              {t.movieDetail.tabInfo}
             </Link>
           </div>
         </div>
 
-        {/* Description */}
         {movie.content && (
           <p className="wp-desc"
             dangerouslySetInnerHTML={{
@@ -289,7 +328,6 @@ export default function WatchPage() {
           />
         )}
 
-        {/* ── EPISODE LIST ── */}
         <EpisodeList
           movie={movie}
           currentEpSlug={currentEp?.slug}
@@ -301,39 +339,23 @@ export default function WatchPage() {
         />
       </div>
 
-      {/* ── RELATED – FRANCHISE (Phim trong bộ) ── */}
       <FranchiseSection franchise={franchise} />
 
-      {/* ── RELATED – Keyword-based ── */}
       {kwRelated.length > 0 && (
         <div className="wp-related">
-          <MovieRow
-            title="Phim liên quan"
-            items={kwRelated}
-            seeAllLink={movie.category?.[0] ? `/the-loai/${movie.category[0].slug}` : '/home'}
-          />
+          <MovieRow title={t.movieDetail.relatedMovies} items={kwRelated} seeAllLink={movie.category?.[0] ? `/category/${movie.category[0].slug}` : '/home'} />
         </div>
       )}
 
-      {/* ── RELATED – Category-based ── */}
       {catRelated.length > 0 && (
         <div className="wp-related">
-          <MovieRow
-            title={`Cùng thể loại · ${movie.category?.[0]?.name || ''}`}
-            items={catRelated}
-            seeAllLink={movie.category?.[0] ? `/the-loai/${movie.category[0].slug}` : '/home'}
-          />
+          <MovieRow title={`${t.movieDetail.sameCategory} · ${movie.category?.[0]?.name || ''}`} items={catRelated} seeAllLink={movie.category?.[0] ? `/category/${movie.category[0].slug}` : '/home'} />
         </div>
       )}
 
-      {/* ── RELATED – Country-based ── */}
       {countryRelated.length > 0 && (
         <div className="wp-related">
-          <MovieRow
-            title={`Cùng quốc gia · ${movie.country?.[0]?.name || ''}`}
-            items={countryRelated}
-            seeAllLink={movie.country?.[0] ? `/quoc-gia/${movie.country[0].slug}` : '/home'}
-          />
+          <MovieRow title={`${t.movieDetail.sameCountry} · ${movie.country?.[0]?.name || ''}`} items={countryRelated} seeAllLink={movie.country?.[0] ? `/country/${movie.country[0].slug}` : '/home'} />
         </div>
       )}
     </div>

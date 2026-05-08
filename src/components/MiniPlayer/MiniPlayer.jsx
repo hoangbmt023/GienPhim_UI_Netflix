@@ -161,7 +161,7 @@ export default function MiniPlayer() {
 
   const handleExpand = useCallback(() => {
     expandPiP();
-    navigate(`/xem-phim/${video.movieSlug}`);
+    navigate(`/watch/${video.movieSlug}`);
   }, [expandPiP, navigate, video.movieSlug]);
 
   if (!isPiP || !video.embedUrl) return null;

@@ -4,8 +4,10 @@ import MovieRow from '@/components/MovieRow/MovieRow';
 import SideLabelRow from '@/components/SideLabelRow/SideLabelRow';
 import SpotlightSection from '@/components/SpotlightSection/SpotlightSection';
 import { getMovieList, parseItems } from '@/services/ophimApi';
+import { useLang } from '@/utils/lang';
 
 export default function PhimBoPage() {
+  const { t } = useLang();
   const [featured, setFeatured] = useState([]);
   const [phimBo, setPhimBo] = useState([]);
   const [dangChieu, setDangChieu] = useState([]);
@@ -67,53 +69,53 @@ export default function PhimBoPage() {
       <HeroBanner movies={featured} loading={loading.featured} />
 
       <SpotlightSection
-        title="Phim Bộ Đang Chiếu"
+        title={t.sections.ongoingSeries}
         items={dangChieu}
         loading={loading.dangChieu}
-        seeAllLink="/danh-sach/phim-bo-dang-chieu"
+        seeAllLink="/list/phim-bo-dang-chieu"
       />
 
       <SpotlightSection
-        title="Phim Bộ Hoàn Thành"
+        title={t.sections.completedSeries}
         items={hoanThanh}
         loading={loading.hoanThanh}
-        seeAllLink="/danh-sach/phim-bo-hoan-thanh"
+        seeAllLink="/list/phim-bo-hoan-thanh"
       />
 
       <MovieRow
-        title="Top Phim Bộ"
+        title={t.sections.topSeries}
         items={phimBo}
         loading={loading.phimBo}
-        seeAllLink="/danh-sach/phim-bo"
+        seeAllLink="/list/phim-bo"
         ranked
       />
 
       <SideLabelRow
-        title="Phim Bộ Hàn Quốc"
+        title={t.sections.koreanSeries}
         items={korean}
         loading={loading.korean}
-        seeAllLink="/danh-sach/phim-bo?country=han-quoc"
+        seeAllLink="/list/phim-bo?country=han-quoc"
       />
 
       <SideLabelRow
-        title="Phim Bộ Trung Quốc"
+        title={t.sections.chineseSeries}
         items={chinese}
         loading={loading.chinese}
-        seeAllLink="/danh-sach/phim-bo?country=trung-quoc"
+        seeAllLink="/list/phim-bo?country=trung-quoc"
       />
 
       <SideLabelRow
-        title="Phim Bộ Thái Lan"
+        title={t.sections.thaiSeries}
         items={thai}
         loading={loading.thai}
-        seeAllLink="/danh-sach/phim-bo?country=thai-lan"
+        seeAllLink="/list/phim-bo?country=thai-lan"
       />
 
       <SideLabelRow
-        title="Phim Bộ Nhật Bản"
+        title={t.sections.japaneseSeries}
         items={nhatBan}
         loading={loading.nhatBan}
-        seeAllLink="/danh-sach/phim-bo?country=nhat-ban"
+        seeAllLink="/list/phim-bo?country=nhat-ban"
       />
 
       <div style={{ height: 48 }} />

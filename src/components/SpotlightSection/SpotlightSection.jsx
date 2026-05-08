@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { imgUrl } from '@/services/ophimApi';
 import './SpotlightSection.css';
+import { getPath, useLang } from '@/utils/lang';
 
 const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
 
@@ -44,6 +45,7 @@ const ClockSvg = () => (
  * bg = poster_url (blur)  |  thumbs = thumb_url (portrait grid)
  */
 export default function SpotlightSection({ title, items = [], seeAllLink, loading = false }) {
+  const { t } = useLang();
   const [activeIdx, setActiveIdx] = useState(0);
 
   if (loading) {
@@ -79,7 +81,7 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
         <h2 className="spotlight-section__title">{title}</h2>
         {seeAllLink && (
           <Link to={seeAllLink} className="spotlight-section__see-all">
-            Xem toàn bộ <ChevronRight />
+            {t.common.seeAll} <ChevronRight />
           </Link>
         )}
       </div>
@@ -126,7 +128,7 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
             {movie?.category?.length > 0 && (
               <div className="spotlight-section__tags">
                 {movie.category.slice(0, 4).map((c) => (
-                  <Link key={c.id} to={`/the-loai/${c.slug}`} className="spotlight-section__tag">
+                  <Link key={c.id} to={`${getPath('category')}/${c.slug}`} className="spotlight-section__tag">
                     {c.name}
                   </Link>
                 ))}
@@ -153,8 +155,8 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
             {desc && <p className="spotlight-section__desc">{desc}</p>}
 
             {/* Play */}
-            <Link to={`/phim/${movie?.slug}`} className="spotlight-section__play" aria-label="Xem phim">
-              <PlayIcon /> Xem ngay
+            <Link to={`${getPath('movie')}/${movie?.slug}`} className="spotlight-section__play" aria-label={t.myList.watchNow}>
+              <PlayIcon /> {t.myList.watchNow}
             </Link>
 
           </div>

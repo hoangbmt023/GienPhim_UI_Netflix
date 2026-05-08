@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { getLang, setLang, getPath, getSwitchPath, getT } from "@/utils/lang";
 import "./Footer.css";
 
 /* ─── INLINE SVG ICONS ─── */
@@ -30,61 +31,6 @@ const GmailIcon = () => (
   </svg>
 );
 
-const GlobeIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <line x1="2" y1="12" x2="22" y2="12" />
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-  </svg>
-);
-
-/* ─── FOOTER DATA ─── */
-const LINKS = [
-  {
-    title: "GienPhim",
-    items: [
-      { label: "Giới thiệu", to: "/gioi-thieu" },
-      { label: "Liên hệ", to: "/lien-he" },
-    ],
-  },
-  {
-    title: "Nội dung",
-    items: [
-      { label: "Phim Lẻ", to: "/phim-le" },
-      { label: "Phim Bộ", to: "/phim-bo" },
-      { label: "Phim Hoạt Hình", to: "/hoat-hinh" },
-      { label: "Phim Việt Nam", to: "/quoc-gia/viet-nam" },
-    ],
-  },
-  {
-    title: "Thể loại",
-    items: [
-      { label: "Hành Động", to: "/the-loai/hanh-dong" },
-      { label: "Tình Cảm", to: "/the-loai/tinh-cam" },
-      { label: "Kinh Dị", to: "/the-loai/kinh-di" },
-      { label: "Hài Hước", to: "/the-loai/hai-huoc" },
-    ],
-  },
-  {
-    title: "Hỗ trợ",
-    items: [
-      { label: "Câu hỏi thường gặp", to: "/cau-hoi-thuong-gap" },
-      { label: "Báo lỗi phim", to: "/lien-he" },
-      { label: "Chính sách bảo mật", to: "/chinh-sach-bao-mat" },
-      { label: "Điều khoản sử dụng", to: "/dieu-khoan-su-dung" },
-    ],
-  },
-];
-
 const SOCIALS = [
   { href: "https://www.facebook.com/profile.php?id=61587108330332", label: "Facebook", icon: <FacebookIcon /> },
   { href: "https://www.instagram.com/gienphimmanager/", label: "Instagram", icon: <InstagramIcon /> },
@@ -94,7 +40,53 @@ const SOCIALS = [
 
 /* ─── COMPONENT ─── */
 export default function Footer() {
+  const t = getT();
+  const location = useLocation();
   const year = new Date().getFullYear();
+
+  const handleLangChange = (e) => {
+    const newLang = e.target.value;
+    const nextPath = getSwitchPath(location.pathname, newLang);
+    setLang(newLang);
+    window.location.href = nextPath;
+  };
+
+  const LINKS = [
+    {
+      title: t.footer.colGienPhim,
+      items: [
+        { label: t.footer.aboutUs, to: getPath('about') },
+        { label: t.footer.contact, to: getPath('contact') },
+      ],
+    },
+    {
+      title: t.footer.colContent,
+      items: [
+        { label: t.footer.movies, to: getPath('movies') },
+        { label: t.footer.series, to: getPath('series') },
+        { label: t.footer.animation, to: getPath('animation') },
+        { label: t.footer.vietnamese, to: getPath('countryVietnam') },
+      ],
+    },
+    {
+      title: t.footer.colGenres,
+      items: [
+        { label: t.footer.action, to: `${getPath('category')}/hanh-dong` },
+        { label: t.footer.romance, to: `${getPath('category')}/tinh-cam` },
+        { label: t.footer.horror, to: `${getPath('category')}/kinh-di` },
+        { label: t.footer.comedy, to: `${getPath('category')}/hai-huoc` },
+      ],
+    },
+    {
+      title: t.footer.colSupport,
+      items: [
+        { label: t.footer.faq, to: getPath('faq') },
+        { label: t.footer.reportError, to: getPath('contact') },
+        { label: t.footer.privacy, to: getPath('privacy') },
+        { label: t.footer.terms, to: getPath('terms') },
+      ],
+    },
+  ];
 
   return (
     <footer className="footer">
@@ -102,7 +94,7 @@ export default function Footer() {
         {/* TOP ROW */}
         <div className="footer__top">
           <Link
-            to="/home"
+            to={getPath('home')}
             className="footer__logo"
             aria-label="GienPhim – Trang chủ"
           >
@@ -150,22 +142,27 @@ export default function Footer() {
         {/* BOTTOM ROW */}
         <div className="footer__bottom">
           <div className="footer__bottom-links">
-            <Link to="/cau-hoi-thuong-gap">Câu hỏi thường gặp</Link>
-            <Link to="/chinh-sach-bao-mat">Chính sách bảo mật</Link>
-            <Link to="/dieu-khoan-su-dung">Điều khoản sử dụng</Link>
-            <Link to="/lien-he">Liên hệ</Link>
+            <Link to={getPath('faq')}>{t.footer.faq}</Link>
+            <Link to={getPath('privacy')}>{t.footer.privacy}</Link>
+            <Link to={getPath('terms')}>{t.footer.terms}</Link>
+            <Link to={getPath('contact')}>{t.footer.contact}</Link>
           </div>
 
           <div className="footer__lang-wrap">
             <span className="footer__lang-icon">🌐</span>
-            <select className="footer__lang-select" aria-label="Chọn ngôn ngữ">
+            <select
+              className="footer__lang-select"
+              aria-label="Chọn ngôn ngữ"
+              value={getLang()}
+              onChange={handleLangChange}
+            >
               <option value="vi">Tiếng Việt</option>
               <option value="en">English</option>
             </select>
           </div>
 
           <p className="footer__copyright">
-            © {year} GiênPhim. Tất cả quyền được bảo lưu. {import.meta.env.VITE_APP_VERSION && `(v${import.meta.env.VITE_APP_VERSION})`}
+            {t.footer.copyright(year)} {import.meta.env.VITE_APP_VERSION && `(v${import.meta.env.VITE_APP_VERSION})`}
           </p>
         </div>
       </div>

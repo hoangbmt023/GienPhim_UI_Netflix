@@ -4,8 +4,10 @@ import SpotlightSection from '@/components/SpotlightSection/SpotlightSection';
 import MovieRow from '@/components/MovieRow/MovieRow';
 import SideLabelRow from '@/components/SideLabelRow/SideLabelRow';
 import { getMovieList, parseItems } from '@/services/ophimApi';
+import { useLang } from '@/utils/lang';
 
 export default function HoatHinhPage() {
+  const { t } = useLang();
   const [hero, setHero] = useState([]);
   const [hhList, setHhList] = useState([]);
   const [latestYear, setLatestYear] = useState([]);
@@ -67,46 +69,46 @@ export default function HoatHinhPage() {
       <HeroBanner movies={hero} loading={loading.hero} />
 
       <SpotlightSection
-        title="Hoạt Hình Năm Mới Nhất"
+        title={t.sections.latestAnimation}
         items={latestYear}
         loading={loading.latestYear}
-        seeAllLink="/danh-sach/hoat-hinh?sort_field=year&sort_type=desc"
+        seeAllLink="/list/hoat-hinh?sort_field=year&sort_type=desc"
       />
 
       <MovieRow
-        title="Top Phim Hoạt Hình"
+        title={t.sections.topAnimation}
         items={hhList}
         loading={loading.hh}
-        seeAllLink="/danh-sach/hoat-hinh"
+        seeAllLink="/list/hoat-hinh"
         ranked
       />
 
       <SideLabelRow
-        title="Hoạt Hình Nhật Bản Mới Nhất"
+        title={t.sections.latestJapaneseAnimation}
         items={nhatBan}
         loading={loading.nhatBan}
-        seeAllLink="/danh-sach/hoat-hinh?country=nhat-ban"
+        seeAllLink="/list/hoat-hinh?country=nhat-ban"
       />
 
       <SideLabelRow
-        title="Hoạt Hình Phiêu Lưu"
+        title={t.sections.adventureAnimation}
         items={action}
         loading={loading.action}
-        seeAllLink="/danh-sach/hoat-hinh?category=phieu-luu"
+        seeAllLink="/list/hoat-hinh?category=phieu-luu"
       />
 
       <SideLabelRow
-        title="Hoạt Hình Gia Đình"
+        title={t.sections.familyAnimation}
         items={family}
         loading={loading.family}
-        seeAllLink="/danh-sach/hoat-hinh?category=gia-dinh"
+        seeAllLink="/list/hoat-hinh?category=gia-dinh"
       />
 
       <MovieRow
-        title="Hoạt Hình Cũ Nhất"
+        title={t.sections.oldestAnimation}
         items={oldest}
         loading={loading.oldest}
-        seeAllLink="/danh-sach/hoat-hinh?sort_field=modified.time&sort_type=asc"
+        seeAllLink="/list/hoat-hinh?sort_field=modified.time&sort_type=asc"
       />
 
       <div style={{ height: 48 }} />

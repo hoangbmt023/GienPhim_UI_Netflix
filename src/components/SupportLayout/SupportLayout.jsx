@@ -1,21 +1,24 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import './SupportLayout.css';
-
-const SUPPORT_LINKS = [
-  { to: '/gioi-thieu', label: 'Giới Thiệu GienPhim' },
-  { to: '/cau-hoi-thuong-gap', label: 'Câu Hỏi Thường Gặp' },
-  { to: '/chinh-sach-bao-mat', label: 'Chính Sách Bảo Mật' },
-  { to: '/dieu-khoan-su-dung', label: 'Điều Khoản Sử Dụng' },
-  { to: '/lien-he', label: 'Liên Hệ & Báo Lỗi' },
-];
+import { useLang, getPath } from '@/utils/lang';
 
 export default function SupportLayout() {
+  const { t } = useLang();
+
+  const SUPPORT_LINKS = [
+    { to: getPath('about'), label: t.supportLayout.about },
+    { to: getPath('faq'), label: t.supportLayout.faq },
+    { to: getPath('privacy'), label: t.supportLayout.privacy },
+    { to: getPath('terms'), label: t.supportLayout.terms },
+    { to: getPath('contact'), label: t.supportLayout.contact },
+  ];
+
   return (
     <div className="support-layout">
       <div className="support-container">
         {/* SIDEBAR */}
         <aside className="support-sidebar">
-          <h2 className="support-sidebar-title">Hỗ Trợ & Chính Sách</h2>
+          <h2 className="support-sidebar-title">{t.supportLayout.sidebarTitle}</h2>
           <nav className="support-nav">
             {SUPPORT_LINKS.map(link => (
               <NavLink 

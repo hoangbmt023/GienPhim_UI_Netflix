@@ -4,8 +4,10 @@ import MovieRow from "@/components/MovieRow/MovieRow";
 import SideLabelRow from "@/components/SideLabelRow/SideLabelRow";
 import SpotlightSection from "@/components/SpotlightSection/SpotlightSection";
 import { getMovieList, parseItems } from "@/services/ophimApi";
+import { useLang } from "@/utils/lang";
 
 export default function PhimLePage() {
+  const { t } = useLang();
   const [featured, setFeatured] = useState([]);
   const [phimLe, setPhimLe] = useState([]);
   const [auMy, setAuMy] = useState([]);
@@ -61,39 +63,39 @@ export default function PhimLePage() {
       <HeroBanner movies={featured} loading={loading.featured} />
 
       <SpotlightSection
-        title="Phim Lẻ 2026"
+        title={t.sections.movies2026}
         items={le2026}
         loading={loading.le2026}
-        seeAllLink="/danh-sach/phim-le?year=2026"
+        seeAllLink="/list/phim-le?year=2026"
       />
 
       <MovieRow
-        title="Top Phim Lẻ"
+        title={t.sections.topMovies}
         items={phimLe}
         loading={loading.phimLe}
-        seeAllLink="/danh-sach/phim-le"
+        seeAllLink="/list/phim-le"
         ranked
       />
 
       <SideLabelRow
-        title="Điện ảnh Âu Mỹ"
+        title={t.sections.westernCinema}
         items={auMy}
         loading={loading.auMy}
-        seeAllLink="/danh-sach/phim-le?country=au-my"
+        seeAllLink="/list/phim-le?country=au-my"
       />
 
       <SideLabelRow
-        title="Điện ảnh Hàn Quốc"
+        title={t.sections.koreanCinema}
         items={hanQuoc}
         loading={loading.hanQuoc}
-        seeAllLink="/danh-sach/phim-le?country=han-quoc"
+        seeAllLink="/list/phim-le?country=han-quoc"
       />
 
       <SideLabelRow
-        title="Điện ảnh Nhật Bản"
+        title={t.sections.japaneseCinema}
         items={nhatBan}
         loading={loading.nhatBan}
-        seeAllLink="/danh-sach/phim-le?country=nhat-ban"
+        seeAllLink="/list/phim-le?country=nhat-ban"
       />
 
       <div style={{ height: 48 }} />

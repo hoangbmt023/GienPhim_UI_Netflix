@@ -267,7 +267,7 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 20px 0 18px;
+  padding: 16px 0; /* Reduced padding to make it more compact and aligned with buttons */
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   margin-bottom: 16px;
 }
@@ -377,6 +377,24 @@
   color: #ff4444;
 }
 
+.wp-btn--next {
+  background: #fff;
+  color: #000;
+  border: none;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+}
+
+.wp-btn--next:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+.wp-btn--next svg {
+  fill: #000;
+}
+
 .wp-btn--ghost {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -386,6 +404,25 @@
 .wp-btn--ghost:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: #fff;
+}
+
+.wp-btn.saved {
+  animation: wp-btn-pop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 15px rgba(245, 197, 24, 0.2);
+  color: #f5c518 !important;
+  border-color: #f5c518 !important;
+}
+
+.wp-btn.saved:hover {
+  background: rgba(245, 197, 24, 0.08) !important;
+  border-color: #f5c518 !important;
+  box-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
+}
+
+@keyframes wp-btn-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
 }
 
 /* ── DESCRIPTION ── */
@@ -638,14 +675,16 @@
     width: 100%;
     margin-left: 0;
     gap: 10px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .wp-info__actions .wp-btn {
-    flex: 1;
-    height: 36px;
+    width: 100%;
+    height: 40px;
     font-size: 12px;
     justify-content: center;
+    padding: 0 10px;
   }
 
   .wp-episodes__head {

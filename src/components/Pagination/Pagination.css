@@ -1,0 +1,117 @@
+.gp-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 52px;
+  flex-wrap: wrap;
+}
+
+.gp-pg-btn {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.1s, border-color 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.3px;
+  outline: none;
+}
+
+.gp-pg-btn:hover:not(:disabled) {
+  background: rgba(229, 9, 20, 0.2);
+  border-color: rgba(229, 9, 20, 0.5);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.gp-pg-btn.active {
+  background: var(--netflix-red) !important;
+  border-color: var(--netflix-red) !important;
+  color: #fff !important;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+  pointer-events: none; /* Disable clicking the already active page */
+}
+
+.gp-pg-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.gp-pg-btn--arrow {
+  font-size: 16px;
+  min-width: 42px;
+  height: 42px;
+}
+
+.gp-pg-dots {
+  color: var(--text-muted);
+  padding: 0 2px;
+  font-size: 14px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.gp-pg-info {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-left: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .gp-pagination {
+    gap: 5px;
+    margin-top: 24px;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .gp-pg-btn {
+    min-width: 38px;
+    height: 38px;
+    font-size: 14px;
+    border-radius: 8px;
+    padding: 0;
+  }
+
+  .gp-pg-hide-mobile {
+    display: none;
+  }
+
+  .gp-pg-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .gp-pg-info {
+    display: none;
+  }
+}
+
+@media (min-width: 1920px) {
+  .gp-pg-btn {
+    min-width: 46px;
+    height: 46px;
+    font-size: 15px;
+  }
+
+  .gp-pg-info {
+    font-size: 14px;
+  }
+}

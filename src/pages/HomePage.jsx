@@ -10,8 +10,10 @@ import {
   getByCountry,
   parseItems,
 } from "@/services/ophimApi";
+import { useLang } from "@/utils/lang";
 
 export default function HomePage() {
+  const { t } = useLang();
   const [heroMovies, setHeroMovies] = useState([]);
   const [newMovies, setNewMovies] = useState([]);
   const [seriesMovies, setSeriesMovies] = useState([]);
@@ -133,104 +135,104 @@ export default function HomePage() {
       <HeroBanner movies={heroMovies} loading={loading.hero} />
 
       {/* 2. THỂ LOẠI */}
-      <CategoryCards title="Bạn đang quan tâm gì?" limit={8} />
+      <CategoryCards title={t.sections.whatAreYouInterestedIn} limit={8} />
 
       {/* 3. SPOTLIGHT – Phim chiếu rạp */}
       <SpotlightSection
-        title="Phim mới chiếu rạp"
+        title={t.sections.newInTheaters}
         items={theaterMovies}
         loading={loading.theater}
-        seeAllLink="/danh-sach/phim-chieu-rap"
+        seeAllLink="/list/phim-chieu-rap"
       />
 
       {/* Phim Sắp Chiếu */}
       <MovieRow
-        title="Phim Sắp Chiếu"
+        title={t.sections.upcomingMovies}
         items={upcomingMovies}
         loading={loading.upcoming}
-        seeAllLink="/danh-sach/phim-sap-chieu"
+        seeAllLink="/list/phim-sap-chieu"
       />
 
       {/* 4. TOP PHIM BỘ */}
       <MovieRow
-        title="Top Phim Bộ"
+        title={t.sections.topSeries}
         items={seriesMovies}
         loading={loading.series}
-        seeAllLink="/danh-sach/phim-bo"
+        seeAllLink="/list/phim-bo"
         ranked
       />
 
       {/* 5. TOP PHIM LẺ */}
       <MovieRow
-        title="Top Phim Lẻ"
+        title={t.sections.topMovies}
         items={singleMovies}
         loading={loading.single}
-        seeAllLink="/danh-sach/phim-le"
+        seeAllLink="/list/phim-le"
         ranked
       />
 
       {/* Phim Vietsub */}
       <SideLabelRow
-        title="Tuyển tập Vietsub"
+        title={t.sections.vietsubCollection}
         items={vietsubMovies}
         loading={loading.vietsub}
-        seeAllLink="/danh-sach/phim-vietsub"
+        seeAllLink="/list/phim-vietsub"
       />
 
       {/* Phim Lồng Tiếng */}
       <SideLabelRow
-        title="Phim Lồng Tiếng"
+        title={t.sections.dubbedMovies}
         items={dubbedMovies}
         loading={loading.dubbed}
-        seeAllLink="/danh-sach/phim-long-tieng"
+        seeAllLink="/list/phim-long-tieng"
       />
 
       {/* 6. ĐIỆN ẢNH HÀN QUỐC */}
       <SideLabelRow
-        title="Điện ảnh Hàn Quốc"
+        title={t.sections.koreanCinema}
         items={koreanMovies}
         loading={loading.korean}
-        seeAllLink="/quoc-gia/han-quoc"
+        seeAllLink="/country/han-quoc"
       />
 
       {/* 7. ĐIỆN ẢNH TRUNG QUỐC */}
       <SideLabelRow
-        title="Điện ảnh Trung Quốc"
+        title={t.sections.chineseCinema}
         items={chineseMovies}
         loading={loading.chinese}
-        seeAllLink="/quoc-gia/trung-quoc"
+        seeAllLink="/country/trung-quoc"
       />
 
       {/* 8. ĐIỆN ẢNH ÂU MỸ */}
       <SideLabelRow
-        title="Điện ảnh Âu Mỹ"
+        title={t.sections.westernCinema}
         items={westernMovies}
         loading={loading.western}
-        seeAllLink="/quoc-gia/au-my"
+        seeAllLink="/country/au-my"
       />
 
       {/* 9. PHIM VIỆT NAM */}
       <SideLabelRow
-        title="Phim Việt Nam"
+        title={t.sections.vietnameseMovies}
         items={vietnamMovies}
         loading={loading.vietnam}
-        seeAllLink="/quoc-gia/viet-nam"
+        seeAllLink="/country/vietnam"
       />
 
       {/* 10. ĐIỆN ẢNH NHẬT BẢN */}
       <SideLabelRow
-        title="Điện ảnh Nhật Bản"
+        title={t.sections.japaneseCinema}
         items={japanMovies}
         loading={loading.japan}
-        seeAllLink="/quoc-gia/nhat-ban"
+        seeAllLink="/country/nhat-ban"
       />
 
       {/* 11. PHIM MỚI CẬP NHẬT */}
       <MovieRow
-        title="Phim mới cập nhật"
+        title={t.sections.recentlyUpdated}
         items={newMovies}
         loading={loading.new}
-        seeAllLink="/danh-sach/phim-moi"
+        seeAllLink="/list/phim-moi"
       />
 
       <div style={{ height: 48 }} />

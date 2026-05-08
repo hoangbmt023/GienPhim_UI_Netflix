@@ -1,5 +1,5 @@
 /* ============================================
-   BrowsePage – 8 cols desktop, 2 cols mobile
+   BrowsePage – 6 cols desktop, 2 cols mobile
    Style matches HomePage aesthetic
    ============================================ */
 
@@ -187,13 +187,12 @@
   font-weight: 700;
 }
 
-/* ── MOVIE GRID – 8 cols desktop ── */
+/* ── MOVIE GRID – 6 cols desktop ── */
 .browse__grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 14px;
   align-items: start;
-  /* prevent cards stretching to tallest in row */
 }
 
 /* ── BROWSE CARD ── */
@@ -206,7 +205,7 @@
 }
 
 .browse-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) translateZ(0);
 }
 
 .browse-card__img-wrap {
@@ -215,8 +214,12 @@
   aspect-ratio: 2/3;
   border-radius: 8px;
   overflow: hidden;
-  background: #141414;
+  background: #000; /* Black background hides any sub-pixel image scaling gaps */
   flex-shrink: 0;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .browse-card__img {
@@ -226,7 +229,8 @@
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  transition: transform 0.35s;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 
 .browse-card:hover .browse-card__img {
@@ -254,7 +258,7 @@
 .browse-card__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.38);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,10 +277,11 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 28px 8px 8px;
+  padding: 80px 10px 12px;
   background: linear-gradient(to top,
-      rgba(0, 0, 0, 0.88) 0%,
-      rgba(0, 0, 0, 0.55) 55%,
+      rgba(0, 0, 0, 0.98) 0%,
+      rgba(0, 0, 0, 0.85) 35%,
+      rgba(0, 0, 0, 0.4) 65%,
       rgba(0, 0, 0, 0) 100%);
   z-index: 2;
   pointer-events: none;
@@ -352,78 +357,11 @@
   color: var(--text-secondary);
 }
 
-/* ── PAGINATION ── */
-.browse__pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  margin-top: 52px;
-  flex-wrap: wrap;
-}
-
-.browse__pg-btn {
-  min-width: 40px;
-  height: 40px;
-  padding: 0 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.12s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.browse__pg-btn:hover:not(:disabled) {
-  background: rgba(229, 9, 20, 0.16);
-  border-color: rgba(229, 9, 20, 0.4);
-  color: #fff;
-  transform: translateY(-1px);
-}
-
-.browse__pg-btn.active {
-  background: var(--netflix-red);
-  border-color: var(--netflix-red);
-  color: #fff;
-  font-size: 14px;
-}
-
-.browse__pg-btn:disabled {
-  opacity: 0.28;
-  cursor: not-allowed;
-}
-
-.browse__pg-btn--arrow {
-  font-size: 15px;
-}
-
-.browse__pg-dots {
-  color: var(--text-muted);
-  padding: 0 2px;
-  font-size: 14px;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  height: 40px;
-}
-
-.browse__pg-info {
-  font-size: 12.5px;
-  color: var(--text-muted);
-  margin-left: 10px;
-  font-weight: 500;
-  white-space: nowrap;
-}
+/* Removed pagination CSS - see Pagination.css */
 
 /* ═══════════════ RESPONSIVE ═══════════════ */
 
-/* Tablet rộng 1024–1199 → 6 cột */
+/* Tablet rộng 1024–1199 → 5 cột */
 @media (max-width: 1199px) {
   .browse {
     padding-left: 24px;
@@ -431,7 +369,7 @@
   }
 
   .browse__grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 12px;
   }
 
@@ -496,20 +434,7 @@
     font-size: 11.5px;
   }
 
-  .browse__pagination {
-    gap: 3px;
-    margin-top: 32px;
-  }
-
-  .browse__pg-btn {
-    min-width: 34px;
-    height: 34px;
-    font-size: 12px;
-  }
-
-  .browse__pg-info {
-    display: none;
-  }
+/* Pagination mobile CSS moved to Pagination.css */
 }
 
 /* Mobile nhỏ ≤ 480 → 2 cột */
@@ -550,7 +475,7 @@
   }
 
   .browse__grid {
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 18px;
   }
 
@@ -584,15 +509,7 @@
     padding: 2px 7px;
   }
 
-  .browse__pg-btn {
-    min-width: 46px;
-    height: 46px;
-    font-size: 15px;
-  }
-
-  .browse__pg-info {
-    font-size: 14px;
-  }
+/* Pagination large screen CSS moved to Pagination.css */
 
   .filter-select__trigger {
     font-size: 14px;

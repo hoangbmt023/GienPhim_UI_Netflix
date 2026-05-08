@@ -7,11 +7,23 @@ import { useEffect } from 'react'
 /* Các trang tự quản lý padding-top (có HeroBanner hoặc hero riêng) */
 const HERO_PATHS = [
   '/home',
+  '/series',
+  '/movies',
+  '/new-releases',
+  '/animation',
+  '/country/:slug',
+  '/category/:slug',
+  '/list/:slug',
+  '/year/:slug',
+  '/movie/:slug',
+  // Tiếng Việt
+  '/trang-chu',
   '/phim-bo',
   '/phim-le',
   '/phim-moi',
   '/hoat-hinh',
   '/quoc-gia/:slug',
+  '/quoc-gia/viet-nam',
   '/the-loai/:slug',
   '/danh-sach/:slug',
   '/nam/:slug',

@@ -1,0 +1,534 @@
+/* ============================================================
+   MY LIST / HISTORY PAGE
+   Design: Poster-first, all elements overlay on the poster
+   ============================================================ */
+
+/* ── PAGE WRAPPER ── */
+.mylist-page {
+  padding: 40px 4vw 40px;
+  min-height: 100dvh;
+  background: #0f0f0f;
+  color: #fff;
+}
+
+/* ── HERO SECTION ── */
+.mylist-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.mylist-hero__content {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.mylist-hero__title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0;
+  background: linear-gradient(135deg, #fff 60%, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mylist-hero__count {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  background: none;
+  -webkit-text-fill-color: #666;
+}
+
+/* ── CONTROLS ROW ── */
+.mylist-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ── TABS ── */
+.mylist-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 2px;
+}
+
+.mylist-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 18px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mylist-tab svg {
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.mylist-tab:hover {
+  color: #ccc;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.mylist-tab.active {
+  background: #e50914;
+  color: #fff;
+}
+
+/* ── CLEAR BUTTON ── */
+.mylist-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #888;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mylist-clear-btn:hover {
+  border-color: #e50914;
+  color: #e50914;
+  background: rgba(229, 9, 20, 0.08);
+}
+
+/* ── SKELETON LOADING ── */
+.mylist-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.mylist-skeleton {
+  aspect-ratio: 2/3;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ── EMPTY STATE ── */
+.mylist-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.mylist-empty__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.mylist-empty__icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.mylist-empty__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ddd;
+  margin: 0 0 8px;
+}
+
+.mylist-empty__sub {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 28px;
+}
+
+.mylist-browse-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #e50914;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.mylist-browse-btn:hover {
+  background: #f40612;
+  transform: translateY(-1px);
+}
+
+/* ── POSTER GRID ── */
+.mylist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+/* ── CARD ── */
+.mylist-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mylist-card__poster {
+  position: relative;
+  aspect-ratio: 2/3;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #1a1a1a;
+}
+
+/* Poster image */
+.mylist-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.mylist-card__poster:hover .mylist-card__img {
+  transform: scale(1.06);
+}
+
+/* Permanent bottom gradient for info legibility */
+.mylist-card__gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70%;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0.8) 30%,
+      rgba(0, 0, 0, 0.4) 60%,
+      transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Progress bar */
+.mylist-card__progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 3;
+}
+
+.mylist-card__progress-fill {
+  height: 100%;
+  background: #e50914;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Always visible bottom info */
+.mylist-card__info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 12px 14px;
+  z-index: 2;
+}
+
+/* Quality & Lang badges */
+.mylist-card__badges {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 5px;
+  flex-wrap: wrap;
+}
+
+.mylist-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  line-height: 1.4;
+}
+
+.mylist-badge--quality {
+  background: #e50914;
+  color: #fff;
+}
+
+.mylist-badge--lang {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mylist-card__timepos {
+  font-size: 11px;
+  color: #f5c518;
+  font-weight: 600;
+}
+
+/* Quality/HD badge – top left corner of poster */
+.mylist-card__quality-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgb(229, 9, 20); /* Netflix Red */
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.mylist-card__title {
+  display: block;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.mylist-card__title:hover {
+  color: #e5e5e5;
+}
+
+.mylist-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mylist-card__ep {
+  font-size: 11px;
+  color: #e50914;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.mylist-card__date {
+  font-size: 11px;
+  color: #aaa;
+}
+
+/* ── HOVER OVERLAY ── */
+.mylist-card__hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 3;
+}
+
+.mylist-card__poster:hover .mylist-card__hover-overlay {
+  opacity: 1;
+}
+
+/* Play button */
+.mylist-card__play {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.mylist-card__play:hover {
+  transform: scale(1.1);
+  background: #fff;
+}
+
+/* Delete button – top right corner */
+.mylist-card__delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mylist-card__delete:hover {
+  background: rgba(229, 9, 20, 0.85);
+  border-color: transparent;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .mylist-page {
+    padding: 30px 3vw 32px;
+  }
+
+  .mylist-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .mylist-hero__title {
+    font-size: 22px;
+  }
+
+  .mylist-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .mylist-tab span {
+    display: none;
+  }
+
+  .mylist-tab {
+    padding: 9px 14px;
+  }
+
+  /* 2 cards per row on mobile */
+  .mylist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .mylist-card__title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .mylist-card__ep,
+  .mylist-card__date {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mylist-card__info {
+    padding: 12px 10px 14px;
+  }
+
+  /* Always show delete button on mobile and make it larger */
+  .mylist-card__hover-overlay {
+    opacity: 1;
+    background: transparent;
+    /* No need for dark overlay by default */
+    pointer-events: none;
+    /* Let clicks pass through to play button or info */
+  }
+
+  .mylist-card__play {
+    opacity: 0;
+    /* Only show delete, not play button by default */
+  }
+
+  .mylist-card__delete {
+    pointer-events: auto;
+    /* Enable clicks for delete */
+    width: 38px;
+    height: 38px;
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.3);
+    top: 8px;
+    right: 8px;
+    opacity: 1;
+  }
+
+  .mylist-card__delete svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Fix gradient gap at bottom */
+  .mylist-card__gradient {
+    bottom: -1px;
+    height: 75%;
+  }
+
+  /* Larger quality badge on mobile */
+  .mylist-card__quality-badge {
+    font-size: 14px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    top: 10px;
+    left: 10px;
+  }
+}
