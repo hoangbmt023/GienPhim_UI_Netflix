@@ -4,8 +4,10 @@ import SpotlightSection from '@/components/SpotlightSection/SpotlightSection';
 import SideLabelRow     from '@/components/SideLabelRow/SideLabelRow';
 import MovieRow         from '@/components/MovieRow/MovieRow';
 import { getMovieList, getByCountry, parseItems } from '@/services/ophimApi';
+import { useLang } from '@/utils/lang';
 
 export default function PhimMoiPage() {
+  const { t } = useLang();
   const [hero,    setHero]    = useState([]);
   const [recent,  setRecent]  = useState([]);
   const [korean,  setKorean]  = useState([]);
@@ -48,38 +50,38 @@ export default function PhimMoiPage() {
       <HeroBanner movies={hero} loading={loading.hero} />
 
       <SpotlightSection
-        title="Phim mới cập nhật"
+        title={t.sections?.newMovies || 'Phim mới cập nhật'}
         items={recent}
         loading={loading.recent}
-        seeAllLink="/danh-sach/phim-moi"
+        seeAllLink="/list/phim-moi"
       />
 
       <MovieRow
-        title="Phim mới nhất hôm nay"
+        title={t.sections?.todayNew || 'Phim mới nhất hôm nay'}
         items={recent}
         loading={loading.recent}
-        seeAllLink="/danh-sach/phim-moi"
+        seeAllLink="/list/phim-moi"
       />
 
       <SideLabelRow
-        title="Điện ảnh Hàn Quốc"
+        title={t.sections?.korean || 'Điện ảnh Hàn Quốc'}
         items={korean}
         loading={loading.korean}
-        seeAllLink="/quoc-gia/han-quoc"
+        seeAllLink="/country/han-quoc"
       />
 
       <SideLabelRow
-        title="Điện ảnh Trung Quốc"
+        title={t.sections?.chinese || 'Điện ảnh Trung Quốc'}
         items={chinese}
         loading={loading.chinese}
-        seeAllLink="/quoc-gia/trung-quoc"
+        seeAllLink="/country/trung-quoc"
       />
 
       <SideLabelRow
-        title="Điện ảnh Phương Tây"
+        title={t.sections?.western || 'Điện ảnh Phương Tây'}
         items={western}
         loading={loading.western}
-        seeAllLink="/quoc-gia/au-my"
+        seeAllLink="/country/au-my"
       />
 
       <div style={{ height: 48 }} />

@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMovieDetail, imgUrl } from "@/services/ophimApi";
 import "./FranchiseSection.css";
+import { useLang } from "@/utils/lang";
 
 export default function FranchiseSection({ franchise }) {
   const navigate = useNavigate();
+  const { t } = useLang();
   const [activeMovie, setActiveMovie] = useState(null);
   const [activeDetails, setActiveDetails] = useState(null);
   // Dùng để trigger crossfade animation khi đổi phim
@@ -60,7 +62,7 @@ export default function FranchiseSection({ franchise }) {
     <div className="franchise-section">
       <div className="franchise-section__inner">
         <h3 className="franchise-section__heading">
-          Phim cùng bộ
+          {t.franchise?.title || 'Phim cùng bộ'}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
             <polyline points="9 18 15 12 9 6"></polyline>
           </svg>
@@ -97,21 +99,21 @@ export default function FranchiseSection({ franchise }) {
               <p className="franchise-section__desc">
                 {movie.content
                   ? movie.content.replace(/<[^>]+>/g, "").slice(0, 200) + "..."
-                  : "Theo dõi phần tiếp theo hoặc các bộ phim cùng series..."}
+                  : t.franchise?.followSeries || "Theo dõi phần tiếp theo hoặc các bộ phim cùng series..."}
               </p>
 
               <button
                 className="franchise-section__play"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
-                  navigate(`/phim/${movie.slug}`);
+                  navigate(`/movie/${movie.slug}`);
                 }}
-                title="Xem phim"
+                title={t.movieDetail.watchMovie}
               >
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-                Xem ngay
+                {t.myList.watchNow}
               </button>
             </div>
 
@@ -128,7 +130,7 @@ export default function FranchiseSection({ franchise }) {
                       onClick={() => {
                         if (isActive) {
                           window.scrollTo({ top: 0, behavior: "smooth" });
-                          navigate(`/phim/${m.slug}`);
+                          navigate(`/movie/${m.slug}`);
                         } else {
                           setActiveMovie(m);
                         }

@@ -10,6 +10,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePiP } from '@/contexts/PiPContext';
+import { useLang } from '@/utils/lang';
 import './PersistentPlayer.css';
 
 const CloseIcon = () => (
@@ -27,6 +28,7 @@ const ExpandIcon = () => (
 );
 
 export default function PersistentPlayer() {
+  const { t } = useLang();
   const navigate = useNavigate();
   const { video, isPiP, hasStarted, playerSlot, stopPiP } = usePiP();
 
@@ -142,8 +144,12 @@ export default function PersistentPlayer() {
    * Chỉ navigate. Khi WatchPage mount → slot register → effectiveIsPiP=false tự động.
    * Không cần gọi expandPiP() vì playerSlot != null sẽ override isPiP. */
   const handleExpand = useCallback(() => {
-    navigate(`/xem-phim/${video.movieSlug}`);
-  }, [navigate, video.movieSlug]);
+    let url = `/watch/${video.movieSlug}`;
+    if (video.epSlug) {
+      url += `?ep=${video.epSlug}&server=${video.serverIdx || 0}`;
+    }
+    navigate(url);
+  }, [navigate, video.movieSlug, video.epSlug, video.serverIdx]);
 
   /* ══════════════════════════════════════════
      Tính style container theo mode
@@ -239,17 +245,17 @@ export default function PersistentPlayer() {
             <div className="pp-text">
               <span className="pp-title">{video.movieName}</span>
               {video.epName && video.epName !== 'Full' && (
-                <span className="pp-ep">Tập {video.epName}</span>
+                <span className="pp-ep">{t.pip?.episode || 'Tập'} {video.epName}</span>
               )}
             </div>
           </div>
           <div className="pp-actions">
             <button className="pp-btn pp-btn--expand" onClick={handleExpand}
-              title="Mở rộng" aria-label="Mở lại trang xem phim">
+              title={t.pip?.expand || 'Mở rộng'} aria-label="Mở lại trang xem phim">
               <ExpandIcon />
             </button>
             <button className="pp-btn pp-btn--close" onClick={stopPiP}
-              title="Đóng" aria-label="Đóng player">
+              title={t.pip?.close || 'Đóng'} aria-label="Đóng player">
               <CloseIcon />
             </button>
           </div>
@@ -283,7 +289,7 @@ export default function PersistentPlayer() {
 
       {effectiveIsPiP && (
         <div key="pp-drag-hint" className="pp-drag-hint">
-          <span>⠿ Kéo để di chuyển</span>
+          <span>⠿ {t.pip?.dragHint || 'Kéo để di chuyển'}</span>
         </div>
       )}
     </div>

@@ -1,6 +1,3 @@
-# Điều Khoản Sử Dụng (Terms of Use) - GienPhim
-
-Chào mừng bạn đến với GienPhim. Việc bạn truy cập và sử dụng dịch vụ trên trang web đồng nghĩa với việc bạn đã đọc, hiểu và đồng ý tuân thủ các điều khoản dưới đây.
 
 ## 1. Tuyên Bố Miễn Trừ Trách Nhiệm (Disclaimer)
 GienPhim **tuyệt đối không lưu trữ, không phát trực tiếp và không phân phối** bất kỳ tệp tin phương tiện truyền thông (video, âm thanh, hình ảnh bản quyền) nào trên máy chủ của hệ thống. 

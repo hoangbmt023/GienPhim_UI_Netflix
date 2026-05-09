@@ -4,8 +4,10 @@ import SpotlightSection from '@/components/SpotlightSection/SpotlightSection';
 import SideLabelRow     from '@/components/SideLabelRow/SideLabelRow';
 import MovieRow         from '@/components/MovieRow/MovieRow';
 import { getByCountry, getMovieList, parseItems } from '@/services/ophimApi';
+import { useLang } from '@/utils/lang';
 
 export default function VietnamPage() {
+  const { t } = useLang();
   const [hero, setHero] = useState([]);
   const [phimMoi, setPhimMoi] = useState([]);
   const [chieuRap, setChieuRap] = useState([]);
@@ -67,46 +69,46 @@ export default function VietnamPage() {
       <HeroBanner movies={hero} loading={loading.hero} />
 
       <SpotlightSection
-        title="Phim Việt Nam Chiếu Rạp"
+        title={t.sections.vietnameseTheatrical}
         items={chieuRap}
         loading={loading.chieuRap}
-        seeAllLink="/danh-sach/phim-chieu-rap?country=viet-nam"
+        seeAllLink="/list/phim-chieu-rap?country=viet-nam"
       />
 
       <MovieRow
-        title="Top Phim Việt Nam"
+        title={t.sections.topVietnameseMovies}
         items={phimMoi}
         loading={loading.phimMoi}
-        seeAllLink="/danh-sach/phim-moi?country=viet-nam"
+        seeAllLink="/list/phim-moi?country=viet-nam"
         ranked
       />
 
       <SideLabelRow
-        title="Phim Lẻ Việt Nam"
+        title={t.sections.vietnameseSingleMovies}
         items={phimLe}
         loading={loading.phimLe}
-        seeAllLink="/danh-sach/phim-le?country=viet-nam"
+        seeAllLink="/list/phim-le?country=viet-nam"
       />
 
       <SideLabelRow
-        title="Phim Bộ Việt Nam"
+        title={t.sections.vietnameseSeries}
         items={phimBo}
         loading={loading.phimBo}
-        seeAllLink="/danh-sach/phim-bo?country=viet-nam"
+        seeAllLink="/list/phim-bo?country=viet-nam"
       />
 
       <SideLabelRow
-        title="Tuyển Tập Tình Cảm"
+        title={t.sections.romanceCollection}
         items={tinhCam}
         loading={loading.tinhCam}
-        seeAllLink="/the-loai/tinh-cam?country=viet-nam"
+        seeAllLink="/category/tinh-cam?country=viet-nam"
       />
 
       <SideLabelRow
-        title="Tuyển Tập Gia Đình"
+        title={t.sections.familyCollection}
         items={giaDinh}
         loading={loading.giaDinh}
-        seeAllLink="/the-loai/gia-dinh?country=viet-nam"
+        seeAllLink="/category/gia-dinh?country=viet-nam"
       />
 
       <div style={{ height: 48 }} />

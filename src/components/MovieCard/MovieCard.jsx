@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { imgUrl } from '@/services/ophimApi';
 import './MovieCard.css';
+import { getPath } from '@/utils/lang';
 
 const FALLBACK = 'https://via.placeholder.com/160x240/1f1f1f/444?text=No+Image';
 
@@ -15,7 +16,7 @@ const PlaySvg = () => (
 export function MovieCard({ movie }) {
   return (
     <Link
-      to={`/phim/${movie.slug}`}
+      to={`${getPath('movie')}/${movie.slug}`}
       className="movie-card"
       aria-label={movie.name}
       title={movie.name}
@@ -55,7 +56,7 @@ export function MovieCard({ movie }) {
 export function RankedCard({ movie, rank }) {
   return (
     <Link
-      to={`/phim/${movie.slug}`}
+      to={`${getPath('movie')}/${movie.slug}`}
       className="ranked-card"
       aria-label={`#${rank} ${movie.name}`}
       title={movie.name}

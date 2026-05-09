@@ -1,6 +1,3 @@
-# Chính Sách Bảo Mật (Privacy Policy) - GienPhim
-
-GienPhim cam kết tôn trọng và bảo vệ tuyệt đối quyền riêng tư của người dùng trong quá trình trải nghiệm hệ thống. Dưới đây là cách chúng tôi quản lý dữ liệu.
 
 ## 1. Thu Thập Dữ Liệu Tài Khoản
 Để cá nhân hóa trải nghiệm, GienPhim cho phép người dùng tạo tài khoản (Account).

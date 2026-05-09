@@ -5,9 +5,12 @@ import {
   getByCategory, getByCountry, searchMovies,
   parseItems, imgUrl, getYouTubeEmbed,
 } from '@/services/ophimApi';
+import { movieApi } from '@/services/movieApi';
+import { useAuth } from '@/contexts/AuthContext';
 import MovieRow from '@/components/MovieRow/MovieRow';
 import EpisodeList from '@/components/EpisodeList/EpisodeList';
 import './MovieDetailPage.css';
+import { getPath, useLang } from '@/utils/lang';
 
 /* ─── Netflix-style Icons ─── */
 const IconPlay = () => (
@@ -44,23 +47,53 @@ const IconChevRight = () => (
   </svg>
 );
 
-/* ─── Constants ─── */
-const TYPE_MAP = { series:'Phim Bộ', single:'Phim Lẻ', hoathinh:'Hoạt Hình', tvshows:'TV Shows' };
-const TABS = [
-  { id:'info',    label:'Thông tin' },
-  { id:'cast',    label:'Diễn viên' },
-  { id:'trailer', label:'Trailer' },
-  { id:'gallery', label:'Ảnh' },
-];
-
 export default function MovieDetailPage() {
+  const { t } = useLang();
+
+  const TYPE_MAP = { series: t.movieDetail.typeSeries, single: t.movieDetail.typeSingle, hoathinh: t.movieDetail.typeHoatHinh, tvshows: t.movieDetail.typeTvshows };
+  const TABS = [
+    { id:'info',    label: t.movieDetail.tabInfo },
+    { id:'cast',    label: t.movieDetail.tabCast },
+    { id:'trailer', label: t.movieDetail.tabTrailer },
+    { id:'gallery', label: t.movieDetail.tabGallery },
+  ];
   const { slug }   = useParams();
   const navigate   = useNavigate();
+
+  const handleSaveMovie = async () => {
+    if (!isAuthenticated || !selectedProfile) {
+      navigate(getPath('login'));
+      return;
+    }
+
+    setSaveLoading(true);
+    try {
+      if (isSaved) {
+        await movieApi.removeFavorite(favoriteId || slug); 
+        setIsSaved(false);
+        setFavoriteId(null);
+      } else {
+        const res = await movieApi.addFavorite(slug);
+        setIsSaved(true);
+        if (res.data.data?.id) setFavoriteId(res.data.data.id);
+      }
+    } catch (err) {
+      console.error('Lỗi khi lưu/bỏ lưu phim:', err);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   const [movie,       setMovie]       = useState(null);
   const [breadcrumb,  setBreadcrumb]  = useState([]);
   const [images,      setImages]      = useState([]);
   const [cast,        setCast]        = useState([]);
+  
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null);
+
+  const { isAuthenticated, selectedProfile } = useAuth();
   const [profileBaseUrl, setProfileBaseUrl] = useState('');
   const [kwRelated,      setKwRelated]      = useState([]);
   const [catRelated,     setCatRelated]     = useState([]);
@@ -76,7 +109,6 @@ export default function MovieDetailPage() {
       const keywords = r?.data?.keywords ?? [];
       if (!keywords.length) return;
 
-      /* Take up to 3 most meaningful keywords */
       const terms = keywords
         .filter(k => k.name_vn && k.name_vn.length > 3)
         .slice(0, 3)
@@ -97,6 +129,26 @@ export default function MovieDetailPage() {
   }, []);
 
   useEffect(() => {
+    if (isAuthenticated && selectedProfile && slug) {
+      checkFavoriteStatus();
+    }
+  }, [isAuthenticated, selectedProfile, slug]);
+
+  const checkFavoriteStatus = async () => {
+    try {
+      const res = await movieApi.checkFavorite(slug);
+      if (res.data.success && res.data.data.isFavorited) {
+        setIsSaved(true);
+        if (res.data.data.favoriteId) setFavoriteId(res.data.data.favoriteId);
+      } else {
+        setIsSaved(false);
+      }
+    } catch (err) {
+      console.error('Failed to check favorite status', err);
+    }
+  };
+
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setLoading(true);
     setTab('info');
@@ -111,7 +163,6 @@ export default function MovieDetailPage() {
         setBreadcrumb(bc);
         document.title = `${item.name || 'Chi tiết phim'} - GienPhim`;
 
-        /* Category related */
         const cat = item.category?.[0]?.slug;
         if (cat) {
           getByCategory(cat, { page: 1, limit: 16 })
@@ -119,7 +170,6 @@ export default function MovieDetailPage() {
             .catch(() => {});
         }
 
-        /* Country related */
         const country = item.country?.[0]?.slug;
         if (country) {
           getByCountry(country, { page: 1, limit: 16 })
@@ -127,15 +177,12 @@ export default function MovieDetailPage() {
             .catch(() => {});
         }
 
-        /* Keyword related */
         loadRelatedByKeywords(slug, slug);
 
-        /* Images */
         getMovieImages(slug)
           .then(r3 => setImages(r3?.data?.items ?? []))
           .catch(() => {});
 
-        /* Peoples (Actors) */
         getMoviePeoples(slug)
           .then(rP => {
             if (rP.success && rP.data) {
@@ -149,7 +196,6 @@ export default function MovieDetailPage() {
       .finally(() => setLoading(false));
   }, [slug, loadRelatedByKeywords]);
 
-  /* ── Loading skeleton ── */
   if (loading) return (
     <div className="movie-detail">
       <div className="md-hero md-hero--skeleton">
@@ -167,46 +213,36 @@ export default function MovieDetailPage() {
 
   if (!movie) return (
     <div className="movie-detail" style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'60vh', gap:16 }}>
-      <p style={{ color:'var(--text-muted)', fontSize:16 }}>Không tìm thấy phim.</p>
-      <Link to="/home" className="md-btn md-btn--primary">Về trang chủ</Link>
+      <p style={{ color:'var(--text-muted)', fontSize:16 }}>{t.movieDetail.notFound}</p>
+      <Link to={getPath('home')} className="md-btn md-btn--primary">{t.movieDetail.backHome}</Link>
     </div>
   );
 
-  /* ── Episode data ── */
   const firstServer = movie.episodes?.[0];
   const firstEp     = firstServer?.server_data?.[0];
-  const watchUrl    = firstEp ? `/xem-phim/${slug}?ep=${firstEp.slug}&server=0` : null;
+  const watchUrl    = firstEp ? `${getPath('watch')}/${slug}?ep=${firstEp.slug}&server=0` : null;
 
-  /* ── Image URLs ── */
-  /* backdrop (landscape) */
   const backdrop = imgUrl(movie.poster_url || movie.thumb_url);
-  /* portrait (vertical) */
   const verticalImg = imgUrl(movie.thumb_url || movie.poster_url);
-  /* landscape (horizontal) */
   const horizontalImg = imgUrl(movie.poster_url || movie.thumb_url);
 
-  /* ── Ratings ── */
   const imdbScore = movie.imdb?.vote_average;
   const tmdbScore = movie.tmdb?.vote_average;
 
-  /* ── Description ── */
   const rawDesc = movie.content?.replace(/<[^>]+>/g, '') || '';
   const shortDesc = rawDesc.slice(0, 240);
 
-  /* ── Trailer embed ── */
   const trailerEmbed = getYouTubeEmbed(movie.trailer_url);
 
   return (
     <div className="movie-detail">
 
-      {/* ── HERO ── */}
-      <div className="md-hero" style={{ '--bd': `url("${backdrop}")` }}>
+      <div className="md-hero" style={{ '--bd-desktop': `url("${backdrop}")`, '--bd-mobile': `url("${verticalImg}")` }}>
         <div className="md-hero__bg" />
         <div className="md-hero__overlay" />
 
-        {/* Breadcrumb */}
         <div className="md-breadcrumb">
-          <Link to="/home" className="md-breadcrumb__item">Trang chủ</Link>
+          <Link to={getPath('home')} className="md-breadcrumb__item">{t.movieDetail.home}</Link>
           {breadcrumb.filter(b => !b.isCurrent).map((b, i) => (
             <span key={i} className="md-breadcrumb__item">
               <IconChevRight />
@@ -221,22 +257,19 @@ export default function MovieDetailPage() {
         </div>
 
         <div className="md-hero__content">
-          {/* Poster */}
           <div className="md-hero__poster">
             <img src={verticalImg} alt={movie.name} className="md-hero__poster-desktop" />
             <img src={horizontalImg} alt={movie.name} className="md-hero__poster-mobile" />
             {movie.quality && <span className="md-quality-badge">{movie.quality}</span>}
-            {movie.chieurap && <span className="md-cinema-badge">Chiếu rạp</span>}
+            {movie.chieurap && <span className="md-cinema-badge">{t.movieDetail.cinema}</span>}
           </div>
 
-          {/* Info */}
           <div className="md-hero__info">
             <h1 className="md-hero__title">{movie.name}</h1>
             {movie.origin_name && (
               <p className="md-hero__origin">{movie.origin_name}</p>
             )}
 
-            {/* Ratings */}
             <div className="md-hero__ratings">
               {imdbScore > 0 && (
                 <div className="md-rating md-rating--imdb">
@@ -254,7 +287,6 @@ export default function MovieDetailPage() {
               )}
             </div>
 
-            {/* Badges */}
             <div className="md-hero__badges">
               {movie.year             && <span className="md-badge">{movie.year}</span>}
               {movie.time             && <span className="md-badge">{movie.time}</span>}
@@ -262,31 +294,29 @@ export default function MovieDetailPage() {
               {movie.type             && <span className="md-badge">{TYPE_MAP[movie.type] || movie.type}</span>}
               {movie.episode_current  && <span className="md-badge md-badge--green">{movie.episode_current}</span>}
               {movie.episode_total && movie.type !== 'single' && (
-                <span className="md-badge">{movie.episode_total} tập</span>
+                <span className="md-badge">{t.movieDetail.episodeInfo(movie.episode_total)}</span>
               )}
             </div>
 
-            {/* Genre tags */}
             {movie.category?.length > 0 && (
               <div className="md-hero__genres">
                 {movie.category.map(c => (
-                  <Link key={c.id} to={`/the-loai/${c.slug}`} className="md-genre-tag">{c.name}</Link>
+                  <Link key={c.id} to={`${getPath('category')}/${c.slug}`} className="md-genre-tag">{c.name}</Link>
                 ))}
                 {movie.country?.map(c => (
-                  <Link key={c.id} to={`/quoc-gia/${c.slug}`} className="md-genre-tag md-genre-tag--country">
+                  <Link key={c.id} to={`${getPath('country')}/${c.slug}`} className="md-genre-tag md-genre-tag--country">
                     {c.name}
                   </Link>
                 ))}
               </div>
             )}
 
-            {/* Description */}
             <div className="md-hero__desc">
               {descExpanded ? (
                 <div className="md-desc-box">
                   <p>{rawDesc}</p>
                   <button className="md-desc-toggle" onClick={() => setDescExpanded(false)}>
-                    Thu gọn
+                    {t.movieDetail.collapse}
                   </button>
                 </div>
               ) : (
@@ -294,26 +324,30 @@ export default function MovieDetailPage() {
                   {shortDesc}
                   {rawDesc.length > 240 && (
                     <button className="md-desc-toggle" onClick={() => setDescExpanded(true)}>
-                      ... Xem thêm
+                      {t.movieDetail.seeMore}
                     </button>
                   )}
                 </p>
               )}
             </div>
 
-            {/* Action buttons */}
             <div className="md-hero__actions">
               {watchUrl ? (
                 <button className="md-btn md-btn--primary" onClick={() => navigate(watchUrl)}>
-                  <IconPlay /> Xem phim
+                  <IconPlay /> {t.movieDetail.watchMovie}
                 </button>
               ) : (
                 <button className="md-btn md-btn--primary" disabled>
-                  <IconPlay /> Sắp chiếu
+                  <IconPlay /> {t.movieDetail.comingSoon}
                 </button>
               )}
-              <button className="md-btn md-btn--ghost">
-                <IconBookmark /> Yêu thích
+              <button 
+                className={`md-btn md-btn--ghost ${isSaved ? 'saved' : ''}`} 
+                onClick={handleSaveMovie}
+                disabled={saveLoading}
+              >
+                <IconBookmark />
+                {isSaved ? t.movieDetail.saved : t.movieDetail.save}
               </button>
               {trailerEmbed && (
                 <button className="md-btn md-btn--ghost" onClick={() => setTab('trailer')}>
@@ -350,29 +384,29 @@ export default function MovieDetailPage() {
             {/* Thông tin */}
             {tab === 'info' && (
               <div className="md-info-grid">
-                <InfoRow label="Tên gốc"    value={movie.origin_name} />
-                <InfoRow label="Năm"        value={movie.year} />
-                <InfoRow label="Trạng thái" value={movie.episode_current} />
-                <InfoRow label="Số tập"     value={movie.episode_total} />
-                <InfoRow label="Thời lượng" value={movie.time} />
-                <InfoRow label="Chất lượng" value={movie.quality} />
-                <InfoRow label="Ngôn ngữ"   value={movie.lang} />
-                <InfoRow label="Loại phim"  value={TYPE_MAP[movie.type] || movie.type} />
-                <InfoRow label="Thể loại"
+                <InfoRow label={t.movieDetail.originalName}    value={movie.origin_name} />
+                <InfoRow label={t.movieDetail.year}        value={movie.year} />
+                <InfoRow label={t.movieDetail.status} value={movie.episode_current} />
+                <InfoRow label={t.movieDetail.totalEpisodes}     value={movie.episode_total} />
+                <InfoRow label={t.movieDetail.duration} value={movie.time} />
+                <InfoRow label={t.movieDetail.quality} value={movie.quality} />
+                <InfoRow label={t.movieDetail.language}   value={movie.lang} />
+                <InfoRow label={t.movieDetail.movieType}  value={TYPE_MAP[movie.type] || movie.type} />
+                <InfoRow label={t.movieDetail.genres}
                   value={movie.category?.map(c => (
-                    <Link key={c.id} to={`/the-loai/${c.slug}`} className="md-link">{c.name}</Link>
+                    <Link key={c.id} to={`${getPath('category')}/${c.slug}`} className="md-link">{c.name}</Link>
                   ))}
                 />
-                <InfoRow label="Quốc gia"
+                <InfoRow label={t.movieDetail.country}
                   value={movie.country?.map(c => (
-                    <Link key={c.id} to={`/quoc-gia/${c.slug}`} className="md-link">{c.name}</Link>
+                    <Link key={c.id} to={`${getPath('country')}/${c.slug}`} className="md-link">{c.name}</Link>
                   ))}
                 />
                 {movie.director?.length > 0 && (
-                  <InfoRow label="Đạo diễn" value={movie.director.join(', ')} />
+                  <InfoRow label={t.movieDetail.director} value={movie.director.join(', ')} />
                 )}
                 {movie.view > 0 && (
-                  <InfoRow label="Lượt xem" value={Number(movie.view).toLocaleString()} />
+                  <InfoRow label={t.movieDetail.views} value={Number(movie.view).toLocaleString()} />
                 )}
               </div>
             )}
@@ -422,7 +456,7 @@ export default function MovieDetailPage() {
                       </div>
                     </div>
                   )) : (
-                    <p className="md-empty">Chưa có thông tin diễn viên.</p>
+                    <p className="md-empty">{t.movieDetail.noCastInfo}</p>
                   )
                 )}
               </div>
@@ -442,7 +476,7 @@ export default function MovieDetailPage() {
                     />
                   </div>
                 ) : (
-                  <p className="md-empty">Chưa có trailer.</p>
+                  <p className="md-empty">{t.movieDetail.noTrailer}</p>
                 )}
               </div>
             )}
@@ -475,16 +509,16 @@ export default function MovieDetailPage() {
         {/* ── EPISODES ── */}
         <EpisodeList
           movie={movie}
-          onEpClick={(ep, si) => navigate(`/xem-phim/${slug}?ep=${ep.slug}&server=${si}`)}
+          onEpClick={(ep, si) => navigate(`${getPath('watch')}/${slug}?ep=${ep.slug}&server=${si}`)}
         />
 
         {/* ── RELATED – Keyword-based ── */}
         {kwRelated.length > 0 && (
           <section className="md-related">
             <MovieRow
-              title="Phim liên quan"
+              title={t.movieDetail.relatedMovies}
               items={kwRelated}
-              seeAllLink={movie.category?.[0] ? `/the-loai/${movie.category[0].slug}` : '/home'}
+              seeAllLink={movie.category?.[0] ? `/category/${movie.category[0].slug}` : '/home'}
             />
           </section>
         )}
@@ -493,9 +527,9 @@ export default function MovieDetailPage() {
         {catRelated.length > 0 && (
           <section className="md-related">
             <MovieRow
-              title={`Cùng thể loại · ${movie.category?.[0]?.name || ''}`}
+              title={`${t.movieDetail.sameCategory} · ${movie.category?.[0]?.name || ''}`}
               items={catRelated}
-              seeAllLink={movie.category?.[0] ? `/the-loai/${movie.category[0].slug}` : '/home'}
+              seeAllLink={movie.category?.[0] ? `/category/${movie.category[0].slug}` : '/home'}
             />
           </section>
         )}
@@ -504,9 +538,9 @@ export default function MovieDetailPage() {
         {countryRelated.length > 0 && (
           <section className="md-related">
             <MovieRow
-              title={`Cùng quốc gia · ${movie.country?.[0]?.name || ''}`}
+              title={`${t.movieDetail.sameCountry} · ${movie.country?.[0]?.name || ''}`}
               items={countryRelated}
-              seeAllLink={movie.country?.[0] ? `/quoc-gia/${movie.country[0].slug}` : '/home'}
+              seeAllLink={movie.country?.[0] ? `/country/${movie.country[0].slug}` : '/home'}
             />
           </section>
         )}

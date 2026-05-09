@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { MovieCard, RankedCard, SkeletonRow } from '@/components/MovieCard/MovieCard';
 import './MovieRow.css';
+import { useLang } from '@/utils/lang';
 
 const ChevronRight = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -29,6 +30,7 @@ export default function MovieRow({
   ranked = false,
   skeletonCount = 7,
 }) {
+  const { t } = useLang();
   const listRef = useRef(null);
 
   const scroll = (dir) => {
@@ -46,7 +48,7 @@ export default function MovieRow({
         <h2 className="movie-row__title">{title}</h2>
         {seeAllLink && (
           <Link to={seeAllLink} className="movie-row__see-all">
-            Xem toàn bộ <ChevronRight />
+            {t.common.seeAll} <ChevronRight />
           </Link>
         )}
       </div>

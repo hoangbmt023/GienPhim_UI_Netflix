@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, parseItems } from '@/services/ophimApi';
 import './CategoryCards.css';
+import { getPath, useLang } from '@/utils/lang';
 
 /* Màu gradient theo thứ tự */
 const COLORS = [
@@ -23,7 +24,8 @@ const COLORS = [
  *   title  {string}  – heading (default "Bạn đang quan tâm gì?")
  *   limit  {number}  – số lượng hiển thị (default 8)
  */
-export default function CategoryCards({ title = 'Bạn đang quan tâm gì?', limit = 8 }) {
+export default function CategoryCards({ title = '', limit = 8 }) {
+  const { t } = useLang();
   const [cats, setCats]       = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,13 +50,13 @@ export default function CategoryCards({ title = 'Bạn đang quan tâm gì?', li
           : display.map((c, i) => (
               <Link
                 key={c._id}
-                to={`/the-loai/${c.slug}`}
+                to={`${getPath('category')}/${c.slug}`}
                 className={`cat-card cat-card--${i % 8}`}
                 style={{ '--grad': COLORS[i % COLORS.length] }}
-                aria-label={`Xem phim ${c.name}`}
+                aria-label={`${t.common.watchCategory || 'Watch'} ${c.name}`}
               >
                 <p className="cat-card__name">{c.name}</p>
-                <p className="cat-card__sub">Xem chủ đề →</p>
+                <p className="cat-card__sub">{t.common.exploreTopic}</p>
               </Link>
             ))
         }

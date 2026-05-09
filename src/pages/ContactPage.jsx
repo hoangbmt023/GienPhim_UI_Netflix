@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './ContactPage.css';
+import { useLang } from '@/utils/lang';
 
 const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -23,17 +24,18 @@ const GmailIcon = () => (
 );
 
 export default function ContactPage() {
+  const { t } = useLang();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: 'Góp ý chung',
+    subject: t.contact.form.subjects.general,
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    document.title = "Liên Hệ & Báo Lỗi - GienPhim";
-  }, []);
+    document.title = `${t.contact.title} - GienPhim`;
+  }, [t.contact.title]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,15 +46,15 @@ export default function ContactPage() {
     // Simulate API call
     setTimeout(() => {
       setSubmitted(true);
-      setFormData({ name: '', email: '', subject: 'Góp ý chung', message: '' });
+      setFormData({ name: '', email: '', subject: t.contact.form.subjects.general, message: '' });
     }, 600);
   };
 
   return (
     <div className="contact-page">
       <div className="contact-header">
-        <h1 className="contact-title">Liên Hệ & Báo Lỗi</h1>
-        <p className="contact-subtitle">Chúng tôi luôn lắng nghe để cải thiện trải nghiệm của bạn.</p>
+        <h1 className="contact-title">{t.contact.title}</h1>
+        <p className="contact-subtitle">{t.contact.subtitle}</p>
       </div>
 
       <div className="contact-container">
@@ -73,7 +75,7 @@ export default function ContactPage() {
         </div>
 
         <div className="contact-divider">
-          <span>Hoặc gửi tin nhắn trực tiếp</span>
+          <span>{t.contact.directMessage}</span>
         </div>
 
         {submitted ? (
@@ -82,39 +84,39 @@ export default function ContactPage() {
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
-            <h2>Cảm ơn bạn đã liên hệ!</h2>
-            <p>Thông điệp của bạn đã được gửi đi. Chúng tôi sẽ xem xét và xử lý trong thời gian sớm nhất.</p>
-            <button className="contact-submit" onClick={() => setSubmitted(false)}>Gửi thêm tin nhắn</button>
+            <h2>{t.contact.successTitle}</h2>
+            <p>{t.contact.successContent}</p>
+            <button className="contact-submit" onClick={() => setSubmitted(false)}>{t.contact.sendAnother}</button>
           </div>
         ) : (
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="name">Họ và tên</label>
-              <input type="text" id="name" name="name" required placeholder="Nhập tên của bạn" value={formData.name} onChange={handleChange} />
+              <label htmlFor="name">{t.contact.form.fullName}</label>
+              <input type="text" id="name" name="name" required placeholder={t.contact.form.namePlaceholder} value={formData.name} onChange={handleChange} />
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Email liên hệ</label>
+              <label htmlFor="email">{t.contact.form.email}</label>
               <input type="email" id="email" name="email" required placeholder="example@domain.com" value={formData.email} onChange={handleChange} />
             </div>
 
             <div className="form-group">
-              <label htmlFor="subject">Chủ đề</label>
+              <label htmlFor="subject">{t.contact.form.subject}</label>
               <select id="subject" name="subject" value={formData.subject} onChange={handleChange}>
-                <option value="Góp ý chung">Góp ý chung</option>
-                <option value="Báo lỗi phim">Báo lỗi phim không xem được</option>
-                <option value="Báo lỗi phụ đề">Báo lỗi phụ đề / thuyết minh</option>
-                <option value="Yêu cầu phim">Yêu cầu thêm phim mới</option>
-                <option value="Bản quyền">Vấn đề bản quyền (Copyright)</option>
+                <option value={t.contact.form.subjects.general}>{t.contact.form.subjects.general}</option>
+                <option value={t.contact.form.subjects.movieError}>{t.contact.form.subjects.movieError}</option>
+                <option value={t.contact.form.subjects.subtitleError}>{t.contact.form.subjects.subtitleError}</option>
+                <option value={t.contact.form.subjects.requestMovie}>{t.contact.form.subjects.requestMovie}</option>
+                <option value={t.contact.form.subjects.copyright}>{t.contact.form.subjects.copyright}</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="message">Nội dung chi tiết</label>
-              <textarea id="message" name="message" rows="5" required placeholder="Mô tả chi tiết lỗi hoặc nội dung bạn muốn gửi..." value={formData.message} onChange={handleChange}></textarea>
+              <label htmlFor="message">{t.contact.form.message}</label>
+              <textarea id="message" name="message" rows="5" required placeholder={t.contact.form.messagePlaceholder} value={formData.message} onChange={handleChange}></textarea>
             </div>
 
-            <button type="submit" className="contact-submit">Gửi Thông Điệp</button>
+            <button type="submit" className="contact-submit">{t.contact.form.submit}</button>
           </form>
         )}
       </div>

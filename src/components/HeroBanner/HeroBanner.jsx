@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { imgUrl, getMovieImages } from '@/services/ophimApi';
 import './HeroBanner.css';
+import { getPath, useLang } from '@/utils/lang';
 
 const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
 
@@ -49,6 +50,7 @@ const AUTO_INTERVAL = 6500;
  *   loading {boolean}
  */
 export default function HeroBanner({ movies = [], loading = false }) {
+  const { t } = useLang();
   const items = movies.slice(0, 8);
   const [activeIdx, setActiveIdx] = useState(0);
   const [backdropCache, setBackdropCache] = useState({});
@@ -144,7 +146,7 @@ export default function HeroBanner({ movies = [], loading = false }) {
   return (
     <section 
       className="hero" 
-      aria-label="Phim nổi bật"
+      aria-label={t.common.featuredMovies}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -195,7 +197,7 @@ export default function HeroBanner({ movies = [], loading = false }) {
               {movie.category.map((c) => (
                 <Link
                   key={c.id}
-                  to={`/the-loai/${c.slug}`}
+                  to={`${getPath('category')}/${c.slug}`}
                   className="hero__tag"
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -236,18 +238,18 @@ export default function HeroBanner({ movies = [], loading = false }) {
 
           {/* Actions */}
           <div className="hero__actions">
-            <Link to={`/phim/${movie.slug}`} className="hero__play-btn">
-              <PlaySvg /> Xem ngay
+            <Link to={`${getPath('movie')}/${movie.slug}`} className="hero__play-btn">
+              <PlaySvg /> {t.myList.watchNow}
             </Link>
-            <Link to={`/phim/${movie.slug}`} className="hero__info-btn">
-              <InfoSvg /> Thông tin
+            <Link to={`${getPath('movie')}/${movie.slug}`} className="hero__info-btn">
+              <InfoSvg /> {t.common.info}
             </Link>
           </div>
         </div>
       </div>
 
       {/* Thumbnail strip – ẩn trên mobile bằng CSS */}
-      <div className="hero__thumbs" aria-label="Chọn phim">
+      <div className="hero__thumbs" aria-label={t.common.selectMovie}>
         {items.map((m, i) => (
           <img
             key={m._id}

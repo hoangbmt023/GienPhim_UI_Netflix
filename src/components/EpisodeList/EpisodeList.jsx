@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import './EpisodeList.css';
+import { useLang } from '@/utils/lang';
 
 /* ── Icons ── */
 const ListIcon = () => (
@@ -10,6 +11,7 @@ const ListIcon = () => (
 );
 
 const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => {
+  const { t } = useLang();
   const [selServer, setSelServer] = useState(initialServer);
   const [epSearch, setEpSearch] = useState('');
 
@@ -49,10 +51,10 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
       <div className="ep-list-head">
         <div className="ep-list-left">
           <ListIcon />
-          <h2 className="ep-list-title">Danh sách tập</h2>
+          <h2 className="ep-list-title">{t.episodeList.title}</h2>
           {hasMultiEp && (
             <span className="ep-list-count">
-              {server?.server_data?.length} tập
+              {t.episodeList.episodeCount(server?.server_data?.length)}
             </span>
           )}
         </div>
@@ -84,7 +86,7 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
               <input
                 className="ep-search-input"
                 type="text"
-                placeholder="Tìm tập..."
+                placeholder={t.episodeList.searchPlaceholder}
                 value={epSearch}
                 onChange={e => setEpSearch(e.target.value)}
               />
@@ -105,14 +107,14 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
               key={ep.slug}
               className={`ep-btn${isActive ? ' active' : ''}`}
               onClick={() => onEpClick(ep, selServer)}
-              title={`Tập ${ep.name}`}
+              title={t.episodeList.episodeTitle(ep.name)}
             >
               {ep.name}
             </button>
           );
         })}
         {filteredEps.length === 0 && epSearch.trim() && (
-          <p className="ep-empty">Không tìm thấy tập «{epSearch}».</p>
+          <p className="ep-empty">{t.episodeList.noResults(epSearch)}</p>
         )}
         {filteredEps.length === 0 && !epSearch.trim() && (
           <div className="ep-empty ep-empty--no-data">
@@ -121,7 +123,7 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
               <line x1="12" y1="8" x2="12" y2="12" />
               <line x1="12" y1="16" x2="12.01" y2="16" strokeWidth="2.5" />
             </svg>
-            <p>Chưa có tập nào &mdash; đang cập nhật...</p>
+            <p>{t.episodeList.noData}</p>
           </div>
         )}
       </div>

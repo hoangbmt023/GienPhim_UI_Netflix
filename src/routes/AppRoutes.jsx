@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { PATHS, getPath } from '@/utils/lang';
 import MainLayout from '@/components/MainLayout/MainLayout';
 import HomePage from '@/pages/HomePage';
 import PhimBoPage from '@/pages/PhimBoPage';
@@ -16,41 +17,60 @@ import FaqPage         from '@/pages/FaqPage';
 import ContactPage     from '@/pages/ContactPage';
 import NotFoundPage    from '@/pages/NotFoundPage';
 import SupportLayout   from '@/components/SupportLayout/SupportLayout';
+import AuthPage        from '@/pages/AuthPage';
+import ProfilesPage    from '@/pages/ProfilesPage';
+import MyListHistoryPage from '@/pages/MyListHistoryPage';
+
+const renderDualRoute = (pathKey, element, suffix = '') => {
+  const routes = [<Route key={`${pathKey}-en`} path={PATHS[pathKey].en + suffix} element={element} />];
+  if (PATHS[pathKey].vi !== PATHS[pathKey].en) {
+    routes.push(<Route key={`${pathKey}-vi`} path={PATHS[pathKey].vi + suffix} element={element} />);
+  }
+  return routes;
+};
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/home" replace />} />
+      <Route path="/" element={<Navigate to={getPath('home')} replace />} />
+      {renderDualRoute('login', <AuthPage initialView="LOGIN" />)}
+      {renderDualRoute('register', <AuthPage initialView="REGISTER" />)}
+      {renderDualRoute('forgotPassword', <AuthPage initialView="FORGOT_PASSWORD" />)}
+      {renderDualRoute('verifyOtp', <AuthPage initialView="VERIFY_OTP" />)}
+      {renderDualRoute('resetPassword', <AuthPage initialView="RESET_PASSWORD" />)}
+      {renderDualRoute('profiles', <ProfilesPage />)}
 
       <Route element={<MainLayout />}>
         {/* Main curated pages */}
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/phim-bo" element={<PhimBoPage />} />
-        <Route path="/phim-le" element={<PhimLePage />} />
-        <Route path="/phim-moi" element={<PhimMoiPage />} />
-        <Route path="/hoat-hinh" element={<HoatHinhPage />} />
+        {renderDualRoute('home', <HomePage />)}
+        {renderDualRoute('series', <PhimBoPage />)}
+        {renderDualRoute('movies', <PhimLePage />)}
+        {renderDualRoute('newReleases', <PhimMoiPage />)}
+        {renderDualRoute('animation', <HoatHinhPage />)}
 
         {/* Vietnam landing page (special, no pagination) */}
-        <Route path="/quoc-gia/viet-nam" element={<VietnamPage />} />
+        {renderDualRoute('countryVietnam', <VietnamPage />)}
 
         {/* Browse pages – có pagination */}
-        <Route path="/tim-kiem" element={<BrowsePage type="search" />} />
-        <Route path="/danh-sach/:slug" element={<BrowsePage type="list" />} />
-        <Route path="/the-loai/:slug" element={<BrowsePage type="category" />} />
-        <Route path="/quoc-gia/:slug" element={<BrowsePage type="country" />} />
-        <Route path="/nam/:slug" element={<BrowsePage type="year" />} />
+        {renderDualRoute('search', <BrowsePage type="search" />)}
+        {renderDualRoute('list', <BrowsePage type="list" />, "/:slug")}
+        {renderDualRoute('category', <BrowsePage type="category" />, "/:slug")}
+        {renderDualRoute('country', <BrowsePage type="country" />, "/:slug")}
+        {renderDualRoute('year', <BrowsePage type="year" />, "/:slug")}
 
         {/* Chi tiết phim */}
-        <Route path="/phim/:slug" element={<MovieDetailPage />} />
+        {renderDualRoute('movie', <MovieDetailPage />, "/:slug")}
 
         {/* Static Pages wrapped in SupportLayout */}
         <Route element={<SupportLayout />}>
-          <Route path="/gioi-thieu" element={<AboutPage />} />
-          <Route path="/chinh-sach-bao-mat" element={<PolicyPage />} />
-          <Route path="/dieu-khoan-su-dung" element={<TermsPage />} />
-          <Route path="/cau-hoi-thuong-gap" element={<FaqPage />} />
-          <Route path="/lien-he" element={<ContactPage />} />
+          {renderDualRoute('about', <AboutPage />)}
+          {renderDualRoute('privacy', <PolicyPage />)}
+          {renderDualRoute('terms', <TermsPage />)}
+          {renderDualRoute('faq', <FaqPage />)}
+          {renderDualRoute('contact', <ContactPage />)}
         </Route>
+
+        {renderDualRoute('myList', <MyListHistoryPage />)}
 
       </Route>
 
@@ -58,7 +78,7 @@ export default function AppRoutes() {
       <Route path="*" element={<NotFoundPage />} />
 
       {/* Xem phim – có header riêng, không dùng MainLayout */}
-      <Route path="/xem-phim/:slug" element={<WatchPage />} />
+      {renderDualRoute('watch', <WatchPage />, "/:slug")}
     </Routes>
   );
 }

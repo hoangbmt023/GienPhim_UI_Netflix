@@ -1,0 +1,516 @@
+.profiles-page {
+  min-height: 100vh;
+  background-color: #141414;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.profiles-page__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.profiles-page__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.2;
+}
+
+.profiles-page__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.profiles-header,
+.profiles-container,
+.profiles-modal {
+  position: relative;
+  z-index: 1;
+}
+
+.profiles-header {
+  padding: 24px 50px;
+}
+
+.profiles-logo {
+  font-family: 'Arial Black', sans-serif;
+  font-size: 35px;
+  font-weight: 900;
+  color: #e50914;
+  margin: 0;
+}
+
+.profiles-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px 100px;
+}
+
+.profiles-container h1 {
+  font-size: 4vw;
+  font-weight: 500;
+  margin-bottom: 3rem;
+}
+
+.profiles-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2vw;
+  max-width: 80%;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: min(150px, 20vw);
+  transition: transform 0.2s;
+}
+
+.profile-avatar {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  border: 3px solid transparent;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: #333;
+  transition: all 0.2s;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.profile-card:hover .profile-avatar {
+  border-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  transform: scale(1.05);
+}
+
+.profile-card:hover .profile-name {
+  color: #fff;
+  font-weight: bold;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-lock {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.profile-add .profile-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #808080;
+}
+
+.profile-add .profile-avatar svg {
+  width: 50%;
+  height: 50%;
+}
+
+.profile-add:hover .profile-avatar {
+  background-color: #e5e5e5;
+  color: #141414;
+}
+
+.profile-name {
+  color: #808080;
+  margin-top: 15px;
+  font-size: 1.4vw;
+  text-align: center;
+  transition: all 0.2s;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.profiles-manage-btn {
+  margin-top: 50px;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 16px 48px;
+  font-size: 1.4vw;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 4px;
+  text-transform: none;
+}
+
+.profiles-manage-btn:hover {
+  background: #e50914;
+  color: #fff;
+}
+
+.profiles-manage-btn.active {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.profiles-manage-btn.active:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Modals */
+.profiles-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.profiles-modal-content {
+  background: #141414;
+  padding: 40px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+}
+
+.profiles-modal-content h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.profiles-modal-content p {
+  color: #808080;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.profiles-modal-content input {
+  width: 100%;
+  background: #666;
+  border: none;
+  padding: 15px;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.profiles-pin-toggle-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #808080;
+  color: #fff;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profiles-pin-toggle-btn:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.profiles-pin-toggle-btn.active {
+  background: rgba(229, 9, 20, 0.1);
+  border-color: #e50914;
+  color: #fff;
+}
+
+.toggle-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-indicator svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Edit Mode Overlay */
+.profile-card.manage-mode .profile-avatar img {
+  opacity: 0.5;
+}
+
+.profile-edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+}
+
+.profile-edit-overlay svg {
+  width: 40px;
+  height: 40px;
+  fill: #fff;
+}
+
+.delete-confirm-box {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.delete-confirm-box p {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.profiles-modal-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.profiles-modal-actions button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  background: #fff;
+  color: #000;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #808080 !important;
+}
+
+.btn-delete {
+  background: transparent;
+  color: #808080;
+  border: 1px solid #808080 !important;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  color: #e50914;
+  border-color: #e50914 !important;
+  background: rgba(229, 9, 20, 0.05);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.primary-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.primary-actions .btn-primary {
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+/* Pin Modal specific */
+.pin-modal {
+  text-align: center;
+  background: #141414;
+  border: 1px solid #333;
+  padding: 50px;
+  max-width: 450px;
+}
+
+.pin-modal h2 {
+  font-size: 24px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.pin-modal p {
+  font-size: 14px;
+}
+
+.pin-error {
+  color: #e50914 !important;
+  margin-bottom: 20px;
+}
+
+.pin-input-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 40px auto;
+}
+
+.pin-input-hidden {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.pin-display {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.pin-box {
+  width: 60px;
+  height: 70px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.pin-box.active {
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pin-input-hidden:focus+.pin-display .pin-box.active {
+  border-color: #e50914;
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.4);
+}
+
+.pin-box.filled {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pin-modal .profiles-modal-actions {
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pin-modal .btn-primary {
+  padding: 12px 36px;
+  font-size: 18px;
+}
+
+.pin-modal .btn-secondary {
+  padding: 12px 36px;
+  font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  .profiles-container h1 {
+    font-size: 40px;
+  }
+
+  .profiles-list {
+    gap: 15px;
+    max-width: 95%;
+  }
+
+  .profile-name {
+    font-size: 14px;
+  }
+
+  .profiles-manage-btn {
+    font-size: 16px;
+    padding: 14px;
+    width: 90%;
+    max-width: none;
+    margin-top: 30px;
+  }
+
+  .profile-card {
+    width: 100px;
+  }
+
+  .profiles-modal-content,
+  .pin-modal {
+    padding: 24px 20px;
+    width: 90%;
+    border-radius: 12px;
+  }
+
+  .profiles-modal-actions {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .profiles-modal-actions button,
+  .pin-modal .btn-primary,
+  .pin-modal .btn-secondary,
+  .btn-delete {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .edit-actions {
+    flex-direction: column;
+    gap: 30px; /* Space before delete button */
+  }
+
+  .primary-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+}
