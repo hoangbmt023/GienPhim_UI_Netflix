@@ -181,6 +181,9 @@ const vi = {
     termsLink: 'Điều khoản sử dụng',
     and: 'và',
     privacyLink: 'Chính sách bảo mật',
+    successTitle: 'Thành công',
+    errorTitle: 'Thất bại',
+    warningTitle: 'Cảnh báo',
     // Messages
     otpSentSuccess: (email) => `Đã gửi mã OTP đến ${email}`,
     registerSuccess: 'Hãy kiểm tra email của bạn để lấy mã OTP kích hoạt tài khoản.',

@@ -229,7 +229,17 @@ export default function MyListHistoryPage() {
             <div className="mylist-grid">
               {currentItems.map((item) => (
                 <div key={item.id} className="mylist-card">
-                  <div className="mylist-card__poster">
+                  <div 
+                    className="mylist-card__poster"
+                    onClick={() => {
+                      if (window.innerWidth <= 768) {
+                        const path = activeTab === 'history'
+                          ? `${getPath('watch')}/${item.slug}?ep=${item.episode || 1}`
+                          : `${getPath('movie')}/${item.slug}`;
+                        navigate(path);
+                      }
+                    }}
+                  >
                     <img
                       src={imgUrl(item.poster_url || item.thumb_url)}
                       alt={item.name}
@@ -274,6 +284,7 @@ export default function MyListHistoryPage() {
                             : `${getPath('movie')}/${item.slug}`
                         }
                         className="mylist-card__play"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <PlayIcon />
                       </Link>
@@ -287,7 +298,11 @@ export default function MyListHistoryPage() {
                           <span className="mylist-badge mylist-badge--lang">{item.lang}</span>
                         </div>
                       )}
-                      <Link to={`${getPath('movie')}/${item.slug}`} className="mylist-card__title">
+                      <Link 
+                        to={`${getPath('movie')}/${item.slug}`} 
+                        className="mylist-card__title"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {item.name}
                       </Link>
                       {activeTab === 'history' && item.episode && (
