@@ -128,6 +128,13 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
+.profile-lock svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: #fff;
+}
+
 .profile-add .profile-avatar {
   display: flex;
   align-items: center;

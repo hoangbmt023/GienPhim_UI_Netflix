@@ -13,6 +13,7 @@ import VerifyOtpForm from '@/components/auth/VerifyOtpForm';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
 import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import StatusModal from '@/components/StatusModal/StatusModal';
 
 export default function AuthPage({ initialView = 'LOGIN' }) {
   const location = useLocation();
@@ -36,6 +37,7 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [showActivateModal, setShowActivateModal] = useState(false);
+  const [statusModal, setStatusModal] = useState({ isOpen: false, type: 'success', title: '', desc: '', onClose: null });
 
   const { login, isAuthenticated, loading: authLoading } = useAuth();
 
@@ -50,6 +52,9 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
     if (errorData?.errors) {
       setFieldErrors(errorData.errors);
       setError(''); // Hide global error if there are field errors
+    } else if (errorData?.message) {
+      setError(errorData.message);
+      setFieldErrors({});
     } else {
       setError(t.auth.somethingWentWrong);
       setFieldErrors({});
@@ -154,10 +159,18 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
     clearErrors();
     try {
       await authApi.activateAccount(email, otp);
-      setMessage(t.auth.activateSuccess);
-      changeView('LOGIN');
-      setOtp('');
-      setPassword('');
+      setStatusModal({
+        isOpen: true,
+        type: 'success',
+        title: t.auth.successTitle,
+        desc: t.auth.activateSuccess,
+        onClose: () => {
+          setStatusModal(prev => ({ ...prev, isOpen: false }));
+          changeView('LOGIN');
+          setOtp('');
+          setPassword('');
+        }
+      });
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -193,12 +206,20 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
     try {
       await authApi.resetPassword({ email, otp, newPassword, logoutAllDevices: true });
-      setMessage(t.auth.resetSuccess);
-      changeView('LOGIN');
-      setOtp('');
-      setNewPassword('');
-      setConfirmNewPassword('');
-      setPassword('');
+      setStatusModal({
+        isOpen: true,
+        type: 'success',
+        title: t.auth.successTitle,
+        desc: t.auth.resetSuccess,
+        onClose: () => {
+          setStatusModal(prev => ({ ...prev, isOpen: false }));
+          changeView('LOGIN');
+          setOtp('');
+          setNewPassword('');
+          setConfirmNewPassword('');
+          setPassword('');
+        }
+      });
     } catch (err) {
       handleApiError(err);
     } finally {
@@ -290,6 +311,18 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
       onConfirm={handleSendActivateOtp}
       isLoading={loading}
       showCloseButton={true}
+    />
+
+    {/* Modal trạng thái (Thành công, Thất bại, Cảnh báo) */}
+    <StatusModal
+      isOpen={statusModal.isOpen}
+      type={statusModal.type}
+      title={statusModal.title}
+      description={statusModal.desc}
+      onClose={() => {
+        if (statusModal.onClose) statusModal.onClose();
+        else setStatusModal(prev => ({ ...prev, isOpen: false }));
+      }}
     />
   </>
   );

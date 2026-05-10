@@ -181,6 +181,9 @@ const en = {
     termsLink: 'Terms of Use',
     and: 'and',
     privacyLink: 'Privacy Policy',
+    successTitle: 'Success',
+    errorTitle: 'Error',
+    warningTitle: 'Warning',
     // Messages
     otpSentSuccess: (email) => `OTP sent to ${email}`,
     registerSuccess: 'Registration successful! Please check your email for OTP.',
