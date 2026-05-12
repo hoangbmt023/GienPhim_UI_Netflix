@@ -27,6 +27,7 @@ const en = {
     nextPage: 'Next',
     pageInfo: (curr, total) => `Page ${curr} of ${total}`,
     continue: 'Continue',
+    home: 'Home',
   },
 
   // ── MOVIE DETAIL ──
@@ -110,6 +111,7 @@ const en = {
     home: 'Home',
     movies: 'Movies',
     series: 'TV Shows',
+    newReleases: 'New Releases',
     animation: 'Animation',
     genres: 'Genres',
     countries: 'Countries',
