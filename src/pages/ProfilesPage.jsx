@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import './ProfilesPage.css';
 import { getPath, useLang } from '@/utils/lang';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import StatusModal from '@/components/StatusModal/StatusModal';
 
 export default function ProfilesPage() {
   const { t } = useLang();
@@ -30,6 +31,11 @@ export default function ProfilesPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [pinAction, setPinAction] = useState('switch'); // 'switch' or 'edit'
   const [verifiedPin, setVerifiedPin] = useState('');
+  const [showForgotPinModal, setShowForgotPinModal] = useState(false);
+  const [accountPassword, setAccountPassword] = useState('');
+  const [forgotPinError, setForgotPinError] = useState('');
+  const [isResettingPin, setIsResettingPin] = useState(false);
+  const [statusModal, setStatusModal] = useState({ open: false, type: 'success', title: '', description: '', onConfirm: null });
 
   const { selectProfile, isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -37,6 +43,10 @@ export default function ProfilesPage() {
   const pinInputRef = useRef(null);
   const newPinInputRef = useRef(null);
   const editPinInputRef = useRef(null);
+
+  useEffect(() => {
+    document.title = `${t.profiles.chooseProfile} - GienPhim`;
+  }, [t.profiles.chooseProfile]);
 
   // Focus main pin input when modal opens
   useEffect(() => {
@@ -210,6 +220,49 @@ export default function ProfilesPage() {
   const handlePinSubmit = async (e) => {
     if (e) e.preventDefault();
     handlePinSubmitInternal(pin);
+  };
+
+  const handleForgotPinSubmit = async (e) => {
+    e.preventDefault();
+    if (!accountPassword.trim()) return;
+
+    setIsResettingPin(true);
+    setForgotPinError('');
+    try {
+      const res = await profileApi.resetPinWithPassword(selectedPinProfile.id, accountPassword);
+      if (res.data.success) {
+        // Close the forgot pin modal first
+        setShowForgotPinModal(false);
+        setAccountPassword('');
+        
+        // Use a small timeout to ensure smooth transition
+        setTimeout(() => {
+          setStatusModal({
+            open: true,
+            type: 'success',
+            title: t.profiles.resetPinSuccess,
+            description: t.profiles.resetPinSuccessDesc,
+            onConfirm: async () => {
+              setStatusModal(prev => ({ ...prev, open: false }));
+              if (pinAction === 'edit') {
+                setShowPinModal(false);
+                openEditModal(selectedPinProfile, '');
+              } else {
+                const switchRes = await profileApi.switchProfile(selectedPinProfile.id);
+                if (switchRes.data.success) {
+                  selectProfile(selectedPinProfile, switchRes.data.data.profileToken);
+                  navigate(getPath('home'));
+                }
+              }
+            }
+          });
+        }, 100);
+      }
+    } catch (err) {
+      setForgotPinError(err.response?.data?.message || t.profiles.updateError);
+    } finally {
+      setIsResettingPin(false);
+    }
   };
 
   const handleAddProfile = async (e) => {
@@ -418,8 +471,61 @@ export default function ProfilesPage() {
                   ))}
                 </div>
               </div>
+
+              <button 
+                type="button" 
+                className="forgot-pin-btn"
+                onClick={() => {
+                  setShowPinModal(false);
+                  setShowForgotPinModal(true);
+                  setForgotPinError('');
+                  setAccountPassword('');
+                }}
+              >
+                {t.profiles.forgotPin}
+              </button>
+
               <div className="profiles-modal-actions">
                 <button type="button" className="btn-secondary" style={{ width: '100%', maxWidth: '300px', margin: '0 auto' }} onClick={() => setShowPinModal(false)}>{t.common.cancel}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showForgotPinModal && (
+        <div className="profiles-modal">
+          <div className="profiles-modal-content pin-modal">
+            <h2>{t.profiles.forgotPin}</h2>
+            <p className="forgot-pin-desc">{t.profiles.resetPinDesc}</p>
+            {forgotPinError && <p className="pin-error">{forgotPinError}</p>}
+            <form onSubmit={handleForgotPinSubmit}>
+              <div className="account-password-container" style={{ width: '100%', maxWidth: '300px', margin: '0 auto 30px auto' }}>
+                <input
+                  type="password"
+                  placeholder={t.profiles.accountPassword}
+                  value={accountPassword}
+                  onChange={e => setAccountPassword(e.target.value)}
+                  required
+                  autoFocus
+                  className="account-password-input"
+                  style={{ marginBottom: 0 }}
+                />
+              </div>
+              <div className="profiles-modal-actions">
+                <button type="submit" className="btn-primary" disabled={isResettingPin}>
+                  {isResettingPin ? (t.common.loading || '...') : t.common.continue}
+                </button>
+                <button 
+                  type="button" 
+                  className="btn-secondary" 
+                  onClick={() => {
+                    setShowForgotPinModal(false);
+                    setShowPinModal(true);
+                  }}
+                >
+                  {t.common.cancel}
+                </button>
               </div>
             </form>
           </div>
@@ -531,6 +637,14 @@ export default function ProfilesPage() {
         onConfirm={handleDeleteProfile}
         showCloseButton={true}
         confirmButtonClass="modal-btn-primary"
+      />
+
+      <StatusModal
+        isOpen={statusModal.open}
+        type={statusModal.type}
+        title={statusModal.title}
+        description={statusModal.description}
+        onClose={statusModal.onConfirm || (() => setStatusModal(prev => ({ ...prev, open: false })))}
       />
     </div>
   );

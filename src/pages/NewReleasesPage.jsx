@@ -6,7 +6,7 @@ import MovieRow         from '@/components/MovieRow/MovieRow';
 import { getMovieList, getByCountry, parseItems } from '@/services/ophimApi';
 import { useLang } from '@/utils/lang';
 
-export default function PhimMoiPage() {
+export default function NewReleasesPage() {
   const { t } = useLang();
   const [hero,    setHero]    = useState([]);
   const [recent,  setRecent]  = useState([]);
@@ -20,6 +20,8 @@ export default function PhimMoiPage() {
   const done = (k) => setLoading(p => ({ ...p, [k]: false }));
 
   useEffect(() => {
+    document.title = `${t.header.newReleases || 'Phim Mới'} - GienPhim`;
+
     getMovieList('phim-moi', { page: 1 })
       .then(r => {
         const items = parseItems(r);
@@ -43,7 +45,7 @@ export default function PhimMoiPage() {
       .then(r => setWestern(parseItems(r)))
       .catch(() => {})
       .finally(() => done('western'));
-  }, []);
+  }, [t.header.newReleases]);
 
   return (
     <div style={{ background: '#141414', minHeight: '100vh' }}>

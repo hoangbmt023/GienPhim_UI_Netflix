@@ -6,7 +6,7 @@ import MovieRow         from '@/components/MovieRow/MovieRow';
 import { getByCountry, getMovieList, parseItems } from '@/services/ophimApi';
 import { useLang } from '@/utils/lang';
 
-export default function VietnamPage() {
+export default function VietnameseMoviesPage() {
   const { t } = useLang();
   const [hero, setHero] = useState([]);
   const [phimMoi, setPhimMoi] = useState([]);
@@ -23,6 +23,8 @@ export default function VietnamPage() {
   const done = (k) => setLoading(p => ({ ...p, [k]: false }));
 
   useEffect(() => {
+    document.title = `${t.header.vietnamese || 'Phim Việt Nam'} - GienPhim`;
+
     // Top Phim Việt Nam + Hero
     getMovieList('phim-moi?country=viet-nam', { page: 1 })
       .then(r => {
@@ -62,7 +64,7 @@ export default function VietnamPage() {
       .then(r => setGiaDinh(parseItems(r)))
       .catch(() => {})
       .finally(() => done('giaDinh'));
-  }, []);
+  }, [t.header.vietnamese]);
 
   return (
     <div style={{ background: '#141414', minHeight: '100vh' }}>

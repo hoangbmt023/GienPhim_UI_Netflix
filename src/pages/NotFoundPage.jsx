@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './NotFoundPage.css';
 import { getPath, useLang } from '@/utils/lang';
 
 export default function NotFoundPage() {
   const { t } = useLang();
+
+  useEffect(() => {
+    document.title = `${t.notFound.title} - ${t.notFound.subtitle} - GienPhim`;
+  }, [t.notFound]);
 
   return (
     <div className="not-found-page">

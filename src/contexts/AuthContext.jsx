@@ -8,12 +8,24 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [user, setUser] = useState(null);
+
+  const parseJwt = (token) => {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  };
 
   useEffect(() => {
     // Check initial state from localStorage
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       setIsAuthenticated(true);
+      const decodedUser = parseJwt(accessToken);
+      if (decodedUser) setUser(decodedUser);
+
       const storedProfile = localStorage.getItem('selectedProfile');
       if (storedProfile) {
         try {
@@ -30,6 +42,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     setIsAuthenticated(true);
+    const decodedUser = parseJwt(accessToken);
+    if (decodedUser) setUser(decodedUser);
   };
 
   const logout = async () => {
@@ -47,6 +61,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('profileToken');
       setIsAuthenticated(false);
       setSelectedProfile(null);
+      setUser(null);
     }
   };
 
@@ -69,6 +84,7 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated,
       loading,
       selectedProfile,
+      user,
       login,
       logout,
       selectProfile,

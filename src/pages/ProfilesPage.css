@@ -327,8 +327,18 @@
 }
 
 .btn-primary {
-  background: #fff;
-  color: #000;
+  background: #e50914;
+  color: #fff;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #ff0f1b;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -388,7 +398,9 @@
 
 .pin-error {
   color: #e50914 !important;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  font-size: 14px !important;
+  min-height: 1.2em; /* Reserve space if needed */
 }
 
 .pin-input-container {
@@ -459,6 +471,50 @@
 .pin-modal .btn-secondary {
   padding: 12px 36px;
   font-size: 18px;
+}
+
+.forgot-pin-btn {
+  background: transparent;
+  border: none;
+  color: #808080;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: -10px;
+  margin-bottom: 25px;
+  transition: all 0.2s;
+  display: block;
+  width: 100%;
+}
+
+.forgot-pin-btn:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.forgot-pin-desc {
+  margin-bottom: 30px !important;
+  color: #fff !important;
+  line-height: 1.5;
+}
+
+.account-password-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid #666 !important;
+  padding: 18px !important;
+  border-radius: 8px !important;
+  width: 100% !important;
+  font-size: 18px !important;
+  color: #fff !important;
+  transition: all 0.2s ease !important;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.account-password-input:focus {
+  border-color: #e50914 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 0 12px rgba(229, 9, 20, 0.4);
+  outline: none;
 }
 
 @media (max-width: 768px) {

@@ -143,7 +143,6 @@ export default function WatchPage() {
         const item = res?.movie || res?.data?.item || res?.item;
         if (!item) return;
         setMovie(item);
-        document.title = `Xem phim ${item.name || ''} - GienPhim`;
 
         const cat = item.category?.[0]?.slug;
         if (cat) {
@@ -215,6 +214,20 @@ export default function WatchPage() {
       registerVideo(embedUrl, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
     }
   }, [embedUrl, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
+
+  useEffect(() => {
+    if (movie?.name) {
+      let epName = '';
+      if (currentEp) {
+        if (currentEp.name === 'Full' || currentEp.name.toLowerCase().includes('trailer')) {
+          epName = `${t.watch?.episode || 'Tập'} ${currentEp.name} - `;
+        } else {
+          epName = `${t.watch?.episode || 'Tập'} ${currentEp.name} - `;
+        }
+      }
+      document.title = `${epName}${movie.name} - GienPhim`;
+    }
+  }, [movie?.name, currentEp?.name, t.watch?.episode]);
 
   const handlePlayClick = () => {
     startVideo();
@@ -304,7 +317,7 @@ export default function WatchPage() {
                 <SkipNextIcon /> {t.watch?.nextEpisode || 'Tập tiếp theo'}
               </button>
             )}
-            <button 
+            <button
               className={`wp-btn wp-btn--ghost ${isSaved ? 'saved' : ''}`}
               onClick={handleSaveMovie}
               disabled={saveLoading}

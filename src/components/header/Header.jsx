@@ -131,7 +131,7 @@ export default function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
 
-  const { isAuthenticated, selectedProfile, logout } = useAuth();
+  const { isAuthenticated, selectedProfile, logout, user } = useAuth();
   const navigate = useNavigate();
   const searchRef = useRef(null);
   const mobileSearchRef = useRef(null);
@@ -141,10 +141,10 @@ export default function Header() {
   useEffect(() => {
     getCategories()
       .then((r) => { const items = r?.data?.items || r?.items || []; if (items.length > 0) setCategories(items); })
-      .catch(() => {});
+      .catch(() => { });
     getCountries()
       .then((r) => { const items = r?.data?.items || r?.items || []; if (items.length > 0) setCountries(items); })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -319,6 +319,17 @@ export default function Header() {
                     <Link to={`${getPath('myList')}?tab=saved`} className="profile__dropdown-item" onClick={() => setProfileOpen(false)}>
                       {t.header.savedMovies}
                     </Link>
+                    <Link to={getPath('myTickets')} className="profile__dropdown-item" onClick={() => setProfileOpen(false)}>
+                      {t.header.supportHistory}
+                    </Link>
+                    {user && ['MODERATOR', 'ADMIN'].includes(user.role) && (
+                      <>
+                        <div className="profile__dropdown-divider" />
+                        <Link to={getPath('moderator')} className="profile__dropdown-item profile__dropdown-item--mod" onClick={() => setProfileOpen(false)}>
+                          {t.header.moderatorPanel}
+                        </Link>
+                      </>
+                    )}
                     <div className="profile__dropdown-divider" />
                     <button className="profile__dropdown-item text-danger" onClick={() => { logout(); setProfileOpen(false); }}>
                       {t.header.signOut}
@@ -374,6 +385,14 @@ export default function Header() {
                 <Link to={`${getPath('myList')}?tab=saved`} className="drawer__account-link" onClick={() => setMobileOpen(false)}>
                   {t.header.savedMovies}
                 </Link>
+                <Link to={getPath('myTickets')} className="drawer__account-link" onClick={() => setMobileOpen(false)}>
+                  {t.header.supportHistory}
+                </Link>
+                {user && ['MODERATOR', 'ADMIN'].includes(user.role) && (
+                  <Link to={getPath('moderator')} className="drawer__account-link drawer__account-link--mod" onClick={() => setMobileOpen(false)}>
+                    {t.header.moderatorPanel}
+                  </Link>
+                )}
                 <button className="drawer__account-link drawer__signout" onClick={() => { logout(); setMobileOpen(false); }}>
                   {t.header.signOut}
                 </button>

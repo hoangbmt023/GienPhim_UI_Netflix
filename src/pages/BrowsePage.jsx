@@ -55,7 +55,7 @@ const SLUG_LABELS = {
   'phim-chieu-rap': 'Phim Chiếu Rạp',
 };
 
-const LIMIT = 40;
+const LIMIT = 42;
 
 /* ─────────────── FILTER DROPDOWN ─────────────── */
 function FilterSelect({ label, value, options, onChange }) {

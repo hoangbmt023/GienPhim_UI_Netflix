@@ -47,6 +47,18 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
     }
   }, [isAuthenticated, authLoading, navigate]);
 
+  React.useEffect(() => {
+    const titles = {
+      LOGIN: t.auth.signIn,
+      REGISTER: t.auth.signUp,
+      FORGOT_PASSWORD: t.auth.forgotPassword,
+      VERIFY_OTP: t.auth.emailVerification,
+      RESET_PASSWORD: t.auth.resetPassword
+    };
+    const currentTitle = titles[view] || t.auth.signIn;
+    document.title = `${currentTitle} - GienPhim`;
+  }, [view, t.auth]);
+
   const handleApiError = (err) => {
     const errorData = err.response?.data;
     if (errorData?.errors) {
