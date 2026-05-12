@@ -27,6 +27,7 @@ const vi = {
     nextPage: 'Trang sau',
     pageInfo: (curr, total) => `Trang ${curr} / ${total}`,
     continue: 'Tiếp tục',
+    home: 'Trang chủ',
   },
 
   // ── MOVIE DETAIL ──
@@ -110,6 +111,7 @@ const vi = {
     home: 'Trang Chủ',
     movies: 'Phim Lẻ',
     series: 'Phim Bộ',
+    newReleases: 'Phim Mới',
     animation: 'Phim Hoạt Hình',
     genres: 'Thể loại',
     countries: 'Quốc gia',

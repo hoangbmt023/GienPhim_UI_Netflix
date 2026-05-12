@@ -48,7 +48,7 @@ export default function HomePage() {
   const done = (key) => setLoading((p) => ({ ...p, [key]: false }));
 
   useEffect(() => {
-    document.title = `${t.common?.home} - GienPhim`;
+    document.title = `${t.header?.home || 'Trang Chủ'} - GienPhim`;
 
     /* Hero */
     getHome()
