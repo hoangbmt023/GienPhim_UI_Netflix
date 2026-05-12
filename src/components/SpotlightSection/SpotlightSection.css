@@ -213,7 +213,7 @@
   flex: 1;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  gap: 16px 8px;
   padding: 28px 28px 28px 16px;
   align-content: center;
 }

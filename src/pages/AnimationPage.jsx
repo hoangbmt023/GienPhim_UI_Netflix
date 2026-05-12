@@ -6,7 +6,7 @@ import SideLabelRow from '@/components/SideLabelRow/SideLabelRow';
 import { getMovieList, parseItems } from '@/services/ophimApi';
 import { useLang } from '@/utils/lang';
 
-export default function HoatHinhPage() {
+export default function AnimationPage() {
   const { t } = useLang();
   const [hero, setHero] = useState([]);
   const [hhList, setHhList] = useState([]);
@@ -23,6 +23,8 @@ export default function HoatHinhPage() {
   const done = (k) => setLoading(p => ({ ...p, [k]: false }));
 
   useEffect(() => {
+    document.title = `${t.header.animation || 'Hoạt Hình'} - GienPhim`;
+
     // Top / Featured Hoạt hình
     getMovieList('hoat-hinh', { page: 1 })
       .then(r => {
@@ -62,7 +64,7 @@ export default function HoatHinhPage() {
       .then(r => setOldest(parseItems(r)))
       .catch(() => { })
       .finally(() => done('oldest'));
-  }, []);
+  }, [t.header.animation]);
 
   return (
     <div style={{ background: '#141414', minHeight: '100vh' }}>

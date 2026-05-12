@@ -9,4 +9,5 @@ export const profileApi = {
     const body = pin ? { pin } : {};
     return api.post(`/api/profiles/${id}/switch`, body);
   },
+  resetPinWithPassword: (id, password) => api.post(`/api/profiles/${id}/reset-pin`, { password }),
 };

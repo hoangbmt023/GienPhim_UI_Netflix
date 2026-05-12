@@ -48,7 +48,7 @@ export default function HomePage() {
   const done = (key) => setLoading((p) => ({ ...p, [key]: false }));
 
   useEffect(() => {
-    document.title = "GienPhim - Xem Phim Online Chất Lượng Cao";
+    document.title = `${t.common?.home} - GienPhim`;
 
     /* Hero */
     getHome()

@@ -161,7 +161,7 @@ export default function MovieDetailPage() {
         if (!item) return;
         setMovie(item);
         setBreadcrumb(bc);
-        document.title = `${item.name || 'Chi tiết phim'} - GienPhim`;
+        document.title = `${item.name}${item.year ? ` (${item.year})` : ''} - GienPhim`;
 
         const cat = item.category?.[0]?.slug;
         if (cat) {

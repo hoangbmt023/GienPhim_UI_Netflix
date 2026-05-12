@@ -214,7 +214,8 @@
   aspect-ratio: 2/3;
   border-radius: 8px;
   overflow: hidden;
-  background: #000; /* Black background hides any sub-pixel image scaling gaps */
+  background: #000;
+  /* Black background hides any sub-pixel image scaling gaps */
   flex-shrink: 0;
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
@@ -257,7 +258,11 @@
 /* Hover overlay (play icon) */
 .browse-card__overlay {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  /* Overlap slightly to prevent sub-pixel gaps */
   background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
@@ -265,6 +270,7 @@
   opacity: 0;
   transition: opacity 0.22s;
   z-index: 2;
+  transform: translateZ(0);
 }
 
 .browse-card:hover .browse-card__overlay {
@@ -274,7 +280,8 @@
 /* Text gradient overlay – always visible at bottom */
 .browse-card__info {
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
+  /* Overlap slightly to prevent sub-pixel gaps */
   left: 0;
   right: 0;
   padding: 80px 10px 12px;
@@ -285,6 +292,7 @@
       rgba(0, 0, 0, 0) 100%);
   z-index: 2;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 .browse-card__name {
@@ -434,7 +442,7 @@
     font-size: 11.5px;
   }
 
-/* Pagination mobile CSS moved to Pagination.css */
+  /* Pagination mobile CSS moved to Pagination.css */
 }
 
 /* Mobile nhỏ ≤ 480 → 2 cột */
@@ -509,7 +517,7 @@
     padding: 2px 7px;
   }
 
-/* Pagination large screen CSS moved to Pagination.css */
+  /* Pagination large screen CSS moved to Pagination.css */
 
   .filter-select__trigger {
     font-size: 14px;

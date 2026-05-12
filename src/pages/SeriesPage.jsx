@@ -6,7 +6,7 @@ import SpotlightSection from '@/components/SpotlightSection/SpotlightSection';
 import { getMovieList, parseItems } from '@/services/ophimApi';
 import { useLang } from '@/utils/lang';
 
-export default function PhimBoPage() {
+export default function SeriesPage() {
   const { t } = useLang();
   const [featured, setFeatured] = useState([]);
   const [phimBo, setPhimBo] = useState([]);
@@ -24,6 +24,8 @@ export default function PhimBoPage() {
   const done = (key) => setLoading(p => ({ ...p, [key]: false }));
 
   useEffect(() => {
+    document.title = `${t.header.series || 'Phim Bộ'} - GienPhim`;
+
     getMovieList('phim-bo', { page: 1 })
       .then(r => {
         const items = parseItems(r);
@@ -62,7 +64,7 @@ export default function PhimBoPage() {
       .then(r => setNhatBan(parseItems(r)))
       .catch(() => { })
       .finally(() => done('nhatBan'));
-  }, []);
+  }, [t.header.series]);
 
   return (
     <div style={{ background: '#141414', minHeight: '100vh' }}>

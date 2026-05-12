@@ -2,11 +2,11 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { PATHS, getPath } from '@/utils/lang';
 import MainLayout from '@/components/MainLayout/MainLayout';
 import HomePage from '@/pages/HomePage';
-import PhimBoPage from '@/pages/PhimBoPage';
-import PhimLePage from '@/pages/PhimLePage';
-import PhimMoiPage from '@/pages/PhimMoiPage';
-import HoatHinhPage from '@/pages/HoatHinhPage';
-import VietnamPage from '@/pages/VietnamPage';
+import SeriesPage from '@/pages/SeriesPage';
+import MoviesPage from '@/pages/MoviesPage';
+import NewReleasesPage from '@/pages/NewReleasesPage';
+import AnimationPage from '@/pages/AnimationPage';
+import VietnameseMoviesPage from '@/pages/VietnameseMoviesPage';
 import BrowsePage from '@/pages/BrowsePage';
 import MovieDetailPage from '@/pages/MovieDetailPage';
 import WatchPage from '@/pages/WatchPage';
@@ -20,6 +20,8 @@ import SupportLayout   from '@/components/SupportLayout/SupportLayout';
 import AuthPage        from '@/pages/AuthPage';
 import ProfilesPage    from '@/pages/ProfilesPage';
 import MyListHistoryPage from '@/pages/MyListHistoryPage';
+import ModeratorPage from '@/pages/ModeratorPage';
+import MyTicketsPage from '@/pages/MyTicketsPage';
 
 const renderDualRoute = (pathKey, element, suffix = '') => {
   const routes = [<Route key={`${pathKey}-en`} path={PATHS[pathKey].en + suffix} element={element} />];
@@ -40,16 +42,17 @@ export default function AppRoutes() {
       {renderDualRoute('resetPassword', <AuthPage initialView="RESET_PASSWORD" />)}
       {renderDualRoute('profiles', <ProfilesPage />)}
 
+
       <Route element={<MainLayout />}>
         {/* Main curated pages */}
         {renderDualRoute('home', <HomePage />)}
-        {renderDualRoute('series', <PhimBoPage />)}
-        {renderDualRoute('movies', <PhimLePage />)}
-        {renderDualRoute('newReleases', <PhimMoiPage />)}
-        {renderDualRoute('animation', <HoatHinhPage />)}
+        {renderDualRoute('series', <SeriesPage />)}
+        {renderDualRoute('movies', <MoviesPage />)}
+        {renderDualRoute('newReleases', <NewReleasesPage />)}
+        {renderDualRoute('animation', <AnimationPage />)}
 
         {/* Vietnam landing page (special, no pagination) */}
-        {renderDualRoute('countryVietnam', <VietnamPage />)}
+        {renderDualRoute('countryVietnam', <VietnameseMoviesPage />)}
 
         {/* Browse pages – có pagination */}
         {renderDualRoute('search', <BrowsePage type="search" />)}
@@ -71,6 +74,8 @@ export default function AppRoutes() {
         </Route>
 
         {renderDualRoute('myList', <MyListHistoryPage />)}
+        {renderDualRoute('myTickets', <MyTicketsPage />)}
+        {renderDualRoute('moderator', <ModeratorPage />)}
 
       </Route>
 

@@ -17,7 +17,16 @@ const YoutubeIcon = () => (
 );
 
 const InstagramIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -25,17 +34,42 @@ const InstagramIcon = () => (
 );
 
 const GmailIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
     <polyline points="22,6 12,13 2,6"></polyline>
   </svg>
 );
 
 const SOCIALS = [
-  { href: "https://www.facebook.com/profile.php?id=61587108330332", label: "Facebook", icon: <FacebookIcon /> },
-  { href: "https://www.instagram.com/gienphimmanager/", label: "Instagram", icon: <InstagramIcon /> },
-  { href: "mailto:gienphimmanager@gmail.com", label: "Gmail", icon: <GmailIcon /> },
-  { href: "https://www.youtube.com/@Gien-Phim", label: "YouTube", icon: <YoutubeIcon /> },
+  {
+    href: "https://www.facebook.com/profile.php?id=61587108330332",
+    label: "Facebook",
+    icon: <FacebookIcon />,
+  },
+  {
+    href: "https://www.instagram.com/gienphimmanager/",
+    label: "Instagram",
+    icon: <InstagramIcon />,
+  },
+  {
+    href: "https://mail.google.com/mail/u/0/?view=cm&fs=1&to=gienphimmanager@gmail.com",
+    label: "Gmail",
+    icon: <GmailIcon />,
+  },
+  {
+    href: "https://www.youtube.com/@Gien-Phim",
+    label: "YouTube",
+    icon: <YoutubeIcon />,
+  },
 ];
 
 /* ─── COMPONENT ─── */
@@ -55,35 +89,35 @@ export default function Footer() {
     {
       title: t.footer.colGienPhim,
       items: [
-        { label: t.footer.aboutUs, to: getPath('about') },
-        { label: t.footer.contact, to: getPath('contact') },
+        { label: t.footer.aboutUs, to: getPath("about") },
+        { label: t.footer.contact, to: getPath("contact") },
       ],
     },
     {
       title: t.footer.colContent,
       items: [
-        { label: t.footer.movies, to: getPath('movies') },
-        { label: t.footer.series, to: getPath('series') },
-        { label: t.footer.animation, to: getPath('animation') },
-        { label: t.footer.vietnamese, to: getPath('countryVietnam') },
+        { label: t.footer.movies, to: getPath("movies") },
+        { label: t.footer.series, to: getPath("series") },
+        { label: t.footer.animation, to: getPath("animation") },
+        { label: t.footer.vietnamese, to: getPath("countryVietnam") },
       ],
     },
     {
       title: t.footer.colGenres,
       items: [
-        { label: t.footer.action, to: `${getPath('category')}/hanh-dong` },
-        { label: t.footer.romance, to: `${getPath('category')}/tinh-cam` },
-        { label: t.footer.horror, to: `${getPath('category')}/kinh-di` },
-        { label: t.footer.comedy, to: `${getPath('category')}/hai-huoc` },
+        { label: t.footer.action, to: `${getPath("category")}/hanh-dong` },
+        { label: t.footer.romance, to: `${getPath("category")}/tinh-cam` },
+        { label: t.footer.horror, to: `${getPath("category")}/kinh-di` },
+        { label: t.footer.comedy, to: `${getPath("category")}/hai-huoc` },
       ],
     },
     {
       title: t.footer.colSupport,
       items: [
-        { label: t.footer.faq, to: getPath('faq') },
-        { label: t.footer.reportError, to: getPath('contact') },
-        { label: t.footer.privacy, to: getPath('privacy') },
-        { label: t.footer.terms, to: getPath('terms') },
+        { label: t.footer.faq, to: getPath("faq") },
+        { label: t.footer.reportError, to: getPath("contact") },
+        { label: t.footer.privacy, to: getPath("privacy") },
+        { label: t.footer.terms, to: getPath("terms") },
       ],
     },
   ];
@@ -94,7 +128,7 @@ export default function Footer() {
         {/* TOP ROW */}
         <div className="footer__top">
           <Link
-            to={getPath('home')}
+            to={getPath("home")}
             className="footer__logo"
             aria-label="GienPhim – Trang chủ"
           >
@@ -142,10 +176,10 @@ export default function Footer() {
         {/* BOTTOM ROW */}
         <div className="footer__bottom">
           <div className="footer__bottom-links">
-            <Link to={getPath('faq')}>{t.footer.faq}</Link>
-            <Link to={getPath('privacy')}>{t.footer.privacy}</Link>
-            <Link to={getPath('terms')}>{t.footer.terms}</Link>
-            <Link to={getPath('contact')}>{t.footer.contact}</Link>
+            <Link to={getPath("faq")}>{t.footer.faq}</Link>
+            <Link to={getPath("privacy")}>{t.footer.privacy}</Link>
+            <Link to={getPath("terms")}>{t.footer.terms}</Link>
+            <Link to={getPath("contact")}>{t.footer.contact}</Link>
           </div>
 
           <div className="footer__lang-wrap">
@@ -162,7 +196,9 @@ export default function Footer() {
           </div>
 
           <p className="footer__copyright">
-            {t.footer.copyright(year)} {import.meta.env.VITE_APP_VERSION && `(v${import.meta.env.VITE_APP_VERSION})`}
+            {t.footer.copyright(year)}{" "}
+            {import.meta.env.VITE_APP_VERSION &&
+              `(v${import.meta.env.VITE_APP_VERSION})`}
           </p>
         </div>
       </div>

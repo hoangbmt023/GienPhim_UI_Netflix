@@ -6,7 +6,7 @@ import SpotlightSection from "@/components/SpotlightSection/SpotlightSection";
 import { getMovieList, parseItems } from "@/services/ophimApi";
 import { useLang } from "@/utils/lang";
 
-export default function PhimLePage() {
+export default function MoviesPage() {
   const { t } = useLang();
   const [featured, setFeatured] = useState([]);
   const [phimLe, setPhimLe] = useState([]);
@@ -25,6 +25,8 @@ export default function PhimLePage() {
   const done = (key) => setLoading((p) => ({ ...p, [key]: false }));
 
   useEffect(() => {
+    document.title = `${t.header.movies || 'Phim Lẻ'} - GienPhim`;
+
     getMovieList("phim-le", { page: 1 })
       .then((r) => {
         const items = parseItems(r);
@@ -56,7 +58,7 @@ export default function PhimLePage() {
       .then((r) => setNhatBan(parseItems(r)))
       .catch(() => { })
       .finally(() => done("nhatBan"));
-  }, []);
+  }, [t.header.movies]);
 
   return (
     <div style={{ background: "#141414", minHeight: "100vh" }}>

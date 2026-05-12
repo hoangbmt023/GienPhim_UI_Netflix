@@ -4,19 +4,39 @@ import en from '@/locales/en';
 export const getLang = () => {
   const savedLang = localStorage.getItem('gp_lang');
   const pathname = window.location.pathname;
+  let detected = null;
 
   // 1. Kiểm tra khớp chính xác URL
   for (const key in PATHS) {
-    if (pathname === PATHS[key].en) return 'en';
-    if (pathname === PATHS[key].vi) return 'vi';
+    if (pathname === PATHS[key].en) {
+      detected = 'en';
+      break;
+    }
+    if (pathname === PATHS[key].vi) {
+      detected = 'vi';
+      break;
+    }
   }
 
   // 2. Kiểm tra khớp prefix (cho dynamic routes)
-  const keys = Object.keys(PATHS).sort((a, b) => PATHS[b].vi.length - PATHS[a].vi.length);
-  for (const key of keys) {
-    if (PATHS[key].vi === '/' || PATHS[key].en === '/') continue;
-    if (pathname.startsWith(PATHS[key].en)) return 'en';
-    if (pathname.startsWith(PATHS[key].vi)) return 'vi';
+  if (!detected) {
+    const keys = Object.keys(PATHS).sort((a, b) => PATHS[b].vi.length - PATHS[a].vi.length);
+    for (const key of keys) {
+      if (PATHS[key].vi === '/' || PATHS[key].en === '/') continue;
+      if (pathname.startsWith(PATHS[key].en)) {
+        detected = 'en';
+        break;
+      }
+      if (pathname.startsWith(PATHS[key].vi)) {
+        detected = 'vi';
+        break;
+      }
+    }
+  }
+
+  if (detected) {
+    if (savedLang !== detected) localStorage.setItem('gp_lang', detected);
+    return detected;
   }
 
   return savedLang || 'vi';
@@ -52,6 +72,8 @@ export const PATHS = {
   terms: { vi: '/dieu-khoan-su-dung', en: '/terms-of-use' },
   faq: { vi: '/cau-hoi-thuong-gap', en: '/faq' },
   contact: { vi: '/lien-he', en: '/contact' },
+  moderator: { vi: '/quan-ly', en: '/moderator' },
+  myTickets: { vi: '/lich-su-ho-tro', en: '/support-history' },
 };
 
 export const getPath = (key) => {
