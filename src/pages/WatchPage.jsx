@@ -58,7 +58,7 @@ export default function WatchPage() {
 
   /* PiPContext API mới */
   const { registerVideo, registerSlot, startVideo, startPiP,
-    hasStarted, isPiP, expandPiP } = usePiP();
+    hasStarted, setHasStarted, isPiP, expandPiP } = usePiP();
 
   const slotCallbackRef = useCallback((node) => {
     registerSlot(node);
@@ -175,6 +175,7 @@ export default function WatchPage() {
   }, [slug]);
 
   useEffect(() => {
+    setHasStarted(false);
     setSelServer(serverIdx);
   }, [serverIdx, epSlug]);
 
@@ -201,10 +202,6 @@ export default function WatchPage() {
     next.set('server', si);
     setSP(next);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    if (hasStarted && isAuthenticated && selectedProfile && slug) {
-      movieApi.saveHistory(slug, ep.name, 0).catch(e => console.error('Failed to save history', e));
-    }
   };
 
   const embedUrl = currentEp?.link_embed || '';
@@ -232,7 +229,7 @@ export default function WatchPage() {
   const handlePlayClick = () => {
     startVideo();
     if (isAuthenticated && selectedProfile && slug && currentEp) {
-      movieApi.saveHistory(slug, currentEp.name, 0).catch(e => console.error('Failed to save history', e));
+      movieApi.saveHistory(slug, currentEp.name, selServer, 0).catch(e => console.error('Failed to save history', e));
     }
   };
 
@@ -278,7 +275,7 @@ export default function WatchPage() {
               <div ref={slotCallbackRef} className="wp-player__slot" />
               {!hasStarted && (
                 <div className="wp-player__cover" onClick={handlePlayClick} style={{ zIndex: 20, pointerEvents: 'auto' }}>
-                  <img src={imgUrl(movie.thumb_url || movie.poster_url)} alt="Cover" />
+                  <img src={imgUrl(movie.poster_url || movie.thumb_url)} alt="Cover" />
                   <div className="wp-player__overlay">
                     <button className="wp-player__play-btn">
                       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
@@ -345,6 +342,7 @@ export default function WatchPage() {
           movie={movie}
           currentEpSlug={currentEp?.slug}
           onEpClick={(ep, si) => {
+            setHasStarted(false);
             setSelServer(si);
             goEp(ep, si);
           }}

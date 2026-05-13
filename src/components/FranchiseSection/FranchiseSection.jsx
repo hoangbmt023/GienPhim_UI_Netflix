@@ -31,7 +31,7 @@ export default function FranchiseSection({ franchise }) {
     // Crossfade background: mờ → đổi ảnh → hiện
     setBgVisible(false);
     const bgTimer = setTimeout(() => {
-      setBgSrc(imgUrl(activeMovie.thumb_url || activeMovie.poster_url));
+      setBgSrc(imgUrl(activeMovie.poster_url || activeMovie.thumb_url));
       setBgVisible(true);
     }, 250);
 
@@ -71,7 +71,7 @@ export default function FranchiseSection({ franchise }) {
           {/* Background crossfade */}
           <div className="franchise-section__bg">
             <img
-              src={bgSrc || imgUrl(movie.thumb_url || movie.poster_url)}
+              src={bgSrc || imgUrl(movie.poster_url || movie.thumb_url)}
               alt="bg"
               className={bgVisible ? 'visible' : ''}
             />

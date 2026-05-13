@@ -270,7 +270,7 @@ export default function MyListHistoryPage() {
                       if (window.innerWidth <= 768) {
                         const path =
                           activeTab === "history"
-                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode || 1}`
+                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode || 1}&server=${item.server ?? 0}`
                             : `${getPath("movie")}/${item.slug}`;
                         navigate(path);
                       }
@@ -321,7 +321,7 @@ export default function MyListHistoryPage() {
                       <Link
                         to={
                           activeTab === "history"
-                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode || 1}`
+                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode || 1}&server=${item.server ?? 0}`
                             : `${getPath("movie")}/${item.slug}`
                         }
                         className="mylist-card__play"
