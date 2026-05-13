@@ -70,8 +70,11 @@ const EpisodeList = ({ movie, currentEpSlug, onEpClick, initialServer = 0 }) => 
                   onClick={() => {
                     setSelServer(si);
                     setEpSearch('');
-                    // Optional: auto-play first ep of new server? 
-                    // Usually handled by parent via onEpClick if desired.
+                    // Auto-switch to the same episode on the new server
+                    const matchingEp = sv.server_data.find(e => e.slug === currentEpSlug);
+                    if (matchingEp) {
+                      onEpClick(matchingEp, si);
+                    }
                   }}
                 >
                   {sv.server_name}

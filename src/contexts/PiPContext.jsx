@@ -75,7 +75,7 @@ export function PiPProvider({ children }) {
 
   return (
     <PiPContext.Provider value={{
-      video, isPiP, hasStarted,
+      video, isPiP, hasStarted, setHasStarted,
       playerSlot,
       registerSlot,
       registerVideo, startVideo,

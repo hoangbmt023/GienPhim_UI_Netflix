@@ -357,6 +357,7 @@ export default function BrowsePage({ type = 'list' }) {
                   }}
                 />
                 {m.quality && <span className="browse-card__quality">{m.quality}</span>}
+                {m.lang && <span className="browse-card__lang">{m.lang}</span>}
                 {/* Play icon – shows on hover */}
                 <div className="browse-card__overlay">
                   <svg viewBox="0 0 24 24" width="36" height="36" fill="white">

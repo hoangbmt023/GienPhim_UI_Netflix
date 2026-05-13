@@ -255,6 +255,22 @@
   pointer-events: none;
 }
 
+.browse-card__lang {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #0053ff;
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 3px;
+  z-index: 3;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 /* Hover overlay (play icon) */
 .browse-card__overlay {
   position: absolute;
