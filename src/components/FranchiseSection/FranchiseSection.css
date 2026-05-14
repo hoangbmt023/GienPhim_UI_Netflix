@@ -237,6 +237,7 @@
   .franchise-section__info {
     padding-bottom: 0;
     width: 100%;
+    max-width: none; /* Bỏ giới hạn 480px để giãn hết bên phải */
     animation: slideUpFadeIn 0.35s ease-out forwards;
   }
 

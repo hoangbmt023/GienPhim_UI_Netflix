@@ -85,8 +85,8 @@ export const getMovieList = (slug = 'phim-moi', opts = {}) => {
  * Tìm kiếm phim
  * GET /v1/api/tim-kiem?keyword=&page=&limit=
  */
-export const searchMovies = (keyword, page = 1, limit = 24) =>
-  get(`/v1/api/tim-kiem${qs({ keyword, page, limit })}`);
+export const searchMovies = (keyword, page = 1, limit = 24, opts = {}) =>
+  get(`/v1/api/tim-kiem${qs({ keyword, page, limit, ...opts })}`);
 
 /**
  * Danh sách thể loại

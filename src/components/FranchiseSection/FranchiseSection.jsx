@@ -128,9 +128,12 @@ export default function FranchiseSection({ franchise }) {
                       className={`fs-card ${isActive ? "active" : ""}`}
                       onMouseEnter={() => !isActive && setActiveMovie(m)}
                       onClick={() => {
+                        const isMobile = window.innerWidth <= 1024;
                         if (isActive) {
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                          navigate(`/movie/${m.slug}`);
+                          if (!isMobile) {
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                            navigate(`/movie/${m.slug}`);
+                          }
                         } else {
                           setActiveMovie(m);
                         }
