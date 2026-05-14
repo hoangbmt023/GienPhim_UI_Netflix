@@ -160,7 +160,7 @@ export default function WatchPage() {
 
         const tmdbId = item.tmdb?.id;
         if (tmdbId) {
-          searchMovies(tmdbId, 1).then(rF => {
+          searchMovies(tmdbId, 1, 24, { sort_field: 'name', sort_type: 'asc' }).then(rF => {
             const items = parseItems(rF).filter(m =>
               m.slug !== slug && String(m.tmdb?.id) === String(tmdbId)
             );
@@ -175,7 +175,6 @@ export default function WatchPage() {
   }, [slug]);
 
   useEffect(() => {
-    setHasStarted(false);
     setSelServer(serverIdx);
   }, [serverIdx, epSlug]);
 
