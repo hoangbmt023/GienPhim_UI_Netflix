@@ -51,8 +51,8 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    setFieldErrors({});
     try {
       await contactApi.submitTicket(formData);
       setStatusModal({
