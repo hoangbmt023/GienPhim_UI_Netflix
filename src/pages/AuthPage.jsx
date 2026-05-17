@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import posterAuth from '@/assets/poster_auth.jpg';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import { authApi } from '@/services/authApi';
 import { userApi } from '@/services/userApi';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,10 +16,9 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import StatusModal from '@/components/StatusModal/StatusModal';
 
 export default function AuthPage({ initialView = 'LOGIN' }) {
-  const location = useLocation();
   const { t } = useLang();
   const [view, setView] = useState(initialView); // LOGIN, REGISTER, FORGOT_PASSWORD, VERIFY_OTP, RESET_PASSWORD
-  
+
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -77,6 +76,7 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
   const clearErrors = (field) => {
     if (field) {
       setFieldErrors(prev => ({ ...prev, [field]: '' }));
+      setError(''); // Clear global error as soon as user modifies any input
     } else {
       setError('');
       setFieldErrors({});
@@ -98,8 +98,8 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    clearErrors();
     try {
       const res = await authApi.login({ email, password });
       if (res.data.success) {
@@ -109,7 +109,7 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
     } catch (err) {
       const status = err.response?.status;
       const msg = err.response?.data?.message || '';
-      
+
       // Tài khoản chưa kích hoạt (403)
       if (status === 403 && msg.includes('kích hoạt')) {
         setShowActivateModal(true);
@@ -139,8 +139,8 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    clearErrors();
 
     if (password !== confirmPassword) {
       setFieldErrors({ confirmPassword: t.auth.passwordMismatch });
@@ -167,8 +167,8 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    clearErrors();
     try {
       await authApi.activateAccount(email, otp);
       setStatusModal({
@@ -192,8 +192,8 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    clearErrors();
     try {
       await authApi.forgotPassword(email);
       setMessage(t.auth.forgotSuccess);
@@ -207,8 +207,8 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
-    clearErrors();
 
     if (newPassword !== confirmNewPassword) {
       setFieldErrors({ confirmNewPassword: t.auth.passwordMismatch });
@@ -243,100 +243,100 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
 
   return (
     <>
-    <div className="auth-page">
-      <div className="auth-page__bg">
-        <img src={posterAuth} alt="Background" onError={(e) => e.target.style.display = 'none'} />
-        <div className="auth-page__overlay"></div>
+      <div className="auth-page">
+        <div className="auth-page__bg">
+          <img src={posterAuth} alt="Background" onError={(e) => e.target.style.display = 'none'} />
+          <div className="auth-page__overlay"></div>
+        </div>
+        <div className="auth-page__header">
+          <h1 className="auth-page__logo" onClick={() => navigate(getPath('home'))}>GIENPHIM</h1>
+        </div>
+
+        <div className="auth-container">
+          {view === 'LOGIN' && (
+            <LoginForm
+              email={email} setEmail={setEmail}
+              password={password} setPassword={setPassword}
+              loading={loading} fieldErrors={fieldErrors}
+              handleLogin={handleLogin} setView={changeView}
+              clearErrors={clearErrors} setMessage={setMessage}
+              error={error} message={message}
+            />
+          )}
+
+          {view === 'REGISTER' && (
+            <RegisterForm
+              email={email} setEmail={setEmail}
+              password={password} setPassword={setPassword}
+              confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
+              acceptTerms={acceptTerms} setAcceptTerms={setAcceptTerms}
+              loading={loading} fieldErrors={fieldErrors}
+              handleRegister={handleRegister} setView={changeView}
+              clearErrors={clearErrors} setMessage={setMessage}
+              error={error} message={message}
+            />
+          )}
+
+          {view === 'VERIFY_OTP' && (
+            <VerifyOtpForm
+              email={email}
+              otp={otp} setOtp={setOtp}
+              loading={loading} fieldErrors={fieldErrors}
+              handleVerifyOtp={handleVerifyOtp} handleSendActivateOtp={handleSendActivateOtp}
+              setView={changeView} clearErrors={clearErrors} setMessage={setMessage}
+              error={error} message={message}
+            />
+          )}
+
+          {view === 'FORGOT_PASSWORD' && (
+            <ForgotPasswordForm
+              email={email} setEmail={setEmail}
+              loading={loading} fieldErrors={fieldErrors}
+              handleForgotPassword={handleForgotPassword} setView={changeView}
+              clearErrors={clearErrors} setMessage={setMessage}
+              error={error} message={message}
+            />
+          )}
+
+          {view === 'RESET_PASSWORD' && (
+            <ResetPasswordForm
+              otp={otp} setOtp={setOtp}
+              newPassword={newPassword} setNewPassword={setNewPassword}
+              confirmNewPassword={confirmNewPassword} setConfirmNewPassword={setConfirmNewPassword}
+              loading={loading} fieldErrors={fieldErrors}
+              handleResetPassword={handleResetPassword} setView={changeView}
+              clearErrors={clearErrors} setMessage={setMessage}
+              error={error} message={message}
+            />
+          )}
+        </div>
       </div>
-      <div className="auth-page__header">
-        <h1 className="auth-page__logo" onClick={() => navigate(getPath('home'))}>GIENPHIM</h1>
-      </div>
-      
-      <div className="auth-container">
-        {view === 'LOGIN' && (
-          <LoginForm 
-            email={email} setEmail={setEmail}
-            password={password} setPassword={setPassword}
-            loading={loading} fieldErrors={fieldErrors}
-            handleLogin={handleLogin} setView={changeView}
-            clearErrors={clearErrors} setMessage={setMessage}
-            error={error} message={message}
-          />
-        )}
 
-        {view === 'REGISTER' && (
-          <RegisterForm 
-            email={email} setEmail={setEmail}
-            password={password} setPassword={setPassword}
-            confirmPassword={confirmPassword} setConfirmPassword={setConfirmPassword}
-            acceptTerms={acceptTerms} setAcceptTerms={setAcceptTerms}
-            loading={loading} fieldErrors={fieldErrors}
-            handleRegister={handleRegister} setView={changeView}
-            clearErrors={clearErrors} setMessage={setMessage}
-            error={error} message={message}
-          />
-        )}
+      {/* Modal kích hoạt tài khoản */}
+      <ConfirmModal
+        isOpen={showActivateModal}
+        onClose={() => setShowActivateModal(false)}
+        title={t.auth.accountNotActivated}
+        description={t.auth.activatePrompt}
+        confirmText={t.auth.sendOtp}
+        cancelText={t.common.cancel}
+        onConfirm={handleSendActivateOtp}
+        isLoading={loading}
+        showCloseButton={true}
+      />
 
-        {view === 'VERIFY_OTP' && (
-          <VerifyOtpForm 
-            email={email}
-            otp={otp} setOtp={setOtp}
-            loading={loading} fieldErrors={fieldErrors}
-            handleVerifyOtp={handleVerifyOtp} handleSendActivateOtp={handleSendActivateOtp}
-            setView={changeView} clearErrors={clearErrors} setMessage={setMessage}
-            error={error} message={message}
-          />
-        )}
-
-        {view === 'FORGOT_PASSWORD' && (
-          <ForgotPasswordForm 
-            email={email} setEmail={setEmail}
-            loading={loading} fieldErrors={fieldErrors}
-            handleForgotPassword={handleForgotPassword} setView={changeView}
-            clearErrors={clearErrors} setMessage={setMessage}
-            error={error} message={message}
-          />
-        )}
-
-        {view === 'RESET_PASSWORD' && (
-          <ResetPasswordForm 
-            otp={otp} setOtp={setOtp}
-            newPassword={newPassword} setNewPassword={setNewPassword}
-            confirmNewPassword={confirmNewPassword} setConfirmNewPassword={setConfirmNewPassword}
-            loading={loading} fieldErrors={fieldErrors}
-            handleResetPassword={handleResetPassword} setView={changeView}
-            clearErrors={clearErrors} setMessage={setMessage}
-            error={error} message={message}
-          />
-        )}
-      </div>
-    </div>
-
-    {/* Modal kích hoạt tài khoản */}
-    <ConfirmModal
-      isOpen={showActivateModal}
-      onClose={() => setShowActivateModal(false)}
-      title={t.auth.accountNotActivated}
-      description={t.auth.activatePrompt}
-      confirmText={t.auth.sendOtp}
-      cancelText={t.common.cancel}
-      onConfirm={handleSendActivateOtp}
-      isLoading={loading}
-      showCloseButton={true}
-    />
-
-    {/* Modal trạng thái (Thành công, Thất bại, Cảnh báo) */}
-    <StatusModal
-      isOpen={statusModal.isOpen}
-      type={statusModal.type}
-      title={statusModal.title}
-      description={statusModal.desc}
-      onClose={() => {
-        if (statusModal.onClose) statusModal.onClose();
-        else setStatusModal(prev => ({ ...prev, isOpen: false }));
-      }}
-    />
-  </>
+      {/* Modal trạng thái (Thành công, Thất bại, Cảnh báo) */}
+      <StatusModal
+        isOpen={statusModal.isOpen}
+        type={statusModal.type}
+        title={statusModal.title}
+        description={statusModal.desc}
+        onClose={() => {
+          if (statusModal.onClose) statusModal.onClose();
+          else setStatusModal(prev => ({ ...prev, isOpen: false }));
+        }}
+      />
+    </>
   );
 }
 

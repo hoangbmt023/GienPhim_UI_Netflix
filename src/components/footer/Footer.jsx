@@ -80,7 +80,7 @@ export default function Footer() {
 
   const handleLangChange = (e) => {
     const newLang = e.target.value;
-    const nextPath = getSwitchPath(location.pathname, newLang);
+    const nextPath = getSwitchPath(location.pathname, newLang) + location.search;
     setLang(newLang);
     window.location.href = nextPath;
   };

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { movieApi } from "@/services/movieApi";
-import { imgUrl } from "@/services/ophimApi";
+import { imgUrl, getMovieDetail } from "@/services/ophimApi";
 import Pagination from "@/components/Pagination/Pagination";
 import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
 import { getPath, getT } from "@/utils/lang";
@@ -187,6 +187,82 @@ export default function MyListHistoryPage() {
   const currentItems = activeTab === "history" ? history : saved;
   const currentTotal = activeTab === "history" ? historyTotal : savedTotal;
 
+  const [movieDetails, setMovieDetails] = useState({});
+  const fetchedSlugs = useRef(new Set());
+
+  // Fetch movie details to get total episodes
+  useEffect(() => {
+    if (!currentItems || currentItems.length === 0) return;
+    
+    currentItems.forEach(item => {
+      if (item.slug && !fetchedSlugs.current.has(item.slug)) {
+        fetchedSlugs.current.add(item.slug);
+        getMovieDetail(item.slug).then(res => {
+          if (res?.data?.item) {
+            setMovieDetails(prev => ({ ...prev, [item.slug]: res.data.item }));
+          }
+        }).catch(err => {
+          console.error("Failed to fetch detail for", item.slug, err);
+        });
+      }
+    });
+  }, [currentItems]);
+
+  const getEpisodeDisplay = (item) => {
+    const detail = movieDetails[item.slug];
+    
+    if (activeTab === "history") {
+       if (!detail || !detail.episodes || detail.episodes.length === 0) {
+           return item.episode ? t.myList.episode(item.episode) : null;
+       }
+       const serverIndex = item.server ?? 0;
+       const serverData = detail.episodes[serverIndex]?.server_data || detail.episodes[0]?.server_data || [];
+       const total = serverData.length;
+       const lastEpName = total > 0 ? (serverData[total - 1]?.name || total) : "?";
+       return `${t.myList.episode(item.episode)} / ${lastEpName}`;
+    } else {
+       if (!detail || !detail.episodes || detail.episodes.length === 0) {
+           return null;
+       }
+       let maxServerData = [];
+       detail.episodes.forEach(ep => {
+           if (ep.server_data && ep.server_data.length > maxServerData.length) {
+               maxServerData = ep.server_data;
+           }
+       });
+       const total = maxServerData.length;
+       if (total === 0) return null;
+       const lastEpName = maxServerData[total - 1]?.name || total;
+       return t.myList.episode(lastEpName);
+    }
+  };
+
+  const getProgress = (item) => {
+    if (activeTab !== "history" || !item.episode) return 0;
+    const detail = movieDetails[item.slug];
+    if (!detail || !detail.episodes || detail.episodes.length === 0) {
+        return 40; // Default fallback if not loaded
+    }
+    
+    const serverIndex = item.server ?? 0;
+    const serverData = detail.episodes[serverIndex]?.server_data || detail.episodes[0]?.server_data || [];
+    if (serverData.length === 0) return 0;
+    
+    const currentEpIndex = serverData.findIndex(ep => ep.slug === String(item.episode) || ep.name === String(item.episode));
+    if (currentEpIndex === -1) {
+       // fallback, try parse int
+       const parsedCur = parseInt(item.episode);
+       const total = serverData.length;
+       if (!isNaN(parsedCur) && total > 0) {
+           return Math.min(100, Math.max(0, (parsedCur / total) * 100));
+       }
+       return 0; // Can't determine progress
+    }
+    
+    // progress based on current index out of total
+    return Math.round(((currentEpIndex + 1) / serverData.length) * 100);
+  };
+
   return (
     <div className="mylist-page">
       {/* ── HERO / HEADER ── */}
@@ -297,7 +373,7 @@ export default function MyListHistoryPage() {
                       <div className="mylist-card__progress-bar">
                         <div
                           className="mylist-card__progress-fill"
-                          style={{ width: "40%" }}
+                          style={{ width: `${getProgress(item)}%` }}
                         />
                       </div>
                     )}
@@ -351,7 +427,7 @@ export default function MyListHistoryPage() {
                       {activeTab === "history" && item.episode && (
                         <div className="mylist-card__meta">
                           <span className="mylist-card__ep">
-                            {t.myList.episode(item.episode)}
+                            {getEpisodeDisplay(item)}
                           </span>
                           {item.timePos > 0 && (
                             <span className="mylist-card__timepos">
@@ -363,6 +439,13 @@ export default function MyListHistoryPage() {
                               {formatDate(item.updatedAt)}
                             </span>
                           )}
+                        </div>
+                      )}
+                      {activeTab === "saved" && getEpisodeDisplay(item) && (
+                        <div className="mylist-card__meta">
+                          <span className="mylist-card__ep">
+                            {getEpisodeDisplay(item)}
+                          </span>
                         </div>
                       )}
                     </div>
