@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { imgUrl } from '@/services/ophimApi';
 import './SpotlightSection.css';
 import { getPath, useLang } from '@/utils/lang';
+import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 
 const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
 
@@ -89,13 +90,13 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
       {/* Card */}
       <div className="spotlight-section__card">
 
-        {/* Blurred poster backdrop */}
-        <img
+        <ImageWithFallback
+          key={bgSrc}
           className="spotlight-section__bg"
+          wrapperClassName="spotlight-section__bg-wrap"
           src={bgSrc}
           alt=""
           aria-hidden="true"
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
 
         {/* Inner: info LEFT + thumbs RIGHT */}
@@ -164,15 +165,14 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
           {/* RIGHT – Thumb grid */}
           <div className="spotlight-section__thumbs">
             {thumbs.map((m, i) => (
-              <img
+              <ImageWithFallback
                 key={m._id}
-                className={`spotlight-section__thumb${i === activeIdx ? ' active' : ''}`}
+                wrapperClassName={`spotlight-section__thumb${i === activeIdx ? ' active' : ''}`}
+                className="spotlight-section__thumb-img"
                 src={imgUrl(m.thumb_url)}
                 alt={m.name}
                 title={m.name}
-                loading="lazy"
                 onClick={() => setActiveIdx(i)}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             ))}
           </div>

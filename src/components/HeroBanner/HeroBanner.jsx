@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { imgUrl, getMovieImages } from '@/services/ophimApi';
+import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import './HeroBanner.css';
 import { getPath, useLang } from '@/utils/lang';
 
@@ -251,16 +252,19 @@ export default function HeroBanner({ movies = [], loading = false }) {
       {/* Thumbnail strip – ẩn trên mobile bằng CSS */}
       <div className="hero__thumbs" aria-label={t.common.selectMovie}>
         {items.map((m, i) => (
-          <img
+          <div
             key={m._id}
-            className={`hero__thumb ${i === activeIdx ? 'active' : ''}`}
-            src={imgUrl(m.thumb_url)}  // thumb for strip
-            alt={m.name}
+            className={`hero__thumb-wrap ${i === activeIdx ? 'active' : ''}`}
             title={m.name}
-            loading="lazy"
             onClick={() => goTo(i)}
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-          />
+          >
+            <ImageWithFallback
+              key={m._id}
+              src={imgUrl(m.thumb_url)}
+              alt={m.name}
+              className="hero__thumb-img"
+            />
+          </div>
         ))}
       </div>
     </section>

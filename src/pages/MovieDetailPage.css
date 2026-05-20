@@ -861,3 +861,7 @@
     font-size: 60px;
   }
 }
+img.loading { opacity: 0; }
+img.loaded { opacity: 1; transition: opacity 0.4s ease; }
+
+.md-hero__poster-img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }

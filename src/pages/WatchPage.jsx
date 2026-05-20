@@ -228,7 +228,7 @@ export default function WatchPage() {
   const handlePlayClick = () => {
     startVideo();
     if (isAuthenticated && selectedProfile && slug && currentEp) {
-      movieApi.saveHistory(slug, currentEp.name, selServer, 0).catch(e => console.error('Failed to save history', e));
+      movieApi.saveHistory(slug, currentEp.name, currentEp.slug, selServer, 0).catch(e => console.error('Failed to save history', e));
     }
   };
 

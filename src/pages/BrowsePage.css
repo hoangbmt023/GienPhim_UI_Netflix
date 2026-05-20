@@ -16,7 +16,6 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   margin-bottom: 0;
 }
 
@@ -550,4 +549,13 @@
     padding: 20px 0 28px;
     margin-bottom: 32px;
   }
+}
+
+.browse-card__img.loading {
+  opacity: 0;
+}
+
+.browse-card__img.loaded {
+  opacity: 1;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }

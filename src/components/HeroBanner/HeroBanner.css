@@ -286,31 +286,7 @@
   align-items: flex-end;
 }
 
-.hero__thumb {
-  width: 56px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 7px;
-  cursor: pointer;
-  opacity: 0.48;
-  border: 2px solid transparent;
-  transition: opacity 0.22s, border-color 0.22s, transform 0.25s,
-    width 0.28s ease, height 0.28s ease;
-  flex-shrink: 0;
-}
 
-.hero__thumb:hover {
-  opacity: 0.82;
-  transform: translateY(-4px);
-}
-
-.hero__thumb.active {
-  opacity: 1;
-  border-color: var(--netflix-red);
-  transform: translateY(-8px);
-  width: 66px;
-  height: 94px;
-}
 
 /* Skeleton */
 .hero__skeleton {
@@ -444,13 +420,47 @@
     gap: 10px;
   }
 
-  .hero__thumb {
+  .hero__thumb-wrap {
     width: 78px;
     height: 112px;
   }
 
-  .hero__thumb.active {
+  .hero__thumb-wrap.active {
     width: 92px;
     height: 132px;
   }
+}
+
+/* -- Thumb-wrap: div that holds sizing/border/active states -- */
+.hero__thumb-wrap {
+  width: 56px;
+  height: 80px;
+  border-radius: 7px;
+  cursor: pointer;
+  opacity: 0.48;
+  border: 2px solid transparent;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: opacity 0.22s, border-color 0.22s, transform 0.25s,
+    width 0.28s ease, height 0.28s ease;
+}
+
+.hero__thumb-wrap:hover {
+  opacity: 0.82;
+  transform: translateY(-4px);
+}
+
+.hero__thumb-wrap.active {
+  opacity: 1;
+  border-color: var(--netflix-red);
+  transform: translateY(-8px);
+  width: 66px;
+  height: 94px;
+}
+
+/* Inner image inside thumb-wrap */
+.hero__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
