@@ -22,6 +22,8 @@ export default defineConfig({
     },
   },
   build: {
+    // Use lightningcss only for minification (not as a transformer) – faster than default
+    cssMinify: 'lightningcss',
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
@@ -40,4 +42,5 @@ export default defineConfig({
     },
   },
 })
+
 
