@@ -125,7 +125,7 @@ export default function MyListHistoryPage() {
   const handleRemoveHistory = async (historyId) => {
     try {
       await movieApi.removeHistory(historyId);
-      setHistory((prev) => prev.filter((h) => h.id !== historyId));
+      setHistory((prev) => prev.filter((h) => h.historyId !== historyId && h.id !== historyId));
     } catch (err) {
       console.error(err);
     }
@@ -145,7 +145,7 @@ export default function MyListHistoryPage() {
   const handleRemoveSaved = async (favoriteId) => {
     try {
       await movieApi.removeFavorite(favoriteId);
-      setSaved((prev) => prev.filter((s) => s.id !== favoriteId));
+      setSaved((prev) => prev.filter((s) => s.favoriteId !== favoriteId && s.id !== favoriteId));
     } catch (err) {
       console.error(err);
     }
@@ -153,7 +153,7 @@ export default function MyListHistoryPage() {
 
   const executeClearAllSaved = async () => {
     try {
-      const ids = saved.map((s) => s.id);
+      const ids = saved.map((s) => s.favoriteId || s.id);
       if (ids.length > 0) await movieApi.removeFavorites(ids);
       setSaved([]);
       setSavedTotal(0);
@@ -213,13 +213,13 @@ export default function MyListHistoryPage() {
     
     if (activeTab === "history") {
        if (!detail || !detail.episodes || detail.episodes.length === 0) {
-           return item.episode ? t.myList.episode(item.episode) : null;
+           return item.episode?.name ? t.myList.episode(item.episode.name) : null;
        }
-       const serverIndex = item.server ?? 0;
+       const serverIndex = item.episode?.server ?? 0;
        const serverData = detail.episodes[serverIndex]?.server_data || detail.episodes[0]?.server_data || [];
        const total = serverData.length;
        const lastEpName = total > 0 ? (serverData[total - 1]?.name || total) : "?";
-       return `${t.myList.episode(item.episode)} / ${lastEpName}`;
+       return `${t.myList.episode(item.episode?.name || "?")} / ${lastEpName}`;
     } else {
        if (!detail || !detail.episodes || detail.episodes.length === 0) {
            return null;
@@ -244,14 +244,14 @@ export default function MyListHistoryPage() {
         return 40; // Default fallback if not loaded
     }
     
-    const serverIndex = item.server ?? 0;
+    const serverIndex = item.episode?.server ?? 0;
     const serverData = detail.episodes[serverIndex]?.server_data || detail.episodes[0]?.server_data || [];
     if (serverData.length === 0) return 0;
     
-    const currentEpIndex = serverData.findIndex(ep => ep.slug === String(item.episode) || ep.name === String(item.episode));
+    const currentEpIndex = serverData.findIndex(ep => ep.slug === String(item.episode?.slug) || ep.name === String(item.episode?.name));
     if (currentEpIndex === -1) {
        // fallback, try parse int
-       const parsedCur = parseInt(item.episode);
+       const parsedCur = parseInt(item.episode?.name);
        const total = serverData.length;
        if (!isNaN(parsedCur) && total > 0) {
            return Math.min(100, Math.max(0, (parsedCur / total) * 100));
@@ -339,29 +339,29 @@ export default function MyListHistoryPage() {
           <>
             <div className="mylist-grid">
               {currentItems.map((item) => (
-                <div key={item.id} className="mylist-card">
+                <div key={item.historyId || item.favoriteId || item.id} className="mylist-card">
                   <div
                     className="mylist-card__poster"
                     onClick={() => {
                       if (window.innerWidth <= 768) {
                         const path =
                           activeTab === "history"
-                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode || 1}&server=${item.server ?? 0}`
+                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode?.slug || 1}&server=${item.episode?.server ?? 0}`
                             : `${getPath("movie")}/${item.slug}`;
                         navigate(path);
                       }
                     }}
                   >
                     <img
-                      src={imgUrl(item.thumb_url || item.poster_url)}
-                      alt={item.name}
+                      src={imgUrl(movieDetails[item.slug]?.thumb_url || movieDetails[item.slug]?.poster_url || item.thumb_url || item.poster_url)}
+                      alt={movieDetails[item.slug]?.name || item.name}
                       className="mylist-card__img"
                     />
 
                     {/* Quality/HD badge – top left corner */}
-                    {item.quality && (
+                    {(movieDetails[item.slug]?.quality || item.quality) && (
                       <span className="mylist-card__quality-badge">
-                        {item.quality}
+                        {movieDetails[item.slug]?.quality || item.quality}
                       </span>
                     )}
 
@@ -386,8 +386,8 @@ export default function MyListHistoryPage() {
                           e.preventDefault();
                           e.stopPropagation();
                           activeTab === "history"
-                            ? handleRemoveHistory(item.id)
-                            : handleRemoveSaved(item.id);
+                            ? handleRemoveHistory(item.historyId || item.id)
+                            : handleRemoveSaved(item.favoriteId || item.id);
                         }}
                         title={t.common.delete}
                       >
@@ -397,7 +397,7 @@ export default function MyListHistoryPage() {
                       <Link
                         to={
                           activeTab === "history"
-                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode || 1}&server=${item.server ?? 0}`
+                            ? `${getPath("watch")}/${item.slug}?ep=${item.episode?.slug || 1}&server=${item.episode?.server ?? 0}`
                             : `${getPath("movie")}/${item.slug}`
                         }
                         className="mylist-card__play"
@@ -410,10 +410,10 @@ export default function MyListHistoryPage() {
                     {/* Always-visible bottom info */}
                     <div className="mylist-card__info">
                       {/* Lang badge in info row */}
-                      {item.lang && (
+                      {(movieDetails[item.slug]?.lang || item.lang) && (
                         <div className="mylist-card__badges">
                           <span className="mylist-badge mylist-badge--lang">
-                            {item.lang}
+                            {movieDetails[item.slug]?.lang || item.lang}
                           </span>
                         </div>
                       )}
@@ -422,7 +422,7 @@ export default function MyListHistoryPage() {
                         className="mylist-card__title"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {item.name}
+                        {movieDetails[item.slug]?.name || item.name}
                       </Link>
                       {activeTab === "history" && item.episode && (
                         <div className="mylist-card__meta">

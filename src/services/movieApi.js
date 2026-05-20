@@ -10,7 +10,7 @@ export const movieApi = {
 
   // History
   getHistory: (page = 1, size = 20) => api.get(`/api/movies/history?page=${page}&size=${size}`),
-  saveHistory: (slug, episode, server, timePos) => api.post('/api/movies/history', { slug, episode, server, timePos }),
+  saveHistory: (slug, episode, episodeSlug, server, timePos) => api.post('/api/movies/history', { slug, episode, episodeSlug, server, timePos }),
   removeHistory: (historyId) => api.delete('/api/movies/history', { data: { historyId } }),
   removeHistories: (historyIds) => api.delete('/api/movies/history', { data: { historyIds } }),
   clearAllHistory: () => api.delete('/api/movies/history', { data: { deleteAll: true } }),
