@@ -6,6 +6,7 @@ import {
   parseItems, parsePagination, imgUrl,
 } from '@/services/ophimApi';
 import Pagination from '@/components/Pagination/Pagination';
+import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import './BrowsePage.css';
 import { getPath, useLang } from '@/utils/lang';
 
@@ -346,15 +347,11 @@ export default function BrowsePage({ type = 'list' }) {
           {items.map((m) => (
             <Link key={m._id} to={`${getPath('movie')}/${m.slug}`} className="browse-card">
               <div className="browse-card__img-wrap">
-                <img
+                <ImageWithFallback
                   className="browse-card__img"
                   src={imgUrl(m.thumb_url ?? m.poster_url)}
+                  fallback={imgUrl(m.thumb_url)}
                   alt={m.name}
-                  loading="lazy"
-                  onError={(e) => {
-                    const fb = imgUrl(m.thumb_url);
-                    if (e.currentTarget.src !== fb) e.currentTarget.src = fb;
-                  }}
                 />
                 {m.quality && <span className="browse-card__quality">{m.quality}</span>}
                 {m.lang && <span className="browse-card__lang">{m.lang}</span>}

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { imgUrl } from '@/services/ophimApi';
 import './MovieCard.css';
@@ -14,6 +15,8 @@ const PlaySvg = () => (
    MovieCard  – standard card
    ═══════════════════════════════════════ */
 export function MovieCard({ movie }) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   return (
     <Link
       to={`${getPath('movie')}/${movie.slug}`}
@@ -21,13 +24,15 @@ export function MovieCard({ movie }) {
       aria-label={movie.name}
       title={movie.name}
     >
-      <div className="movie-card__img-wrap">
+      <div className={`movie-card__img-wrap ${!imgLoaded ? 'skeleton' : ''}`}>
         <img
-          className="movie-card__img"
+          className={`movie-card__img ${imgLoaded ? 'loaded' : 'loading'}`}
           src={imgUrl(movie.thumb_url)}
           alt={movie.name}
           loading="lazy"
-          onError={(e) => { e.currentTarget.src = FALLBACK; }}
+          decoding="async"
+          onLoad={() => setImgLoaded(true)}
+          onError={(e) => { e.currentTarget.src = FALLBACK; setImgLoaded(true); }}
         />
         {movie.quality && (
           <span className="movie-card__quality">{movie.quality}</span>
@@ -54,6 +59,8 @@ export function MovieCard({ movie }) {
    RankedCard – numbered ranking card
    ═══════════════════════════════════════ */
 export function RankedCard({ movie, rank }) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   return (
     <Link
       to={`${getPath('movie')}/${movie.slug}`}
@@ -62,13 +69,15 @@ export function RankedCard({ movie, rank }) {
       title={movie.name}
     >
       <span className="ranked-card__rank" aria-hidden="true">{rank}</span>
-      <div className="ranked-card__img-wrap">
+      <div className={`ranked-card__img-wrap ${!imgLoaded ? 'skeleton' : ''}`}>
         <img
-          className="ranked-card__img"
+          className={`ranked-card__img ${imgLoaded ? 'loaded' : 'loading'}`}
           src={imgUrl(movie.thumb_url)}
           alt={movie.name}
           loading="lazy"
-          onError={(e) => { e.currentTarget.src = FALLBACK; }}
+          decoding="async"
+          onLoad={() => setImgLoaded(true)}
+          onError={(e) => { e.currentTarget.src = FALLBACK; setImgLoaded(true); }}
         />
         {movie.quality && (
           <span className="ranked-card__quality">{movie.quality}</span>

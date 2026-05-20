@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMovieDetail, imgUrl } from "@/services/ophimApi";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import "./FranchiseSection.css";
 import { useLang } from "@/utils/lang";
 
@@ -70,10 +71,12 @@ export default function FranchiseSection({ franchise }) {
         <div className="franchise-section__container">
           {/* Background crossfade */}
           <div className="franchise-section__bg">
-            <img
+            <ImageWithFallback
+              key={bgSrc || movie.poster_url || movie.thumb_url}
               src={bgSrc || imgUrl(movie.poster_url || movie.thumb_url)}
               alt="bg"
               className={bgVisible ? 'visible' : ''}
+              wrapperClassName="franchise-section__bg-wrap"
             />
             <div className="franchise-section__overlay"></div>
           </div>
@@ -139,7 +142,11 @@ export default function FranchiseSection({ franchise }) {
                         }
                       }}
                     >
-                      <img src={imgUrl(m.thumb_url)} alt={m.name} loading="lazy" />
+                      <ImageWithFallback 
+                        src={imgUrl(m.thumb_url)} 
+                        alt={m.name} 
+                        className="fs-card__img"
+                      />
                       <div className="fs-card__overlay">
                         <p>{m.name}</p>
                       </div>

@@ -9,6 +9,7 @@ import { movieApi } from '@/services/movieApi';
 import { useAuth } from '@/contexts/AuthContext';
 import MovieRow from '@/components/MovieRow/MovieRow';
 import EpisodeList from '@/components/EpisodeList/EpisodeList';
+import ImageWithFallback from '@/components/ImageWithFallback/ImageWithFallback';
 import './MovieDetailPage.css';
 import { getPath, useLang } from '@/utils/lang';
 
@@ -258,8 +259,18 @@ export default function MovieDetailPage() {
 
         <div className="md-hero__content">
           <div className="md-hero__poster">
-            <img src={verticalImg} alt={movie.name} className="md-hero__poster-desktop" />
-            <img src={horizontalImg} alt={movie.name} className="md-hero__poster-mobile" />
+            <ImageWithFallback 
+              src={verticalImg} 
+              alt={movie.name} 
+              wrapperClassName="md-hero__poster-desktop"
+              className="md-hero__poster-img"
+            />
+            <ImageWithFallback 
+              src={horizontalImg} 
+              alt={movie.name} 
+              wrapperClassName="md-hero__poster-mobile"
+              className="md-hero__poster-img"
+            />
             {movie.quality && <span className="md-quality-badge">{movie.quality}</span>}
             {movie.chieurap && <span className="md-cinema-badge">{t.movieDetail.cinema}</span>}
           </div>
@@ -489,7 +500,7 @@ export default function MovieDetailPage() {
                   : [movie.poster_url, movie.thumb_url].filter(Boolean).map(f => ({ src: imgUrl(f), key: f }))
                 ).map(({ src, key }) => (
                   <div key={key} className="md-gallery__item" onClick={() => setLightbox(src)}>
-                    <img src={src} alt="" loading="lazy" />
+                    <ImageWithFallback src={src} alt="" />
                   </div>
                 ))}
               </div>

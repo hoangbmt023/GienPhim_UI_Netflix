@@ -223,6 +223,16 @@
   background: #1a1a1a;
 }
 
+/* ── Image wrapper – fills the full poster (both skeleton div & img-fallback-wrap) ── */
+.mylist-card__poster .mylist-card__img-wrap,
+.mylist-card__poster .img-fallback-wrap {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: inherit;
+}
+
 /* Poster image */
 .mylist-card__img {
   width: 100%;
@@ -532,3 +542,5 @@
     left: 10px;
   }
 }
+.mylist-card__img.loading { opacity: 0; }
+.mylist-card__img.loaded { opacity: 1; transition: opacity 0.4s ease, transform 0.4s ease; }

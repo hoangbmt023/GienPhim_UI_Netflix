@@ -5,6 +5,7 @@ import { movieApi } from "@/services/movieApi";
 import { imgUrl, getMovieDetail } from "@/services/ophimApi";
 import Pagination from "@/components/Pagination/Pagination";
 import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
+import ImageWithFallback from "@/components/ImageWithFallback/ImageWithFallback";
 import { getPath, getT } from "@/utils/lang";
 import "./MyListHistoryPage.css";
 
@@ -352,11 +353,23 @@ export default function MyListHistoryPage() {
                       }
                     }}
                   >
-                    <img
-                      src={imgUrl(movieDetails[item.slug]?.thumb_url || movieDetails[item.slug]?.poster_url || item.thumb_url || item.poster_url)}
-                      alt={movieDetails[item.slug]?.name || item.name}
-                      className="mylist-card__img"
-                    />
+                    {(() => {
+                      const rawSrc =
+                        movieDetails[item.slug]?.thumb_url ||
+                        movieDetails[item.slug]?.poster_url ||
+                        item.thumb_url ||
+                        item.poster_url;
+                      return rawSrc ? (
+                        <ImageWithFallback
+                          src={imgUrl(rawSrc)}
+                          alt={movieDetails[item.slug]?.name || item.name}
+                          wrapperClassName="mylist-card__img-wrap"
+                          className="mylist-card__img"
+                        />
+                      ) : (
+                        <div className="mylist-card__img-wrap skeleton" />
+                      );
+                    })()}
 
                     {/* Quality/HD badge – top left corner */}
                     {(movieDetails[item.slug]?.quality || item.quality) && (
