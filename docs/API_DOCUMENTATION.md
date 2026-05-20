@@ -1,18 +1,401 @@
-# 📺 GienPhim API Documentation
+# 📺 GienPhim Frontend - API Integration Guide
 
-**Phiên bản**: 1.0.0  
-**Base URL**: `http://localhost:3000` (hoặc URL server của bạn)  
-**Content-Type**: `application/json`
+**Version**: 1.0.0  
+**Last Updated**: May 2026  
+**API Base URL**: Configured via `VITE_API_URL` environment variable
 
 ---
 
-## 📋 Mục Lục
+## 📋 Quick Links
 
-1. [Authentication - Xác thực](#authentication--xác-thực)
-2. [Users - Quản lý người dùng](#users--quản-lý-người-dùng)
-3. [Profiles - Tài khoản con](#profiles--tài-khoản-con)
-4. [Movies - Phim](#movies--phim)
-5. [Error Handling - Xử lý lỗi](#error-handling--xử-lý-lỗi)
+- **Backend API Docs**: See [Backend API_DOCUMENTATION.md](../../GienPhim_Be_Netflix/API_DOCUMENTATION.md)
+- **Frontend Services**: See [FRONTEND_API_SERVICES.md](./FRONTEND_API_SERVICES.md)
+
+---
+
+## 🎯 Overview
+
+This document describes how the GienPhim Frontend integrates with the GienPhim Backend API. The frontend uses service modules (in `src/services/`) to communicate with the backend.
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create `.env` file in frontend root:
+
+```env
+# Backend API
+VITE_API_URL=http://localhost:8080
+
+# External APIs
+VITE_OPHIM_API_URL=https://ophim.cc/api
+
+# Feature Flags
+VITE_ENABLE_PWA=true
+VITE_ENABLE_ANALYTICS=false
+```
+
+### Base URL Usage
+
+The base URL is set in `src/services/api.js`:
+
+```javascript
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080'
+});
+```
+
+---
+
+## 🔐 Authentication
+
+### Token Management
+
+The frontend automatically manages tokens using localStorage:
+
+```javascript
+// After login
+localStorage.setItem('accessToken', token);
+localStorage.setItem('refreshToken', token);
+
+// After profile selection
+localStorage.setItem('profileToken', token);
+localStorage.setItem('selectedProfile', JSON.stringify(profile));
+```
+
+### Auto Token Refresh
+
+Axios interceptors automatically:
+1. Include tokens in request headers
+2. Detect 401 responses
+3. Refresh token automatically
+4. Retry failed requests
+
+See `src/services/api.js` for implementation.
+
+---
+
+## 📡 Service Modules
+
+### Structure
+
+Each service module exports an object with methods:
+
+```javascript
+export const serviceApi = {
+  methodName: (params) => api.post('/endpoint', params),
+  anotherMethod: (id) => api.get(`/endpoint/${id}`),
+};
+```
+
+### Available Modules
+
+1. **authApi** - Login, logout, password reset
+2. **userApi** - User registration
+3. **profileApi** - Profile management
+4. **movieApi** - Favorites, history
+5. **contactApi** - Support tickets
+6. **ophimApi** - External movie data
+
+See [FRONTEND_API_SERVICES.md](./FRONTEND_API_SERVICES.md) for detailed API reference.
+
+---
+
+## 🔀 API Flow Diagram
+
+```
+User Action
+    │
+    ├─ Login → authApi.login()
+    │          ↓
+    │          Store tokens → localStorage
+    │          ↓
+    │
+    ├─ Select Profile → profileApi.switchProfile()
+    │                   ↓
+    │                   Store profileToken → localStorage
+    │                   ↓
+    │
+    ├─ Watch Movie → movieApi.saveHistory()
+    │               getMovieDetail() [OPhim API]
+    │
+    ├─ Add Favorite → movieApi.addFavorite()
+    │
+    └─ Get List → movieApi.getFavorites()
+                  movieApi.getHistory()
+```
+
+---
+
+## 🚀 Common Use Cases
+
+### 1. Complete Authentication Flow
+
+```javascript
+import { authApi, userApi } from '@/services';
+
+// Register
+await userApi.register({ email, password });
+
+// Activate
+await authApi.sendActivateOtp(email);
+await authApi.activateAccount(email, otp);
+
+// Login
+const loginResponse = await authApi.login({ email, password });
+const { accessToken, refreshToken } = loginResponse.data.data;
+localStorage.setItem('accessToken', accessToken);
+localStorage.setItem('refreshToken', refreshToken);
+```
+
+### 2. Profile Management
+
+```javascript
+import { profileApi } from '@/services';
+
+// Get all profiles
+const profiles = await profileApi.getProfiles();
+
+// Switch to profile
+const result = await profileApi.switchProfile(profileId, pin);
+localStorage.setItem('profileToken', result.data.data.profileToken);
+```
+
+### 3. Watch Movie & Save Progress
+
+```javascript
+import { movieApi } from '@/services';
+import { getMovieDetail } from '@/services/ophimApi';
+
+// Get movie data
+const movieData = await getMovieDetail(slug);
+
+// Save progress every 30 seconds
+setInterval(() => {
+  movieApi.saveHistory(
+    slug,
+    currentEpisode,
+    currentEpisodeSlug,
+    server,
+    currentTime
+  );
+}, 30000);
+```
+
+### 4. Favorites Management
+
+```javascript
+import { movieApi } from '@/services';
+
+// Check if favorite
+const isFav = await movieApi.checkFavorite(slug);
+
+// Add to favorites
+await movieApi.addFavorite(slug);
+
+// Get all favorites
+const favorites = await movieApi.getFavorites(page, size);
+
+// Remove favorite
+await movieApi.removeFavorite(favoriteId);
+```
+
+---
+
+## 🔗 API Endpoints Summary
+
+### Authentication
+```
+POST   /api/auth/login
+POST   /api/auth/logout
+POST   /api/auth/refresh-token
+POST   /api/auth/send-activate-otp
+POST   /api/auth/activate-account
+POST   /api/auth/forgot-password
+POST   /api/auth/verify-forgot-password
+POST   /api/auth/reset-password
+```
+
+### Users
+```
+POST   /api/users/register
+GET    /api/users
+PUT    /api/users/{id}/ban
+PUT    /api/users/{id}/unban
+PUT    /api/users/{id}/roles
+DELETE /api/users/{id}
+```
+
+### Profiles
+```
+GET    /api/profiles
+POST   /api/profiles
+PUT    /api/profiles/{id}
+DELETE /api/profiles/{id}
+POST   /api/profiles/{id}/switch
+POST   /api/profiles/{id}/reset-pin
+```
+
+### Movies
+```
+GET    /api/movies/favorites
+POST   /api/movies/favorites
+GET    /api/movies/favorites/check/{slug}
+DELETE /api/movies/favorites
+GET    /api/movies/history
+POST   /api/movies/history
+DELETE /api/movies/history
+GET    /api/movies/{slug}
+```
+
+### Contact
+```
+POST   /api/contact
+GET    /api/contact/my
+GET    /api/contact
+GET    /api/contact/{id}
+PATCH  /api/contact/{id}/status
+POST   /api/contact/{id}/reply
+```
+
+---
+
+## 🧪 Testing API Calls
+
+### Using Browser Console
+
+```javascript
+// Import service
+import { authApi } from '@/services/authApi';
+
+// Call API
+authApi.login({ email: 'test@test.com', password: 'pass123' })
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+```
+
+### Using Postman
+
+1. Create environment:
+   ```
+   base_url: http://localhost:8080
+   access_token: <from-login-response>
+   profile_token: <from-switch-response>
+   ```
+
+2. Use in requests:
+   ```
+   {{base_url}}/api/endpoint
+   
+   Header: Authorization: Bearer {{access_token}}
+   Header: x-profile-token: {{profile_token}}
+   ```
+
+### Using cURL
+
+```bash
+# Login
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@test.com","password":"pass123"}'
+
+# Get favorites (with tokens)
+curl -X GET http://localhost:8080/api/movies/favorites \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "x-profile-token: YOUR_PROFILE_TOKEN"
+```
+
+---
+
+## ⚠️ Error Handling
+
+### Response Format
+
+Success:
+```json
+{
+  "success": true,
+  "message": "Success message",
+  "data": { ... },
+  "pagination": { ... }
+}
+```
+
+Error:
+```json
+{
+  "success": false,
+  "message": "Error message",
+  "errors": {
+    "fieldName": "Validation error"
+  }
+}
+```
+
+### Common Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Token expired | Call refresh-token or re-login |
+| 403 Forbidden | No permissions | Check user role/profile |
+| 404 Not Found | Resource missing | Verify ID/slug |
+| 400 Bad Request | Validation failed | Check field errors |
+| 409 Conflict | Already exists | Item already in list |
+
+---
+
+## 🔍 Debugging
+
+### Enable Network Logging
+
+```javascript
+// In api.js interceptor
+api.interceptors.request.use((config) => {
+  console.log('API Request:', config.method.toUpperCase(), config.url);
+  console.log('Data:', config.data);
+  return config;
+});
+
+api.interceptors.response.use((response) => {
+  console.log('API Response:', response.status, response.data);
+  return response;
+});
+```
+
+### Check Stored Data
+
+```javascript
+// Check tokens
+console.log(localStorage.getItem('accessToken'));
+console.log(localStorage.getItem('refreshToken'));
+console.log(localStorage.getItem('profileToken'));
+
+// Check selected profile
+console.log(JSON.parse(localStorage.getItem('selectedProfile')));
+```
+
+### Browser DevTools
+
+1. **Network Tab**: See all API calls
+2. **Storage Tab**: Check localStorage
+3. **Console Tab**: See errors & logs
+4. **Application Tab**: Check cookies, headers
+
+---
+
+## 📚 Related Documentation
+
+- **Backend README**: [GienPhim_Be_Netflix/README.md](../../GienPhim_Be_Netflix/README.md)
+- **Backend API Docs**: [GienPhim_Be_Netflix/API_DOCUMENTATION.md](../../GienPhim_Be_Netflix/API_DOCUMENTATION.md)
+- **Frontend Services**: [./FRONTEND_API_SERVICES.md](./FRONTEND_API_SERVICES.md)
+
+---
+
+**Last Updated**: May 2026  
+**Version**: 1.0.0
+
 
 ---
 
