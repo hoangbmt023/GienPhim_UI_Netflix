@@ -25,15 +25,15 @@ The Frontend communicates with the Backend API through service modules located i
 
 ### Available Services
 
-| Service | Purpose | File |
-|---------|---------|------|
-| **api** | Base Axios instance with interceptors | `api.js` |
-| **authApi** | User authentication & password reset | `authApi.js` |
-| **userApi** | User registration | `userApi.js` |
-| **profileApi** | Profile management | `profileApi.js` |
-| **movieApi** | Favorites & watch history | `movieApi.js` |
-| **contactApi** | Support tickets | `contactApi.js` |
-| **ophimApi** | External movie data | `ophimApi.js` |
+| Service        | Purpose                               | File            |
+| -------------- | ------------------------------------- | --------------- |
+| **api**        | Base Axios instance with interceptors | `api.js`        |
+| **authApi**    | User authentication & password reset  | `authApi.js`    |
+| **userApi**    | User registration                     | `userApi.js`    |
+| **profileApi** | Profile management                    | `profileApi.js` |
+| **movieApi**   | Favorites & watch history             | `movieApi.js`   |
+| **contactApi** | Support tickets                       | `contactApi.js` |
+| **ophimApi**   | External movie data                   | `ophimApi.js`   |
 
 ---
 
@@ -58,9 +58,9 @@ The Frontend communicates with the Backend API through service modules located i
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 ```
@@ -71,16 +71,16 @@ Automatically adds tokens to every request:
 
 ```javascript
 api.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem("accessToken");
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
-  
-  const profileToken = localStorage.getItem('profileToken');
+
+  const profileToken = localStorage.getItem("profileToken");
   if (profileToken) {
-    config.headers['x-profile-token'] = profileToken;
+    config.headers["x-profile-token"] = profileToken;
   }
-  
+
   return config;
 });
 ```
@@ -100,7 +100,7 @@ api.interceptors.response.use(
       return api(error.config);
     }
     return Promise.reject(error);
-  }
+  },
 );
 ```
 
@@ -130,6 +130,7 @@ VITE_ENABLE_ANALYTICS=false
 Login with email and password
 
 **Parameters:**
+
 ```javascript
 {
   email: string,      // User email
@@ -140,6 +141,7 @@ Login with email and password
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -151,15 +153,16 @@ Login with email and password
 ```
 
 **Example:**
+
 ```javascript
 const response = await authApi.login({
   email: "user@example.com",
-  password: "SecurePass123!"
+  password: "SecurePass123!",
 });
 
 const { accessToken, refreshToken } = response.data.data;
-localStorage.setItem('accessToken', accessToken);
-localStorage.setItem('refreshToken', refreshToken);
+localStorage.setItem("accessToken", accessToken);
+localStorage.setItem("refreshToken", refreshToken);
 ```
 
 ---
@@ -169,20 +172,22 @@ localStorage.setItem('refreshToken', refreshToken);
 Logout user and invalidate refresh token
 
 **Parameters:**
+
 ```javascript
-refreshToken: string  // User's refresh token from localStorage
+refreshToken: string; // User's refresh token from localStorage
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
-const refreshToken = localStorage.getItem('refreshToken');
+const refreshToken = localStorage.getItem("refreshToken");
 await authApi.logout(refreshToken);
 
-localStorage.removeItem('accessToken');
-localStorage.removeItem('refreshToken');
-localStorage.removeItem('selectedProfile');
+localStorage.removeItem("accessToken");
+localStorage.removeItem("refreshToken");
+localStorage.removeItem("selectedProfile");
 ```
 
 ---
@@ -192,13 +197,15 @@ localStorage.removeItem('selectedProfile');
 Send OTP code to email for account activation
 
 **Parameters:**
+
 ```javascript
-email: string  // User email address
+email: string; // User email address
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -207,6 +214,7 @@ email: string  // User email address
 ```
 
 **Example:**
+
 ```javascript
 await authApi.sendActivateOtp("user@example.com");
 // User checks email for OTP code
@@ -219,6 +227,7 @@ await authApi.sendActivateOtp("user@example.com");
 Verify OTP and activate account
 
 **Parameters:**
+
 ```javascript
 {
   email: string,  // User email
@@ -229,10 +238,11 @@ Verify OTP and activate account
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await authApi.activateAccount(
   "user@example.com",
-  "123456"  // OTP from email
+  "123456", // OTP from email
 );
 ```
 
@@ -243,13 +253,15 @@ await authApi.activateAccount(
 Request password reset by sending OTP
 
 **Parameters:**
+
 ```javascript
-email: string  // User email address
+email: string; // User email address
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await authApi.forgotPassword("user@example.com");
 // User receives OTP in email
@@ -262,6 +274,7 @@ await authApi.forgotPassword("user@example.com");
 Verify OTP for password reset
 
 **Parameters:**
+
 ```javascript
 {
   email: string,  // User email
@@ -272,6 +285,7 @@ Verify OTP for password reset
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -282,10 +296,11 @@ Verify OTP for password reset
 ```
 
 **Example:**
+
 ```javascript
 const response = await authApi.verifyForgotPassword(
   "user@example.com",
-  "123456"
+  "123456",
 );
 ```
 
@@ -296,6 +311,7 @@ const response = await authApi.verifyForgotPassword(
 Set new password using reset token
 
 **Parameters:**
+
 ```javascript
 {
   email: string,      // User email
@@ -307,11 +323,12 @@ Set new password using reset token
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await authApi.resetPassword({
   email: "user@example.com",
   resetToken: "temp-reset-token-xyz",
-  newPassword: "NewSecurePass456!"
+  newPassword: "NewSecurePass456!",
 });
 ```
 
@@ -330,6 +347,7 @@ await authApi.resetPassword({
 Create new user account
 
 **Parameters:**
+
 ```javascript
 {
   email: string,      // Valid email address
@@ -340,6 +358,7 @@ Create new user account
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -348,10 +367,11 @@ Create new user account
 ```
 
 **Example:**
+
 ```javascript
 await userApi.register({
   email: "newuser@example.com",
-  password: "SecurePass123!"
+  password: "SecurePass123!",
 });
 
 // After registration, user needs to:
@@ -376,6 +396,7 @@ Get all profiles for authenticated user
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -399,11 +420,12 @@ Get all profiles for authenticated user
 ```
 
 **Example:**
+
 ```javascript
 const response = await profileApi.getProfiles();
 const profiles = response.data.data;
 
-profiles.forEach(profile => {
+profiles.forEach((profile) => {
   console.log(`${profile.name} - ${profile.id}`);
 });
 ```
@@ -415,6 +437,7 @@ profiles.forEach(profile => {
 Create new profile/sub-account
 
 **Parameters:**
+
 ```javascript
 {
   name: string,           // Profile name (required)
@@ -426,6 +449,7 @@ Create new profile/sub-account
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -439,11 +463,12 @@ Create new profile/sub-account
 ```
 
 **Example:**
+
 ```javascript
 const newProfile = await profileApi.createProfile({
   name: "Kids Profile",
   pin: "1234",
-  avatar: "https://example.com/avatar.jpg"
+  avatar: "https://example.com/avatar.jpg",
 });
 
 console.log("Created profile:", newProfile.data.data.id);
@@ -456,6 +481,7 @@ console.log("Created profile:", newProfile.data.data.id);
 Modify existing profile
 
 **Parameters:**
+
 ```javascript
 id: string  // Profile ID
 
@@ -469,10 +495,11 @@ id: string  // Profile ID
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await profileApi.updateProfile("profile-uuid-1", {
   name: "Updated Profile Name",
-  pin: "5678"
+  pin: "5678",
 });
 ```
 
@@ -483,6 +510,7 @@ await profileApi.updateProfile("profile-uuid-1", {
 Remove profile from account
 
 **Parameters:**
+
 ```javascript
 id: string    // Profile ID
 pin?: string  // PIN (required if profile is PIN-protected)
@@ -491,6 +519,7 @@ pin?: string  // PIN (required if profile is PIN-protected)
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 // Without PIN
 await profileApi.deleteProfile("profile-uuid-1");
@@ -506,6 +535,7 @@ await profileApi.deleteProfile("profile-uuid-1", "1234");
 Activate profile and get profile token
 
 **Parameters:**
+
 ```javascript
 id: string    // Profile ID
 pin?: string  // PIN (required if profile is PIN-protected)
@@ -514,6 +544,7 @@ pin?: string  // PIN (required if profile is PIN-protected)
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -527,16 +558,20 @@ pin?: string  // PIN (required if profile is PIN-protected)
 ```
 
 **Example:**
+
 ```javascript
 const response = await profileApi.switchProfile("profile-uuid-1", "1234");
 const { profileToken } = response.data.data;
 
 // Store profile token for future API calls
-localStorage.setItem('profileToken', profileToken);
-localStorage.setItem('selectedProfile', JSON.stringify({
-  id: response.data.data.id,
-  name: response.data.data.name
-}));
+localStorage.setItem("profileToken", profileToken);
+localStorage.setItem(
+  "selectedProfile",
+  JSON.stringify({
+    id: response.data.data.id,
+    name: response.data.data.name,
+  }),
+);
 ```
 
 ---
@@ -546,19 +581,18 @@ localStorage.setItem('selectedProfile', JSON.stringify({
 Reset profile PIN using account password
 
 **Parameters:**
+
 ```javascript
-id: string        // Profile ID
-password: string  // Account password
+id: string; // Profile ID
+password: string; // Account password
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
-await profileApi.resetPinWithPassword(
-  "profile-uuid-1",
-  "AccountPassword123!"
-);
+await profileApi.resetPinWithPassword("profile-uuid-1", "AccountPassword123!");
 ```
 
 ---
@@ -576,6 +610,7 @@ await profileApi.resetPinWithPassword(
 Get user's favorite movies
 
 **Parameters:**
+
 ```javascript
 page: number = 1,   // Page number (default: 1)
 size: number = 20   // Items per page (default: 20)
@@ -584,6 +619,7 @@ size: number = 20   // Items per page (default: 20)
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -607,12 +643,13 @@ size: number = 20   // Items per page (default: 20)
 ```
 
 **Example:**
+
 ```javascript
 const response = await movieApi.getFavorites(1, 20);
 const favorites = response.data.data;
 const totalPages = response.data.pagination.totalPages;
 
-favorites.forEach(movie => {
+favorites.forEach((movie) => {
   console.log(`${movie.name} (${movie.slug})`);
 });
 ```
@@ -624,13 +661,15 @@ favorites.forEach(movie => {
 Add movie to favorites
 
 **Parameters:**
+
 ```javascript
-slug: string  // Movie slug identifier
+slug: string; // Movie slug identifier
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await movieApi.addFavorite("avatar-1");
 console.log("Added to favorites");
@@ -643,13 +682,15 @@ console.log("Added to favorites");
 Check if movie is in favorites
 
 **Parameters:**
+
 ```javascript
-slug: string  // Movie slug identifier
+slug: string; // Movie slug identifier
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -660,6 +701,7 @@ slug: string  // Movie slug identifier
 ```
 
 **Example:**
+
 ```javascript
 const response = await movieApi.checkFavorite("avatar-1");
 const isFavorite = response.data.data.isFavorite;
@@ -675,13 +717,15 @@ setIsFavorited(isFavorite);
 Remove single movie from favorites
 
 **Parameters:**
+
 ```javascript
-favoriteId: string  // Favorite record ID
+favoriteId: string; // Favorite record ID
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await movieApi.removeFavorite("favorite-uuid-1");
 console.log("Removed from favorites");
@@ -694,6 +738,7 @@ console.log("Removed from favorites");
 Remove multiple movies from favorites
 
 **Parameters:**
+
 ```javascript
 favoriteIds: string[]  // Array of favorite IDs
 ```
@@ -701,6 +746,7 @@ favoriteIds: string[]  // Array of favorite IDs
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const ids = ["favorite-uuid-1", "favorite-uuid-2", "favorite-uuid-3"];
 await movieApi.removeFavorites(ids);
@@ -714,6 +760,7 @@ console.log("Removed multiple favorites");
 Get user's watch history
 
 **Parameters:**
+
 ```javascript
 page: number = 1,   // Page number
 size: number = 20   // Items per page
@@ -722,6 +769,7 @@ size: number = 20   // Items per page
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -746,11 +794,12 @@ size: number = 20   // Items per page
 ```
 
 **Example:**
+
 ```javascript
 const response = await movieApi.getHistory(1, 20);
 const watchedMovies = response.data.data;
 
-watchedMovies.forEach(item => {
+watchedMovies.forEach((item) => {
   console.log(`${item.name} - Episode ${item.episode}`);
   console.log(`Watched at: ${item.timePos} seconds`);
 });
@@ -763,6 +812,7 @@ watchedMovies.forEach(item => {
 Save or update movie watch progress
 
 **Parameters:**
+
 ```javascript
 slug: string,           // Movie slug (required)
 episode: string,        // Episode name/number (optional)
@@ -774,18 +824,20 @@ timePos: number         // Time watched in seconds (optional)
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 // Save video progress when user is watching
 await movieApi.saveHistory(
-  "avatar-1",           // Movie slug
-  "5",                  // Episode number
-  "tap-5",              // Episode slug
-  0,                    // Server index
-  1800                  // 30 minutes watched
+  "avatar-1", // Movie slug
+  "5", // Episode number
+  "tap-5", // Episode slug
+  0, // Server index
+  1800, // 30 minutes watched
 );
 ```
 
 **Use Case - Auto-save Progress:**
+
 ```javascript
 // In watch component, save every 30 seconds
 const saveProgressInterval = setInterval(() => {
@@ -794,7 +846,7 @@ const saveProgressInterval = setInterval(() => {
     currentEpisode,
     currentEpisodeSlug,
     selectedServer,
-    Math.floor(videoElement.currentTime)
+    Math.floor(videoElement.currentTime),
   );
 }, 30000); // Every 30 seconds
 
@@ -809,13 +861,15 @@ return () => clearInterval(saveProgressInterval);
 Delete single history item
 
 **Parameters:**
+
 ```javascript
-historyId: string  // History record ID
+historyId: string; // History record ID
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await movieApi.removeHistory("history-uuid-1");
 ```
@@ -827,6 +881,7 @@ await movieApi.removeHistory("history-uuid-1");
 Delete multiple history items
 
 **Parameters:**
+
 ```javascript
 historyIds: string[]  // Array of history IDs
 ```
@@ -834,6 +889,7 @@ historyIds: string[]  // Array of history IDs
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const ids = ["history-uuid-1", "history-uuid-2"];
 await movieApi.removeHistories(ids);
@@ -848,6 +904,7 @@ Delete entire watch history
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await movieApi.clearAllHistory();
 console.log("All watch history cleared");
@@ -868,6 +925,7 @@ console.log("All watch history cleared");
 Submit new support ticket
 
 **Parameters:**
+
 ```javascript
 {
   name: string,     // Contact name
@@ -880,6 +938,7 @@ Submit new support ticket
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -891,12 +950,13 @@ Submit new support ticket
 ```
 
 **Example:**
+
 ```javascript
 const response = await contactApi.createTicket({
   name: "John Doe",
   email: "john@example.com",
   subject: "Cannot watch movies",
-  message: "I'm unable to play videos on my account"
+  message: "I'm unable to play videos on my account",
 });
 
 console.log("Ticket created:", response.data.data.id);
@@ -909,6 +969,7 @@ console.log("Ticket created:", response.data.data.id);
 Get user's support tickets
 
 **Parameters:**
+
 ```javascript
 page: number = 1,
 size: number = 20
@@ -917,11 +978,12 @@ size: number = 20
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const response = await contactApi.getMyTickets(1, 10);
 const tickets = response.data.data;
 
-tickets.forEach(ticket => {
+tickets.forEach((ticket) => {
   console.log(`[${ticket.status}] ${ticket.subject}`);
 });
 ```
@@ -933,13 +995,15 @@ tickets.forEach(ticket => {
 Get single ticket details (Admin)
 
 **Parameters:**
+
 ```javascript
-id: string  // Ticket ID
+id: string; // Ticket ID
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const response = await contactApi.getTicketDetail("ticket-uuid-1");
 ```
@@ -951,6 +1015,7 @@ const response = await contactApi.getTicketDetail("ticket-uuid-1");
 Update ticket status (Admin)
 
 **Parameters:**
+
 ```javascript
 id: string,     // Ticket ID
 status: string  // PENDING | REPLIED | RESOLVED | CLOSED
@@ -959,6 +1024,7 @@ status: string  // PENDING | REPLIED | RESOLVED | CLOSED
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await contactApi.updateTicketStatus("ticket-uuid-1", "REPLIED");
 ```
@@ -970,6 +1036,7 @@ await contactApi.updateTicketStatus("ticket-uuid-1", "REPLIED");
 Reply to support ticket (Admin)
 
 **Parameters:**
+
 ```javascript
 id: string,      // Ticket ID
 message: string  // Reply message
@@ -978,10 +1045,11 @@ message: string  // Reply message
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 await contactApi.replyToTicket(
   "ticket-uuid-1",
-  "Thank you for contacting us. We've resolved your issue."
+  "Thank you for contacting us. We've resolved your issue.",
 );
 ```
 
@@ -1000,13 +1068,15 @@ await contactApi.replyToTicket(
 Get detailed information about a movie
 
 **Parameters:**
+
 ```javascript
-slug: string  // Movie slug (e.g., "avatar-1")
+slug: string; // Movie slug (e.g., "avatar-1")
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -1036,6 +1106,7 @@ slug: string  // Movie slug (e.g., "avatar-1")
 ```
 
 **Example:**
+
 ```javascript
 const response = await getMovieDetail("avatar-1");
 const movieData = response.data.item;
@@ -1051,18 +1122,20 @@ console.log(`Episodes: ${movieData.episodes.length}`);
 Search for movies by keyword
 
 **Parameters:**
+
 ```javascript
-query: string  // Search keyword
+query: string; // Search keyword
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const response = await searchMovies("Avatar");
 const results = response.data.items;
 
-results.forEach(movie => {
+results.forEach((movie) => {
   console.log(`${movie.name} (${movie.slug})`);
 });
 ```
@@ -1074,13 +1147,15 @@ results.forEach(movie => {
 Get movies by genre/category
 
 **Parameters:**
+
 ```javascript
-slug: string  // Genre slug (e.g., "hanh-dong")
+slug: string; // Genre slug (e.g., "hanh-dong")
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const response = await getMoviesByGenre("hanh-dong");
 const actionMovies = response.data.items;
@@ -1093,13 +1168,15 @@ const actionMovies = response.data.items;
 Get movies by country
 
 **Parameters:**
+
 ```javascript
-slug: string  // Country code (e.g., "au-my")
+slug: string; // Country code (e.g., "au-my")
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const response = await getMoviesByCountry("au-my");
 const usMovies = response.data.items;
@@ -1112,13 +1189,15 @@ const usMovies = response.data.items;
 Get movies by release year
 
 **Parameters:**
+
 ```javascript
-year: number  // Year (e.g., 2023)
+year: number; // Year (e.g., 2023)
 ```
 
 **Returns:** `Promise<AxiosResponse>`
 
 **Example:**
+
 ```javascript
 const response = await getMoviesByYear(2023);
 const newMovies = response.data.items;
@@ -1167,15 +1246,15 @@ try {
 
 ### Common Status Codes
 
-| Code | Meaning | Action |
-|------|---------|--------|
-| 200 | Success | Proceed normally |
-| 201 | Created | Resource created successfully |
-| 400 | Bad Request | Validation error - check field errors |
-| 401 | Unauthorized | Token expired - refresh or re-login |
-| 403 | Forbidden | Access denied - check permissions |
-| 404 | Not Found | Resource doesn't exist |
-| 500 | Server Error | Show generic error message |
+| Code | Meaning      | Action                                |
+| ---- | ------------ | ------------------------------------- |
+| 200  | Success      | Proceed normally                      |
+| 201  | Created      | Resource created successfully         |
+| 400  | Bad Request  | Validation error - check field errors |
+| 401  | Unauthorized | Token expired - refresh or re-login   |
+| 403  | Forbidden    | Access denied - check permissions     |
+| 404  | Not Found    | Resource doesn't exist                |
+| 500  | Server Error | Show generic error message            |
 
 ---
 
@@ -1187,7 +1266,7 @@ try {
 // 1. Register
 await userApi.register({
   email: "newuser@example.com",
-  password: "SecurePass123!"
+  password: "SecurePass123!",
 });
 
 // 2. Activate
@@ -1196,18 +1275,18 @@ await authApi.sendActivateOtp("newuser@example.com");
 
 await authApi.activateAccount(
   "newuser@example.com",
-  "123456" // OTP from email
+  "123456", // OTP from email
 );
 
 // 3. Login
 const response = await authApi.login({
   email: "newuser@example.com",
-  password: "SecurePass123!"
+  password: "SecurePass123!",
 });
 
 const { accessToken, refreshToken } = response.data.data;
-localStorage.setItem('accessToken', accessToken);
-localStorage.setItem('refreshToken', refreshToken);
+localStorage.setItem("accessToken", accessToken);
+localStorage.setItem("refreshToken", refreshToken);
 
 // 4. Get and select profile
 const profilesResponse = await profileApi.getProfiles();
@@ -1215,7 +1294,7 @@ const mainProfile = profilesResponse.data.data[0];
 
 const switchResponse = await profileApi.switchProfile(mainProfile.id);
 const { profileToken } = switchResponse.data.data;
-localStorage.setItem('profileToken', profileToken);
+localStorage.setItem("profileToken", profileToken);
 
 // 5. Can now use movie API
 await movieApi.addFavorite("avatar-1");
@@ -1225,9 +1304,9 @@ const favorites = await movieApi.getFavorites(1, 20);
 ### Movie Detail with History
 
 ```javascript
-import { useState, useEffect } from 'react';
-import { movieApi } from '@/services/movieApi';
-import { getMovieDetail } from '@/services/ophimApi';
+import { useState, useEffect } from "react";
+import { movieApi } from "@/services/movieApi";
+import { getMovieDetail } from "@/services/ophimApi";
 
 function MovieDetail({ slug }) {
   const [movieData, setMovieData] = useState(null);
@@ -1262,7 +1341,7 @@ function MovieDetail({ slug }) {
       episode.name,
       episode.slug,
       server,
-      timePos
+      timePos,
     );
   };
 
@@ -1281,8 +1360,8 @@ function MovieDetail({ slug }) {
 ### Search & Filter
 
 ```javascript
-import { useState } from 'react';
-import { searchMovies, getMoviesByGenre } from '@/services/ophimApi';
+import { useState } from "react";
+import { searchMovies, getMoviesByGenre } from "@/services/ophimApi";
 
 function Browse() {
   const [searchResults, setSearchResults] = useState([]);
@@ -1306,15 +1385,18 @@ function Browse() {
         placeholder="Search movies..."
         onChange={(e) => handleSearch(e.target.value)}
       />
-      
-      <select value={selectedGenre} onChange={(e) => handleGenreChange(e.target.value)}>
+
+      <select
+        value={selectedGenre}
+        onChange={(e) => handleGenreChange(e.target.value)}
+      >
         <option value="hanh-dong">Action</option>
         <option value="tinh-cam">Romance</option>
         {/* More genres */}
       </select>
 
       <div className="results">
-        {searchResults.map(movie => (
+        {searchResults.map((movie) => (
           <div key={movie.slug}>
             <img src={movie.thumb_url} alt={movie.name} />
             <h3>{movie.name}</h3>

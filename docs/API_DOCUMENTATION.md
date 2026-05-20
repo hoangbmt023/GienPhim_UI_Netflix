@@ -43,7 +43,7 @@ The base URL is set in `src/services/api.js`:
 
 ```javascript
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080'
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
 });
 ```
 
@@ -57,17 +57,18 @@ The frontend automatically manages tokens using localStorage:
 
 ```javascript
 // After login
-localStorage.setItem('accessToken', token);
-localStorage.setItem('refreshToken', token);
+localStorage.setItem("accessToken", token);
+localStorage.setItem("refreshToken", token);
 
 // After profile selection
-localStorage.setItem('profileToken', token);
-localStorage.setItem('selectedProfile', JSON.stringify(profile));
+localStorage.setItem("profileToken", token);
+localStorage.setItem("selectedProfile", JSON.stringify(profile));
 ```
 
 ### Auto Token Refresh
 
 Axios interceptors automatically:
+
 1. Include tokens in request headers
 2. Detect 401 responses
 3. Refresh token automatically
@@ -85,7 +86,7 @@ Each service module exports an object with methods:
 
 ```javascript
 export const serviceApi = {
-  methodName: (params) => api.post('/endpoint', params),
+  methodName: (params) => api.post("/endpoint", params),
   anotherMethod: (id) => api.get(`/endpoint/${id}`),
 };
 ```
@@ -134,7 +135,7 @@ User Action
 ### 1. Complete Authentication Flow
 
 ```javascript
-import { authApi, userApi } from '@/services';
+import { authApi, userApi } from "@/services";
 
 // Register
 await userApi.register({ email, password });
@@ -146,28 +147,28 @@ await authApi.activateAccount(email, otp);
 // Login
 const loginResponse = await authApi.login({ email, password });
 const { accessToken, refreshToken } = loginResponse.data.data;
-localStorage.setItem('accessToken', accessToken);
-localStorage.setItem('refreshToken', refreshToken);
+localStorage.setItem("accessToken", accessToken);
+localStorage.setItem("refreshToken", refreshToken);
 ```
 
 ### 2. Profile Management
 
 ```javascript
-import { profileApi } from '@/services';
+import { profileApi } from "@/services";
 
 // Get all profiles
 const profiles = await profileApi.getProfiles();
 
 // Switch to profile
 const result = await profileApi.switchProfile(profileId, pin);
-localStorage.setItem('profileToken', result.data.data.profileToken);
+localStorage.setItem("profileToken", result.data.data.profileToken);
 ```
 
 ### 3. Watch Movie & Save Progress
 
 ```javascript
-import { movieApi } from '@/services';
-import { getMovieDetail } from '@/services/ophimApi';
+import { movieApi } from "@/services";
+import { getMovieDetail } from "@/services/ophimApi";
 
 // Get movie data
 const movieData = await getMovieDetail(slug);
@@ -179,7 +180,7 @@ setInterval(() => {
     currentEpisode,
     currentEpisodeSlug,
     server,
-    currentTime
+    currentTime,
   );
 }, 30000);
 ```
@@ -187,7 +188,7 @@ setInterval(() => {
 ### 4. Favorites Management
 
 ```javascript
-import { movieApi } from '@/services';
+import { movieApi } from "@/services";
 
 // Check if favorite
 const isFav = await movieApi.checkFavorite(slug);
@@ -207,6 +208,7 @@ await movieApi.removeFavorite(favoriteId);
 ## 🔗 API Endpoints Summary
 
 ### Authentication
+
 ```
 POST   /api/auth/login
 POST   /api/auth/logout
@@ -219,6 +221,7 @@ POST   /api/auth/reset-password
 ```
 
 ### Users
+
 ```
 POST   /api/users/register
 GET    /api/users
@@ -229,6 +232,7 @@ DELETE /api/users/{id}
 ```
 
 ### Profiles
+
 ```
 GET    /api/profiles
 POST   /api/profiles
@@ -239,6 +243,7 @@ POST   /api/profiles/{id}/reset-pin
 ```
 
 ### Movies
+
 ```
 GET    /api/movies/favorites
 POST   /api/movies/favorites
@@ -251,6 +256,7 @@ GET    /api/movies/{slug}
 ```
 
 ### Contact
+
 ```
 POST   /api/contact
 GET    /api/contact/my
@@ -268,17 +274,19 @@ POST   /api/contact/{id}/reply
 
 ```javascript
 // Import service
-import { authApi } from '@/services/authApi';
+import { authApi } from "@/services/authApi";
 
 // Call API
-authApi.login({ email: 'test@test.com', password: 'pass123' })
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
+authApi
+  .login({ email: "test@test.com", password: "pass123" })
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err));
 ```
 
 ### Using Postman
 
 1. Create environment:
+
    ```
    base_url: http://localhost:8080
    access_token: <from-login-response>
@@ -286,9 +294,10 @@ authApi.login({ email: 'test@test.com', password: 'pass123' })
    ```
 
 2. Use in requests:
+
    ```
    {{base_url}}/api/endpoint
-   
+
    Header: Authorization: Bearer {{access_token}}
    Header: x-profile-token: {{profile_token}}
    ```
@@ -314,6 +323,7 @@ curl -X GET http://localhost:8080/api/movies/favorites \
 ### Response Format
 
 Success:
+
 ```json
 {
   "success": true,
@@ -324,6 +334,7 @@ Success:
 ```
 
 Error:
+
 ```json
 {
   "success": false,
@@ -336,13 +347,13 @@ Error:
 
 ### Common Errors
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Token expired | Call refresh-token or re-login |
-| 403 Forbidden | No permissions | Check user role/profile |
-| 404 Not Found | Resource missing | Verify ID/slug |
-| 400 Bad Request | Validation failed | Check field errors |
-| 409 Conflict | Already exists | Item already in list |
+| Error            | Cause             | Solution                       |
+| ---------------- | ----------------- | ------------------------------ |
+| 401 Unauthorized | Token expired     | Call refresh-token or re-login |
+| 403 Forbidden    | No permissions    | Check user role/profile        |
+| 404 Not Found    | Resource missing  | Verify ID/slug                 |
+| 400 Bad Request  | Validation failed | Check field errors             |
+| 409 Conflict     | Already exists    | Item already in list           |
 
 ---
 
@@ -353,13 +364,13 @@ Error:
 ```javascript
 // In api.js interceptor
 api.interceptors.request.use((config) => {
-  console.log('API Request:', config.method.toUpperCase(), config.url);
-  console.log('Data:', config.data);
+  console.log("API Request:", config.method.toUpperCase(), config.url);
+  console.log("Data:", config.data);
   return config;
 });
 
 api.interceptors.response.use((response) => {
-  console.log('API Response:', response.status, response.data);
+  console.log("API Response:", response.status, response.data);
   return response;
 });
 ```
@@ -368,12 +379,12 @@ api.interceptors.response.use((response) => {
 
 ```javascript
 // Check tokens
-console.log(localStorage.getItem('accessToken'));
-console.log(localStorage.getItem('refreshToken'));
-console.log(localStorage.getItem('profileToken'));
+console.log(localStorage.getItem("accessToken"));
+console.log(localStorage.getItem("refreshToken"));
+console.log(localStorage.getItem("profileToken"));
 
 // Check selected profile
-console.log(JSON.parse(localStorage.getItem('selectedProfile')));
+console.log(JSON.parse(localStorage.getItem("selectedProfile")));
 ```
 
 ### Browser DevTools
@@ -395,7 +406,6 @@ console.log(JSON.parse(localStorage.getItem('selectedProfile')));
 
 **Last Updated**: May 2026  
 **Version**: 1.0.0
-
 
 ---
 
