@@ -788,3 +788,138 @@
     font-size: 20px;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .watch-page,
+body.dark-night .watch-page--error {
+  background: #f8f9fa;
+}
+
+body.dark-night .wp-topnav__title {
+  color: #111;
+}
+
+body.dark-night .wp-info__title {
+  color: #111;
+}
+
+body.dark-night .wp-info__origin {
+  color: #555;
+}
+
+body.dark-night .wp-episodes__title {
+  color: #111;
+}
+
+body.dark-night .wp-desc {
+  color: #333;
+  border-bottom-color: #dee2e6;
+}
+
+body.dark-night .wp-server-btn {
+  background: #fff;
+  border-color: #dee2e6;
+  color: #333;
+}
+
+body.dark-night .wp-server-btn:hover {
+  background: rgba(229, 9, 20, 0.08);
+  color: var(--netflix-red);
+  border-color: rgba(229, 9, 20, 0.3);
+}
+
+body.dark-night .wp-server-btn.active {
+  background: var(--netflix-red) !important;
+  color: #fff !important;
+  border-color: var(--netflix-red) !important;
+}
+
+body.dark-night .wp-ep-btn {
+  background: #fff;
+  border-color: #dee2e6;
+  color: #333;
+}
+
+body.dark-night .wp-ep-btn:hover {
+  background: rgba(229, 9, 20, 0.08);
+  color: var(--netflix-red);
+  border-color: rgba(229, 9, 20, 0.3);
+}
+
+body.dark-night .wp-ep-btn.active {
+  background: var(--netflix-red) !important;
+  color: #fff !important;
+  border-color: var(--netflix-red) !important;
+}
+
+body.dark-night .wp-ep-search {
+  background: #fff;
+  border-color: #dee2e6;
+  color: #111;
+}
+
+body.dark-night .wp-ep-search:focus {
+  border-color: var(--netflix-red);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+}
+
+body.dark-night .wp-info {
+  border-bottom-color: #dee2e6;
+}
+
+body.dark-night .wp-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+body.dark-night .wp-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.dark-night .wp-btn--detail {
+  background: rgba(229, 9, 20, 0.08);
+  border-color: rgba(229, 9, 20, 0.2);
+  color: var(--netflix-red);
+}
+
+body.dark-night .wp-btn--detail:hover {
+  background: rgba(229, 9, 20, 0.15);
+  color: #ff4444;
+}
+
+body.dark-night .wp-btn--ghost {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #111;
+}
+
+body.dark-night .wp-btn--ghost:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: #111;
+}
+
+body.dark-night .wp-btn--next {
+  background: #111;
+  color: #fff;
+}
+
+body.dark-night .wp-btn--next:hover {
+  background: #000;
+}
+
+body.dark-night .wp-btn--next svg {
+  fill: #fff;
+}
+
+body.dark-night .wp-back {
+  background: #fff;
+  border-color: #dee2e6;
+  color: #333;
+}
+
+body.dark-night .wp-back:hover {
+  background: #f1f3f5;
+  color: #111;
+}

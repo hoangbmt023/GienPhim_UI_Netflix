@@ -19,6 +19,14 @@
 </head>
 
 <body>
+  <script>
+    (function () {
+      const theme = localStorage.getItem("gp_dark_night");
+      if (theme === "true") {
+        document.body.classList.add("dark-night");
+      }
+    })();
+  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
   <script>

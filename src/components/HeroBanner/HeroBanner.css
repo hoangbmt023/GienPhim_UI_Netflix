@@ -10,7 +10,7 @@
   min-height: 520px;
   max-height: 900px;
   overflow: hidden;
-  background: #080808;
+  background: var(--hero-bg);
 }
 
 /* ── Backdrops crossfade ── */
@@ -24,15 +24,21 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 15%;
   opacity: 0;
   transition: opacity 0.9s cubic-bezier(.4, 0, .2, 1);
   will-change: opacity;
+  filter: var(--hero-backdrop-filter);
+}
+
+.hero__backdrop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
 }
 
 .hero__backdrop.visible {
-  opacity: 1;
+  opacity: var(--hero-backdrop-opacity);
 }
 
 /* Gradient overlays – lighter so poster shows through */
@@ -102,11 +108,11 @@
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  color: #e5e5e5;
+  border: 1px solid var(--hero-badge-border);
+  color: var(--text-primary);
   letter-spacing: 0.4px;
   backdrop-filter: blur(4px);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hero-badge-bg);
 }
 
 .hero__badge--quality {
@@ -125,16 +131,16 @@
 .hero__title {
   font-size: clamp(26px, 4.2vw, 56px);
   font-weight: 800;
-  color: #fff;
+  color: var(--text-title);
   line-height: 1.08;
   margin: 0 0 5px;
   letter-spacing: -0.6px;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  text-shadow: var(--hero-title-shadow, 0 2px 12px rgba(0, 0, 0, 0.5));
 }
 
 .hero__origin {
   font-size: clamp(12px, 1.3vw, 15px);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--netflix-red);
   font-weight: 600;
   margin-bottom: 10px;
   letter-spacing: 0.2px;
@@ -150,20 +156,21 @@
 
 .hero__tag {
   font-size: 11.5px;
-  color: #fff; /* Chữ trắng cho đậm nét */
-  font-weight: 700; /* Tăng độ đậm */
-  background: rgba(255, 255, 255, 0.12); /* Nền đậm hơn xíu */
+  color: var(--hero-tag-color);
+  font-weight: 700;
+  background: var(--hero-tag-bg);
   padding: 4px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--hero-tag-border);
   text-decoration: none;
   transition: all 0.2s ease;
   backdrop-filter: blur(4px);
 }
 
 .hero__tag:hover {
-  background: rgba(229, 9, 20, 0.2);
-  color: #fff;
+  background: rgba(229, 9, 20, 0.15);
+  color: var(--netflix-red);
+  border-color: rgba(229, 9, 20, 0.3);
 }
 
 /* Meta row */
@@ -292,7 +299,7 @@
 .hero__skeleton {
   position: absolute;
   inset: 0;
-  background: #0a0a0a;
+  background: var(--hero-bg);
 }
 
 .hero__skeleton .skeleton {
@@ -463,4 +470,91 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* ── DARK NIGHT (Light Mode) – Hero banner overrides ──
+   Hero luôn có nền tối (backdrop ảnh phim) nên text và badge
+   vẫn cần màu sáng để đọc được trên ảnh.
+   ──────────────────────────────────────────────────── */
+body.dark-night .hero__grad-left {
+  background: linear-gradient(105deg,
+      rgba(0, 0, 0, 0.60) 0%,
+      rgba(0, 0, 0, 0.20) 48%,
+      rgba(0, 0, 0, 0.00) 100%) !important;
+}
+
+body.dark-night .hero__grad-bottom {
+  background: linear-gradient(to top,
+      rgb(255 255 255) 0%,
+      rgb(255 255 255 / 60%) 20%,
+      rgba(255, 255, 255, 0.00) 90%) !important;
+}
+
+/* Title – trắng để đọc được trên ảnh nền tối */
+body.dark-night .hero__title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55) !important;
+}
+
+body.dark-night .hero__origin {
+  color: var(--netflix-red) !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-night .hero__meta {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+body.dark-night .hero__meta-item--time,
+body.dark-night .hero__meta-item--land {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+body.dark-night .hero__desc {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Badge base – viền sáng trên ảnh tối (chỉ badge thường, không phải quality/ep) */
+body.dark-night .hero__badge:not(.hero__badge--quality):not(.hero__badge--ep) {
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  color: #e5e5e5 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Quality badge – giữ đỏ Netflix như bên tối */
+body.dark-night .hero__badge--quality {
+  background: var(--netflix-red) !important;
+  border-color: var(--netflix-red) !important;
+  color: #ffffff !important;
+}
+
+/* Ep badge – giữ xanh lá như bên tối */
+body.dark-night .hero__badge--ep {
+  background: rgba(70, 211, 105, 0.18) !important;
+  border-color: rgba(70, 211, 105, 0.55) !important;
+  color: var(--green-active) !important;
+}
+
+/* Tag – giữ trắng trên ảnh tối */
+body.dark-night .hero__tag {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.dark-night .hero__tag:hover {
+  background: rgba(229, 9, 20, 0.25) !important;
+  color: #ffffff !important;
+  border-color: rgba(229, 9, 20, 0.4) !important;
+}
+
+body.dark-night .hero__info-btn {
+  background: rgb(255, 255, 255) !important;
+  border: 1px solid #111111 !important;
+  color: #111111 !important;
+}
+
+body.dark-night .hero__info-btn:hover {
+  background: rgba(255, 255, 255, 0.404) !important;
 }

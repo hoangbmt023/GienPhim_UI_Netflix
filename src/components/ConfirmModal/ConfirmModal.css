@@ -120,7 +120,38 @@
   transition: all 0.2s;
 }
 
-.modal-btn-outline:hover:not(:disabled) {
-  border-color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-}
+  .modal-btn-outline:hover:not(:disabled) {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  /* ── DARK NIGHT MODE OVERRIDES ── */
+  body.dark-night .confirm-modal-overlay {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  body.dark-night .confirm-modal {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+  body.dark-night .confirm-modal-close {
+    color: #555555;
+  }
+  body.dark-night .confirm-modal-close:hover {
+    color: #111111;
+  }
+  body.dark-night .confirm-modal h3 {
+    color: #111111;
+  }
+  body.dark-night .confirm-modal-desc {
+    color: #555555;
+  }
+  body.dark-night .modal-btn-outline {
+    color: #555555;
+    border-color: #dee2e6;
+  }
+  body.dark-night .modal-btn-outline:hover:not(:disabled) {
+    border-color: #111111;
+    background: rgba(0, 0, 0, 0.05);
+    color: #111111;
+  }

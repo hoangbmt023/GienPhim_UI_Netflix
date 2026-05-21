@@ -155,13 +155,13 @@ export default function HeroBanner({ movies = [], loading = false }) {
       {/* Crossfade backdrops */}
       <div className="hero__backdrop-wrap" aria-hidden="true">
         {items.map((m, i) => (
-          <img
+          <ImageWithFallback
             key={m._id}
-            className={`hero__backdrop ${i === activeIdx ? 'visible' : ''}`}
+            wrapperClassName={`hero__backdrop ${i === activeIdx ? 'visible' : ''}`}
+            className="hero__backdrop-img"
             src={posterSrc(m)}
             alt=""
             loading={i === 0 ? 'eager' : 'lazy'}
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
         ))}
       </div>

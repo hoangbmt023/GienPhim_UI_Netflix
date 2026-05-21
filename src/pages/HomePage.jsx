@@ -130,7 +130,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div style={{ background: "#141414", minHeight: "100vh" }}>
+    <div style={{ background: "var(--bg-dark)", minHeight: "100vh" }}>
       {/* 1. HERO BANNER */}
       <HeroBanner movies={heroMovies} loading={loading.hero} />
 

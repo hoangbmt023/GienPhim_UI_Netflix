@@ -131,6 +131,7 @@ const en = {
     signIn: 'Sign In',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
+    darkNight: 'Dark Night Mode',
   },
 
   // ── FOOTER ──

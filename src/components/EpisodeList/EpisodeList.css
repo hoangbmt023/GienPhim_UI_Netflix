@@ -220,3 +220,65 @@
     min-width: 56px;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .ep-list-title {
+  color: #111111;
+}
+
+body.dark-night .ep-list-count {
+  color: #555555;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-night .ep-servers {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.dark-night .ep-server-btn {
+  color: #555555;
+}
+
+body.dark-night .ep-server-btn:hover {
+  color: #111111;
+}
+
+body.dark-night .ep-server-btn.active {
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .ep-search-input {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #111111;
+}
+
+body.dark-night .ep-search-input:focus {
+  background: #ffffff;
+  border-color: var(--netflix-red);
+}
+
+body.dark-night .ep-btn {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #333333 !important;
+}
+
+body.dark-night .ep-btn:hover {
+  background: rgba(229, 9, 20, 0.08) !important;
+  border-color: rgba(229, 9, 20, 0.3) !important;
+  color: var(--netflix-red) !important;
+}
+
+body.dark-night .ep-btn.active {
+  background: var(--netflix-red) !important;
+  border-color: var(--netflix-red) !important;
+  color: #ffffff !important;
+}
+
+body.dark-night .ep-empty {
+  color: #666666;
+}

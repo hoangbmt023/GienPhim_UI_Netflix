@@ -93,3 +93,32 @@
 .auth-input::-ms-clear {
   display: none;
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .auth-input-container {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+body.dark-night .auth-input-container:focus-within {
+  background: #f8f9fa;
+  border-color: var(--netflix-red);
+}
+body.dark-night .auth-input-container.has-error {
+  border-bottom-color: #e50914;
+}
+body.dark-night .auth-input {
+  color: #111111;
+}
+body.dark-night .auth-label {
+  color: #555555;
+}
+body.dark-night .auth-input-toggle {
+  color: #555555;
+}
+body.dark-night .auth-input-toggle:hover {
+  color: #111111;
+  background: rgba(0, 0, 0, 0.05);
+}
+body.dark-night .auth-error-text {
+  color: #e50914;
+}

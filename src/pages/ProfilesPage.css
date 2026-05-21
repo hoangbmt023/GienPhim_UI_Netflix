@@ -400,7 +400,8 @@
   color: #e50914 !important;
   margin-bottom: 15px;
   font-size: 14px !important;
-  min-height: 1.2em; /* Reserve space if needed */
+  min-height: 1.2em;
+  /* Reserve space if needed */
 }
 
 .pin-input-container {
@@ -568,7 +569,8 @@
 
   .edit-actions {
     flex-direction: column;
-    gap: 30px; /* Space before delete button */
+    gap: 30px;
+    /* Space before delete button */
   }
 
   .primary-actions {
@@ -576,4 +578,170 @@
     width: 100%;
     gap: 12px;
   }
+}
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .profiles-page {
+  background-color: #f8f9fa;
+  color: #111111;
+}
+
+body.dark-night .profiles-page__overlay {
+  background: linear-gradient(to top, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0.11) 40%, rgba(248, 249, 250, 0.9) 100%);
+}
+
+body.dark-night .profiles-container h1 {
+  color: #111111;
+}
+
+body.dark-night .profile-name {
+  color: #555555;
+  text-shadow: none;
+}
+
+body.dark-night .profile-card:hover .profile-name {
+  color: #111111;
+}
+
+body.dark-night .profile-avatar {
+  background-color: #e9ecef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-night .profile-card:hover .profile-avatar {
+  border-color: #111111;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-night .profile-lock {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-night .profile-lock svg {
+  fill: #111111;
+}
+
+body.dark-night .profile-add .profile-avatar {
+  color: #888888;
+}
+
+body.dark-night .profile-add:hover .profile-avatar {
+  background-color: #dee2e6;
+  color: #111111;
+}
+
+body.dark-night .profiles-manage-btn {
+  background: #111111;
+  color: #ffffff;
+}
+
+body.dark-night .profiles-manage-btn:hover {
+  background: var(--netflix-red);
+}
+
+body.dark-night .profiles-manage-btn.active {
+  background: transparent;
+  color: #111111;
+  border-color: #111111;
+}
+
+body.dark-night .profiles-manage-btn.active:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-night .profiles-modal {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+body.dark-night .profiles-modal-content,
+body.dark-night .pin-modal {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .profiles-modal-content p,
+body.dark-night .pin-modal p {
+  color: #555555;
+}
+
+body.dark-night .profiles-modal-content input,
+body.dark-night .account-password-input {
+  background: #f1f3f5 !important;
+  color: #111111 !important;
+  border-color: #dee2e6 !important;
+}
+
+body.dark-night .account-password-input:focus {
+  background: #ffffff !important;
+  border-color: var(--netflix-red) !important;
+}
+
+body.dark-night .profiles-pin-toggle-btn {
+  border-color: #dee2e6;
+  color: #555555;
+}
+
+body.dark-night .profiles-pin-toggle-btn:hover {
+  border-color: #111111;
+  background: rgba(0, 0, 0, 0.02);
+  color: #111111;
+}
+
+body.dark-night .profiles-pin-toggle-btn.active {
+  background: rgba(229, 9, 20, 0.05);
+  border-color: var(--netflix-red);
+  color: var(--netflix-red);
+}
+
+body.dark-night .btn-secondary,
+body.dark-night .btn-delete {
+  color: #555555;
+  border-color: #dee2e6 !important;
+}
+
+body.dark-night .btn-secondary:hover {
+  color: #111111;
+  border-color: #111111 !important;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-night .btn-delete:hover {
+  color: var(--netflix-red);
+  border-color: var(--netflix-red) !important;
+  background: rgba(229, 9, 20, 0.05);
+}
+
+body.dark-night .forgot-pin-btn {
+  color: #555555;
+}
+
+body.dark-night .forgot-pin-btn:hover {
+  color: #111111;
+}
+
+body.dark-night .forgot-pin-desc {
+  color: #111111 !important;
+}
+
+body.dark-night .pin-box {
+  background: #f1f3f5;
+  border-color: #dee2e6;
+  color: #111111;
+}
+
+body.dark-night .pin-box.active {
+  border-color: #111111;
+  background: #ffffff;
+}
+
+body.dark-night .pin-input-hidden:focus+.pin-display .pin-box.active {
+  border-color: var(--netflix-red);
+}
+
+body.dark-night .pin-box.filled {
+  border-color: #111111;
+  background: #ffffff;
 }

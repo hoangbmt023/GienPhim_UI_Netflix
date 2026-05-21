@@ -139,4 +139,65 @@
   font-size: 13px;
   font-weight: 500;
   margin-top: 4px;
+}
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .contact-page {
+  color: #333333;
+}
+body.dark-night .contact-title {
+  color: #111111;
+}
+body.dark-night .contact-subtitle {
+  color: #555555;
+}
+body.dark-night .social-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #555555;
+}
+body.dark-night .social-fb:hover {
+  background: #1877F2;
+  border-color: #1877F2;
+  color: #ffffff;
+}
+body.dark-night .social-ig:hover {
+  background: #E4405F;
+  border-color: #E4405F;
+  color: #ffffff;
+}
+body.dark-night .social-gm:hover {
+  background: #EA4335;
+  border-color: #EA4335;
+  color: #ffffff;
+}
+body.dark-night .contact-divider {
+  color: #555555;
+}
+body.dark-night .contact-divider::before,
+body.dark-night .contact-divider::after {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+body.dark-night .form-group label {
+  color: #555555;
+}
+body.dark-night .form-group input,
+body.dark-night .form-group select,
+body.dark-night .form-group textarea {
+  background: #f8f9fa;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #111111;
+}
+body.dark-night .form-group select option {
+  background: #ffffff;
+  color: #111111;
+}
+body.dark-night .form-group input:focus,
+body.dark-night .form-group select:focus,
+body.dark-night .form-group textarea:focus {
+  background: #ffffff;
+  border-color: var(--netflix-red);
+}
+body.dark-night .input-error {
+  background: rgba(229, 9, 20, 0.05) !important;
 }

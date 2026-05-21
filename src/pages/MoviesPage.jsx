@@ -61,7 +61,7 @@ export default function MoviesPage() {
   }, [t.header.movies]);
 
   return (
-    <div style={{ background: "#141414", minHeight: "100vh" }}>
+    <div style={{ background: "var(--bg-dark)", minHeight: "100vh" }}>
       <HeroBanner movies={featured} loading={loading.featured} />
 
       <SpotlightSection
