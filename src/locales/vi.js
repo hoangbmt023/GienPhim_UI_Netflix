@@ -131,6 +131,7 @@ const vi = {
     signIn: 'Đăng nhập',
     openMenu: 'Mở menu',
     closeMenu: 'Đóng menu',
+    darkNight: 'Chế độ Dark Night',
   },
 
   // ── FOOTER ──

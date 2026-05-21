@@ -88,3 +88,30 @@
     padding: 24px;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .support-layout {
+  background: #f8f9fa;
+}
+body.dark-night .support-sidebar {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+body.dark-night .support-sidebar-title {
+  color: #111111;
+}
+body.dark-night .support-nav-link {
+  color: #555555;
+}
+body.dark-night .support-nav-link:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111111;
+}
+body.dark-night .support-nav-link.active {
+  background: rgba(229, 9, 20, 0.05);
+  color: var(--netflix-red);
+}
+body.dark-night .support-content {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}

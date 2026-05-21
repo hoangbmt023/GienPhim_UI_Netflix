@@ -67,7 +67,7 @@ export default function AnimationPage() {
   }, [t.header.animation]);
 
   return (
-    <div style={{ background: '#141414', minHeight: '100vh' }}>
+    <div style={{ background: 'var(--bg-dark)', minHeight: '100vh' }}>
       <HeroBanner movies={hero} loading={loading.hero} />
 
       <SpotlightSection

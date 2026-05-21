@@ -130,6 +130,24 @@ export default function Header() {
   const [countries, setCountries] = useState(STATIC_COUNTRIES);
   const [profileOpen, setProfileOpen] = useState(false);
   const [drawerProfileOpen, setDrawerProfileOpen] = useState(false);
+  const [isDarkNight, setIsDarkNight] = useState(() => {
+    return document.body.classList.contains("dark-night");
+  });
+
+  const toggleDarkNight = (e) => {
+    if (e) e.stopPropagation();
+    setIsDarkNight((prev) => {
+      const newVal = !prev;
+      if (newVal) {
+        document.body.classList.add("dark-night");
+        localStorage.setItem("gp_dark_night", "true");
+      } else {
+        document.body.classList.remove("dark-night");
+        localStorage.setItem("gp_dark_night", "false");
+      }
+      return newVal;
+    });
+  };
 
   const { isAuthenticated, selectedProfile, logout, user } = useAuth();
   const navigate = useNavigate();
@@ -310,6 +328,19 @@ export default function Header() {
                       </div>
                     </div>
                     <div className="profile__dropdown-divider" />
+                    <div
+                      className="profile__dropdown-item profile__theme-toggle"
+                      onClick={toggleDarkNight}
+                    >
+                      <div className="theme-toggle__label">
+                        <span className="theme-toggle__icon">🌃</span>
+                        <span>{t.header.darkNight || 'Chế độ Dark Night'}</span>
+                      </div>
+                      <div className={`theme-toggle__switch ${isDarkNight ? 'active' : ''}`}>
+                        <div className="theme-toggle__thumb" />
+                      </div>
+                    </div>
+                    <div className="profile__dropdown-divider" />
                     <Link to={getPath('profiles')} className="profile__dropdown-item" onClick={() => setProfileOpen(false)}>
                       {t.header.changeProfile}
                     </Link>
@@ -376,6 +407,19 @@ export default function Header() {
 
             {drawerProfileOpen && (
               <div className="drawer__profile-panel">
+                <div
+                  className="drawer__account-link profile__theme-toggle"
+                  onClick={toggleDarkNight}
+                >
+                  <div className="theme-toggle__label">
+                    <span className="theme-toggle__icon">🌃</span>
+                    <span>{t.header.darkNight || 'Chế độ Dark Night'}</span>
+                  </div>
+                  <div className={`theme-toggle__switch ${isDarkNight ? 'active' : ''}`}>
+                    <div className="theme-toggle__thumb" />
+                  </div>
+                </div>
+                <div className="profile__dropdown-divider" style={{ margin: '4px 0', opacity: 0.5 }} />
                 <Link to={getPath('profiles')} className="drawer__account-link" onClick={() => setMobileOpen(false)}>
                   {t.header.changeProfile}
                 </Link>

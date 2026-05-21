@@ -238,8 +238,19 @@ export default function MovieDetailPage() {
   return (
     <div className="movie-detail">
 
-      <div className="md-hero" style={{ '--bd-desktop': `url("${backdrop}")`, '--bd-mobile': `url("${verticalImg}")` }}>
-        <div className="md-hero__bg" />
+      <div className="md-hero">
+        <ImageWithFallback 
+          src={backdrop} 
+          alt="" 
+          wrapperClassName="md-hero__bg md-hero__bg--desktop"
+          className="md-hero__bg-img"
+        />
+        <ImageWithFallback 
+          src={verticalImg} 
+          alt="" 
+          wrapperClassName="md-hero__bg md-hero__bg--mobile"
+          className="md-hero__bg-img"
+        />
         <div className="md-hero__overlay" />
 
         <div className="md-breadcrumb">

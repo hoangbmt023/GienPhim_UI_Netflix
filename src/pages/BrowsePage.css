@@ -5,7 +5,7 @@
 
 .browse {
   min-height: 100vh;
-  background: #141414;
+  background: var(--bg-dark);
   padding: var(--header-height) 40px 80px;
 }
 
@@ -558,4 +558,45 @@
 .browse-card__img.loaded {
   opacity: 1;
   transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .browse__title {
+  color: #111111;
+}
+
+body.dark-night .browse__meta,
+body.dark-night .filter-select__label {
+  color: #555555;
+}
+
+body.dark-night .filter-select__trigger {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #111111;
+}
+
+body.dark-night .filter-select__trigger:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.dark-night .filter-select__value {
+  color: #111111;
+  font-weight: 700;
+}
+
+body.dark-night .filter-select__menu {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-night .filter-select__item {
+  color: #111111;
+}
+
+body.dark-night .filter-select__item:hover,
+body.dark-night .filter-select__item.active {
+  background: rgba(229, 9, 20, 0.08);
+  color: var(--netflix-red);
 }
