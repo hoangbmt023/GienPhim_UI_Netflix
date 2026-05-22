@@ -120,7 +120,7 @@ export default function SpotlightSection({ title, items = [], seeAllLink, loadin
               )}
               {movie?.year && <span className="spotlight-section__badge">{movie.year}</span>}
               {movie?.episode_current && (
-                <span className="spotlight-section__badge">{movie.episode_current}</span>
+                <span className="spotlight-section__badge spotlight-section__badge--episode">{movie.episode_current}</span>
               )}
               {movie?.lang && <span className="spotlight-section__badge">{movie.lang}</span>}
             </div>

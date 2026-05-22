@@ -426,3 +426,62 @@
     padding: 8px 0;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .auth-page {
+  background-color: #f8f9fa;
+  color: #111111;
+}
+
+body.dark-night .auth-page__overlay {
+  background: linear-gradient(to bottom,
+      rgba(248, 249, 250, 0.9) 0%,
+      rgba(248, 249, 250, 0.5) 35%,
+      rgba(248, 249, 250, 0.5) 65%,
+      rgba(248, 249, 250, 0.95) 100%);
+}
+
+body.dark-night .auth-form {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.1);
+  color: #111111;
+}
+
+body.dark-night .auth-form h2 {
+  color: #111111;
+}
+
+body.dark-night .auth-desc {
+  color: #555555;
+}
+
+body.dark-night .auth-link,
+body.dark-night .auth-switch,
+body.dark-night .auth-switch button,
+body.dark-night .auth-switch span {
+  color: #555555;
+}
+
+body.dark-night .auth-link:hover,
+body.dark-night .auth-switch button:hover,
+body.dark-night .auth-switch span:hover {
+  color: #111111;
+}
+
+body.dark-night .auth-checkbox-group label {
+  color: #555555;
+}
+
+body.dark-night .field-error {
+  color: #e50914;
+}
+
+@media (max-width: 480px) {
+  body.dark-night .auth-page__overlay {
+    background: rgba(248, 249, 250, 0.85);
+  }
+  body.dark-night .auth-form {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}

@@ -131,6 +131,7 @@ const vi = {
     signIn: 'Đăng nhập',
     openMenu: 'Mở menu',
     closeMenu: 'Đóng menu',
+    settings: 'Cài đặt',
   },
 
   // ── FOOTER ──
@@ -497,6 +498,24 @@ const vi = {
     privacy: 'Chính Sách Bảo Mật',
     terms: 'Điều Khoản Sử Dụng',
     contact: 'Liên Hệ & Báo Lỗi',
+  },
+
+  // ── SETTINGS ──
+  settings: {
+    title: 'Cài đặt',
+    display: 'Màn hình',
+    language: 'Ngôn ngữ',
+    appearance: 'Chế độ sáng tối',
+    appearanceDesc: 'Điều chỉnh giao diện để giảm độ chói và cho đôi mắt được nghỉ ngơi.',
+    displaySub: 'Chế độ sáng tối',
+    dark: 'Tối',
+    light: 'Sáng',
+    auto: 'Tự động',
+    autoNote: 'Chúng tôi sẽ tự động điều chỉnh sáng tối theo cài đặt hệ thống trên thiết bị bạn.',
+    selectLang: 'Chọn ngôn ngữ',
+    selectLangDesc: 'Ngôn ngữ hiển thị của giao diện và đường dẫn trang.',
+    back: 'Quay lại',
+    close: 'Đóng',
   },
 };
 

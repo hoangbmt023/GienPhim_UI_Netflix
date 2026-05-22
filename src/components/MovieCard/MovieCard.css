@@ -24,8 +24,8 @@
   padding-top: 150%;
   border-radius: 8px;
   overflow: hidden;
-  background: #141414;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  background: var(--card-img-bg);
+  box-shadow: var(--card-shadow);
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   transform: translateZ(0);
 }
@@ -97,7 +97,7 @@
 }
 
 .movie-card:hover .movie-card__overlay {
-  background: rgba(0, 0, 0, 0.38);
+  background: var(--card-overlay-hover);
 }
 
 .movie-card__play {
@@ -131,7 +131,7 @@
 .movie-card__name {
   font-size: 12.5px;
   font-weight: 600;
-  color: #e5e5e5;
+  color: var(--card-name-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -185,9 +185,9 @@
   padding-top: 150%;
   border-radius: 8px;
   overflow: hidden;
-  background: #141414;
+  background: var(--card-img-bg);
   margin-left: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--card-shadow);
   transition: box-shadow 0.28s;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   transform: translateZ(0);
@@ -245,7 +245,7 @@
 .ranked-card__name {
   font-size: 12px;
   font-weight: 600;
-  color: #e5e5e5;
+  color: var(--card-name-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -253,7 +253,7 @@
 
 .ranked-card__origin {
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--card-origin-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -262,7 +262,10 @@
 
 /* ── SKELETON ── */
 .skeleton {
-  background: linear-gradient(90deg, #1f1f1f 25%, #2a2a2a 50%, #1f1f1f 75%);
+  background: linear-gradient(90deg,
+      var(--skeleton-base) 25%,
+      var(--skeleton-shine) 50%,
+      var(--skeleton-base) 75%);
   background-size: 200% 100%;
   animation: skeleton-shine 1.4s infinite linear;
   border-radius: 8px;
@@ -429,4 +432,11 @@
   .skeleton-card__line2 {
     height: 12px;
   }
+}
+
+/* ── DARK NIGHT – Ranked card rank number ── */
+body.dark-night .ranked-card__rank {
+  color: rgba(230, 230, 230, 0.9);
+  -webkit-text-stroke: 5px #111111;
+  paint-order: stroke fill;
 }

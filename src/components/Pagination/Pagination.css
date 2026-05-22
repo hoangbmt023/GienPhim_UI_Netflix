@@ -115,3 +115,27 @@
     font-size: 14px;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .gp-pg-btn {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.04);
+  color: #111111;
+}
+
+body.dark-night .gp-pg-btn:hover:not(:disabled) {
+  background: rgba(229, 9, 20, 0.1);
+  border-color: rgba(229, 9, 20, 0.4);
+  color: var(--netflix-red);
+}
+
+body.dark-night .gp-pg-btn.active {
+  background: var(--netflix-red) !important;
+  border-color: var(--netflix-red) !important;
+  color: #ffffff !important;
+}
+
+body.dark-night .gp-pg-dots,
+body.dark-night .gp-pg-info {
+  color: #555555;
+}

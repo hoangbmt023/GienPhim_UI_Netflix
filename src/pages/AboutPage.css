@@ -77,3 +77,32 @@
     font-size: 15px;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .about-page,
+body.dark-night .contact-page {
+  color: #111111;
+}
+
+body.dark-night .about-title,
+body.dark-night .contact-title {
+  color: #111111;
+}
+
+body.dark-night .about-subtitle,
+body.dark-night .contact-subtitle {
+  color: #555555;
+}
+
+body.dark-night .about-section h2 {
+  color: #111111;
+}
+
+body.dark-night .about-section p,
+body.dark-night .about-section ul {
+  color: #333333;
+}
+
+body.dark-night .about-section strong {
+  color: #111111;
+}

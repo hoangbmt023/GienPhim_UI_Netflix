@@ -94,3 +94,27 @@
     font-size: 14px;
   }
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .faq-item {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .faq-item.open {
+  background: rgba(229, 9, 20, 0.05);
+}
+
+body.dark-night .faq-question {
+  color: #111111;
+}
+
+body.dark-night .faq-answer-inner {
+  color: #555555;
+}
+
+body.dark-night .faq-answer-inner strong {
+  color: #111111;
+  background: rgba(229, 9, 20, 0.15);
+  text-shadow: none;
+}

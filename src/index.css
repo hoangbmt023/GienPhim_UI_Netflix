@@ -1,21 +1,180 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
 
 :root {
+  /* Brand */
   --netflix-red: #e50914;
   --netflix-red-hover: #f40612;
+
+  /* Backgrounds */
   --bg-dark: #141414;
+  --bg-page: #141414;
   --bg-header: rgba(10, 10, 10, 0.97);
   --bg-footer: #141414;
   --bg-card: #1f1f1f;
   --bg-dropdown: #181818;
+  --bg-surface: #1a1a1a;
+
+  /* Text */
   --text-primary: #e5e5e5;
   --text-secondary: #ababab;
   --text-muted: #737373;
+  --text-title: #ffffff;
+
+  /* Misc */
   --border-color: #2a2a2a;
   --accent: #e50914;
   --green-active: #46d369;
   --header-height: 60px;
   --header-height-tv: 80px;
+
+  /* Hero banner */
+  --hero-bg: #080808;
+  --hero-backdrop-filter: brightness(1) contrast(1);
+  --hero-backdrop-opacity: 1;
+  --hero-grad-left: linear-gradient(105deg,
+      rgba(8, 8, 8, 0.72) 0%,
+      rgba(8, 8, 8, 0.30) 45%,
+      rgba(8, 8, 8, 0.00) 100%);
+  --hero-grad-bottom: linear-gradient(to top, #141414 0%, rgba(20, 20, 20, 0) 100%);
+  --hero-grad-mobile: linear-gradient(to bottom,
+      rgba(8, 8, 8, 0.10) 0%,
+      rgba(8, 8, 8, 0.62) 55%,
+      rgba(20, 20, 20, 0.98) 100%);
+
+  /* Spotlight */
+  --spotlight-bg: #111;
+  --spotlight-bg-filter: blur(6px) brightness(0.3) saturate(0.7);
+  --spotlight-overlay: linear-gradient(to right,
+      rgba(10, 10, 10, 0.96) 0%,
+      rgba(10, 10, 10, 0.70) 45%,
+      rgba(10, 10, 10, 0.20) 100%);
+  --spotlight-overlay-mobile: linear-gradient(to bottom,
+      rgba(10, 10, 10, 0.12) 0%,
+      rgba(10, 10, 10, 0.82) 50%,
+      rgba(10, 10, 10, 1.00) 100%);
+  --spotlight-title-color: #fff;
+
+  /* Cards */
+  --card-img-bg: #141414;
+  --card-name-color: #e5e5e5;
+  --card-origin-color: var(--text-muted);
+  --card-overlay-hover: rgba(0, 0, 0, 0.38);
+  --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+
+  /* Nav arrows */
+  --nav-arrow-bg: rgba(15, 15, 15, 0.92);
+  --nav-arrow-border: rgba(255, 255, 255, 0.1);
+  --nav-arrow-color: #fff;
+
+  /* See-all links */
+  --see-all-color: var(--text-muted);
+  --see-all-hover: #fff;
+
+  /* Skeleton */
+  --skeleton-base: #1e1e1e;
+  --skeleton-shine: #2a2a2a;
+
+  /* Hero badge & tag (dark mode defaults) */
+  --hero-badge-border: rgba(255, 255, 255, 0.32);
+  --hero-badge-bg: rgba(255, 255, 255, 0.05);
+  --hero-tag-color: #fff;
+  --hero-tag-bg: rgba(255, 255, 255, 0.12);
+  --hero-tag-border: rgba(255, 255, 255, 0.15);
+
+  /* Card episode badge */
+  --card-ep-bg: rgba(0, 0, 0, 0.85);
+  --card-ep-color: var(--green-active);
+}
+
+/* ── DARK NIGHT THEME (Light/Premium B&W mode) ───────────────────────────────
+   Đây là nơi DUY NHẤT định nghĩa màu sắc cho dark-night.
+   Component CSS chỉ dùng var() — không hardcode màu nào hết.
+   Pattern giống FB, YouTube, TikTok.
+   ────────────────────────────────────────────────────────────────────────── */
+body.dark-night {
+  /* Brand — giữ đỏ Netflix */
+  --netflix-red: #e50914;
+  --netflix-red-hover: #f40612;
+
+  /* Backgrounds */
+  --bg-dark: #ffffff;
+  --bg-page: #f4f4f4;
+  --bg-header: rgba(255, 255, 255, 0.96);
+  --bg-footer: #f8f9fa;
+  --bg-card: #f1f3f5;
+  --bg-dropdown: #ffffff;
+  --bg-surface: #ffffff;
+
+  /* Text */
+  --text-primary: #111111;
+  --text-secondary: #495057;
+  --text-muted: #6c757d;
+  --text-title: #111111;
+
+  /* Misc */
+  --border-color: #dee2e6;
+  --accent: #e50914;
+  --green-active: #46d369;
+
+  /* Hero banner */
+  --hero-bg: #ffffff;
+  --hero-backdrop-filter: brightness(1.05) contrast(0.95);
+  --hero-backdrop-opacity: 0.72;
+  --hero-grad-left: linear-gradient(105deg,
+      rgba(255, 255, 255, 0.68) 0%,
+      rgba(255, 255, 255, 0.35) 28%,
+      rgba(255, 255, 255, 0.08) 55%,
+      rgba(255, 255, 255, 0.00) 100%);
+  --hero-grad-bottom: linear-gradient(to top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+  --hero-grad-mobile: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.65) 55%,
+      rgba(255, 255, 255, 1.00) 100%);
+  --hero-title-shadow: 0 1px 8px rgba(255, 255, 255, 0.9), 0 0 24px rgba(255, 255, 255, 0.5);
+
+  /* Spotlight */
+  --spotlight-bg: #ffffff;
+  --spotlight-bg-filter: blur(6px) brightness(1.4) contrast(0.85) opacity(0.38);
+  --spotlight-overlay: linear-gradient(to right,
+      rgba(255, 255, 255, 0.88) 0%,
+      rgba(255, 255, 255, 0.42) 42%,
+      rgba(255, 255, 255, 0.00) 72%);
+  --spotlight-overlay-mobile: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 1.00) 100%);
+  --spotlight-title-color: #111111;
+
+  /* Cards */
+  --card-img-bg: #f1f3f5;
+  --card-name-color: #111111;
+  --card-origin-color: #555555;
+  --card-overlay-hover: rgba(255, 255, 255, 0.15);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* Nav arrows */
+  --nav-arrow-bg: rgba(255, 255, 255, 0.95);
+  --nav-arrow-border: rgba(0, 0, 0, 0.1);
+  --nav-arrow-color: #111111;
+
+  /* See-all links */
+  --see-all-color: #111111;
+  --see-all-hover: #e50914;
+
+  /* Skeleton */
+  --skeleton-base: #e9ecef;
+  --skeleton-shine: #dee2e6;
+
+  /* Hero badge & tag (light mode) */
+  --hero-badge-border: rgba(0, 0, 0, 0.15);
+  --hero-badge-bg: rgba(0, 0, 0, 0.04);
+  --hero-tag-color: #111111;
+  --hero-tag-bg: rgba(0, 0, 0, 0.05);
+  --hero-tag-border: rgba(0, 0, 0, 0.12);
+
+  /* Card episode badge */
+  --card-ep-bg: rgba(0, 0, 0, 0.06);
+  --card-ep-color: #0f5132;
 }
 
 *,
@@ -205,14 +364,16 @@ img {
 
 .art-icon-play svg {
   /* Manual offset adjustment for visual centering */
-  transform: translateX(2px); 
+  transform: translateX(2px);
 }
 
 @media (max-width: 767px) {
   .art-video-player {
     border-radius: 0;
   }
+
   .art-control-show {
-    backdrop-filter: none; /* Better performance on mobile */
+    backdrop-filter: none;
+    /* Better performance on mobile */
   }
-}
+}

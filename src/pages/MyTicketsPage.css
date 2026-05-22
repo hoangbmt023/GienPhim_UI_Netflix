@@ -778,3 +778,126 @@
 .post-body strong {
   color: #fff;
 }
+
+/* ── DARK NIGHT MODE OVERRIDES ── */
+body.dark-night .mytickets-page {
+  background-color: #f8f9fa;
+  color: #333333;
+}
+body.dark-night .mytickets-title {
+  color: #111111;
+}
+body.dark-night .mytickets-sidebar {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+}
+body.dark-night .mytickets-list-header {
+  color: #111111;
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+body.dark-night .mytickets-item {
+  border-bottom-color: rgba(0,0,0,0.05);
+}
+body.dark-night .mytickets-item:hover {
+  background: rgba(0,0,0,0.02);
+}
+body.dark-night .mytickets-item.active {
+  background: rgba(229, 9, 20, 0.05);
+}
+body.dark-night .item-subject {
+  color: #111111;
+}
+body.dark-night .mytickets-main {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+}
+body.dark-night .mytickets-no-selection h3 {
+  color: #111111;
+}
+body.dark-night .ticket-forum-header {
+  background: #ffffff;
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+body.dark-night .forum-title {
+  color: #333333;
+}
+body.dark-night .forum-subtitle {
+  color: #555555;
+}
+body.dark-night .forum-btn {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.2);
+  color: #333333;
+}
+body.dark-night .forum-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+body.dark-night .ticket-post {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+}
+body.dark-night .post-header {
+  background: rgba(0,0,0,0.02);
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+body.dark-night .post-meta strong {
+  color: #111111;
+}
+body.dark-night .post-body {
+  color: #333333;
+}
+body.dark-night .post-body h3 {
+  color: #111111;
+}
+body.dark-night .post-body strong {
+  color: #111111;
+}
+body.dark-night .post-body blockquote {
+  background: rgba(0,0,0,0.02);
+  color: #555555;
+}
+body.dark-night .reply-form-section {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.1);
+}
+body.dark-night .reply-form-header {
+  background: rgba(0,0,0,0.02);
+  border-bottom-color: rgba(0,0,0,0.1);
+  color: #111111;
+}
+body.dark-night .form-col label {
+  color: #555555;
+}
+body.dark-night .form-col input,
+body.dark-night .form-col textarea {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.2);
+  color: #111111;
+}
+body.dark-night .form-col input.readonly-input {
+  background: rgba(0,0,0,0.05);
+  color: #555555;
+}
+body.dark-night .rich-text-container {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.2);
+}
+body.dark-night .rich-text-toolbar {
+  background: rgba(0,0,0,0.02);
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+body.dark-night .rich-text-toolbar button {
+  color: #555555;
+}
+body.dark-night .rich-text-toolbar button:hover {
+  background: rgba(0,0,0,0.05);
+  color: #111111;
+}
+body.dark-night .preview-mode-content {
+  background: #ffffff;
+  color: #333333;
+  border-top-color: rgba(0,0,0,0.1);
+}
+body.dark-night .preview-mode-content blockquote {
+  color: #555555;
+}
