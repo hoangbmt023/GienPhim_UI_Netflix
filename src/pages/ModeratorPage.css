@@ -800,6 +800,7 @@
   text-decoration: none;
 }
 
+.post-body a:hover {
   text-decoration: underline;
 }
 

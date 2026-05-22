@@ -888,7 +888,9 @@
   .md-hero__title {
     font-size: 60px;
   }
+}
 
+.md-lightbox__close {
   color: #fff;
   background: none;
   border: none;
