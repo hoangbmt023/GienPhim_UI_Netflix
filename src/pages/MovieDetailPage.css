@@ -1252,3 +1252,17 @@ img.loaded {
   object-fit: cover;
   border-radius: inherit;
 }
+
+/* ── Dark-Night overrides ── */
+body.dark-night .md-hero__title {
+  color: #111;
+  text-shadow:
+    -1px -1px 0 #fff,
+     1px -1px 0 #fff,
+    -1px  1px 0 #fff,
+     1px  1px 0 #fff,
+    -2px  0   0 #fff,
+     2px  0   0 #fff,
+     0   -2px  0 #fff,
+     0    2px  0 #fff;
+}

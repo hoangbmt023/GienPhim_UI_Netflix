@@ -508,7 +508,7 @@
   width: 100%;
   height: 44px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.40);
   border-radius: 10px;
   padding: 0 16px 0 44px;
   font-size: 14px;
@@ -663,7 +663,7 @@
 }
 
 .drawer__profile-panel {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 0 0 12px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   padding: 6px 0;
@@ -775,17 +775,19 @@
     display: none !important;
   }
 
-  /* Make header solid black by default on mobile */
+  /* Make header solid (scrolled style) when hamburger is visible */
   .header::before {
     opacity: 0 !important;
   }
+
   .header::after {
     opacity: 1 !important;
-    background: var(--bg-dark) !important;
+    background: rgba(9, 9, 9, 0.92) !important;
   }
+
   .header {
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55), inset 0 -1px 0 rgba(255, 255, 255, 0.07);
   }
 
   /* Mobile search in drawer only */
@@ -1080,7 +1082,8 @@ body.dark-night .header::before {
 }
 
 body.dark-night .header::after {
-  display: none !important; /* Hide pseudo element to prevent transition conflicts */
+  display: none !important;
+  /* Hide pseudo element to prevent transition conflicts */
 }
 
 body.dark-night .header.scrolled {
@@ -1090,14 +1093,15 @@ body.dark-night .header.scrolled {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* Mobile: solid header */
-@media (max-width: 900px) {
+/* Mobile: solid white header when hamburger is visible (≤1150px) */
+@media (max-width: 1150px) {
   body.dark-night .header {
     background: rgba(255, 255, 255, 0.96) !important;
     backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid #e9ecef !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
   }
+
   body.dark-night .header::before,
   body.dark-night .header::after {
     display: none !important;
@@ -1279,4 +1283,4 @@ body.dark-night .header__login-btn:hover {
 
 body.dark-night .profile__dropdown-divider {
   background: rgba(0, 0, 0, 0.08);
-}
+}
