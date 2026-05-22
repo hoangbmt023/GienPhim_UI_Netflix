@@ -1,0 +1,448 @@
+/* ============================================
+   SettingsModal – Smooth Facebook-style UI
+   Typography hierarchy + Slide transitions
+   ============================================ */
+
+/* ── CSS Variables – áp theo theme ── */
+/* Chế độ TỐI (mặc định, không có .dark-night) */
+body:not(.dark-night) .settings-modal {
+  --sm-bg:         #242526;
+  --sm-border:     rgba(255,255,255,0.1);
+  --sm-text:       #e4e6eb;
+  --sm-text-sub:   #b0b3b8;
+  --sm-text-em:    #2d88ff;
+  --sm-hover:      #3a3b3c;
+  --sm-active:     #4e4f50;
+  --sm-btn-bg:     #3a3b3c;
+  --sm-btn-hover:  #4e4f50;
+  --sm-radio-off:  #555658;
+  --sm-radio-on:   #2d88ff;
+  --sm-radio-dot:  #242526;
+  --sm-sel-bg:     #3a3b3c;
+  --sm-check:      #2d88ff;
+  --sm-shadow:     0 12px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Chế độ SÁNG (.dark-night class = giao diện sáng) */
+body.dark-night .settings-modal {
+  --sm-bg:         #ffffff;
+  --sm-border:     #e4e6ea;
+  --sm-text:       #1c1e21;
+  --sm-text-sub:   #65676b;
+  --sm-text-em:    #1877f2;
+  --sm-hover:      #f2f2f2;
+  --sm-active:     #e4e6ea;
+  --sm-btn-bg:     #e4e6ea;
+  --sm-btn-hover:  #d8dadf;
+  --sm-radio-off:  #ccd0d5;
+  --sm-radio-on:   #1877f2;
+  --sm-radio-dot:  #ffffff;
+  --sm-sel-bg:     #f0f2f5;
+  --sm-check:      #1877f2;
+  --sm-shadow:     0 8px 24px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* ── Khử tap highlight màu xanh trên di động ── */
+.settings-modal button,
+.sm-icon-btn,
+.sm-row,
+.sm-radio-row,
+.sm-lang-row {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none;
+  outline: none !important;
+}
+
+/* ── Overlay ── */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: sm-overlay-in 0.2s ease both;
+}
+.settings-overlay--out {
+  animation: sm-overlay-out 0.18s ease both;
+}
+@keyframes sm-overlay-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sm-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* ── Modal box ── */
+.settings-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--sm-bg);
+  color: var(--sm-text);
+  border-radius: 14px;
+  width: calc(100% - 28px); /* Padding cách lề 2 bên di động */
+  max-width: 400px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sm-shadow);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+  animation: sm-modal-in 0.24s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
+}
+.settings-modal--out {
+  animation: sm-modal-out 0.18s ease both;
+}
+@keyframes sm-modal-in  {
+  from { transform: translate(-50%, -48%) scale(0.93); opacity: 0; }
+  to   { transform: translate(-50%, -50%) scale(1);    opacity: 1; }
+}
+@keyframes sm-modal-out {
+  from { transform: translate(-50%, -50%) scale(1);    opacity: 1; }
+  to   { transform: translate(-50%, -48%) scale(0.96);  opacity: 0; }
+}
+
+/* ── Header bar ── */
+.sm-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--sm-border);
+  flex-shrink: 0;
+  gap: 8px;
+  transition: border-color 0.25s ease;
+}
+
+.sm-header__title {
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--sm-text);
+  transition: color 0.25s ease;
+}
+
+.sm-header__title--main {
+  /* bằng với title thường */
+}
+
+/* Icon buttons (back, close) */
+.sm-icon-btn {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--sm-btn-bg);
+  color: var(--sm-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.12s ease;
+}
+.sm-icon-btn:hover  { background: var(--sm-btn-hover); }
+.sm-icon-btn:active { transform: scale(0.9); }
+
+/* ── Scrollable body wrapper ── */
+.sm-body {
+  overflow: hidden;
+  position: relative;
+  /* min-height để không bị nhảy khi slide */
+  min-height: 120px;
+}
+
+/* ── Page slide animations ── */
+/* Forward: đi vào từ phải, ra về trái */
+.sm-page {
+  width: 100%;
+  overflow-y: auto;
+  max-height: min(72vh, 500px);
+}
+
+.sm-page--forward {
+  animation: sm-slide-in-right 0.26s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.sm-page--back {
+  animation: sm-slide-in-left 0.26s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes sm-slide-in-right {
+  from { transform: translateX(48px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes sm-slide-in-left {
+  from { transform: translateX(-48px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.sm-page::-webkit-scrollbar { width: 3px; }
+.sm-page::-webkit-scrollbar-track { background: transparent; }
+.sm-page::-webkit-scrollbar-thumb { background: var(--sm-border); border-radius: 3px; }
+
+/* ─────────────────────────────────────────
+   TYPOGRAPHY HIERARCHY
+   Section title  → 18px bold  (to nhất)
+   Section desc   → 13px       (mô tả section)
+   Row label      → 14px semi  (nhỏ hơn desc 1 xíu → sai)
+   -------
+   Theo yêu cầu:
+   section-title  → 18px (to nhất)
+   section-desc   → 14px
+   row-label      → 13.5px  (nhỏ hơn desc ~0.5px)
+   row-note       → 11.5px  (nhỏ nhất)
+   ───────────────────────────────────────── */
+
+/* ── Section title ── */
+.sm-section-title {
+  padding: 18px 16px 4px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--sm-text);
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+  transition: color 0.25s ease;
+}
+
+/* ── Section description ── */
+.sm-section-desc {
+  padding: 4px 16px 14px;
+  font-size: 14px;
+  color: var(--sm-text-sub);
+  line-height: 1.6;
+  transition: color 0.25s ease;
+}
+
+/* ── Main rows (Màn hình / Ngôn ngữ) ── */
+.sm-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--sm-text);
+  transition:
+    background-color 0.15s ease,
+    color 0.25s ease;
+}
+.sm-row:hover  { background: var(--sm-hover); }
+.sm-row:active { background: var(--sm-active); transition: background-color 0.06s; }
+
+.sm-row__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sm-row__label {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--sm-text);
+  transition: color 0.25s ease;
+}
+
+.sm-row__sub {
+  font-size: 12.5px;
+  color: var(--sm-text-sub);
+  transition: color 0.25s ease;
+}
+
+.sm-row__sub--em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--sm-text-em);
+  transition: color 0.25s ease;
+}
+
+.sm-row__chevron {
+  color: var(--sm-text-sub);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.25s ease, transform 0.15s ease;
+}
+.sm-row:hover .sm-row__chevron { transform: translateX(3px); }
+
+.sm-divider {
+  height: 1px;
+  background: var(--sm-border);
+  margin: 2px 0;
+  transition: background-color 0.25s ease;
+}
+
+/* ── Radio rows (Display page) ── */
+.sm-radio-row {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--sm-border);
+  cursor: pointer;
+  text-align: left;
+  color: var(--sm-text);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.25s ease;
+}
+.sm-radio-row:first-of-type { border-top: none; }
+.sm-radio-row:hover  { background: var(--sm-hover); }
+.sm-radio-row:active { background: var(--sm-active); transition: background-color 0.06s; }
+.sm-radio-row.selected { background: var(--sm-sel-bg); }
+
+.sm-radio-row__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 1px;
+}
+
+/* Option label: nhỏ hơn sm-section-desc (~14px) 1 xíu → 13.5px */
+.sm-radio-row__label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sm-text);
+  transition: color 0.25s ease;
+}
+
+/* Option note: nhỏ nhất */
+.sm-radio-row__note {
+  font-size: 11.5px;
+  color: var(--sm-text-sub);
+  line-height: 1.55;
+  transition: color 0.25s ease;
+}
+
+/* ── Radio button ── */
+.sm-radio {
+  margin-top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--sm-radio-off);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.sm-radio--on {
+  border-color: var(--sm-radio-on);
+  background: var(--sm-radio-on);
+}
+
+.sm-radio__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sm-radio-dot);
+  transform: scale(0);
+  transition:
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.2s ease;
+}
+.sm-radio--on .sm-radio__dot { transform: scale(1); }
+
+/* ── Language rows ── */
+.sm-lang-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 13px 16px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--sm-border);
+  cursor: pointer;
+  text-align: left;
+  color: var(--sm-text);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.25s ease,
+    transform 0.15s ease;
+}
+.sm-lang-row:first-child { border-top: none; }
+.sm-lang-row:hover  { background: var(--sm-hover); }
+.sm-lang-row:active { background: var(--sm-active); transition: background-color 0.06s; }
+.sm-lang-row.selected { background: var(--sm-sel-bg); }
+
+/* Bounce khi chọn ngôn ngữ */
+.sm-lang-row.bouncing {
+  animation: sm-bounce 0.28s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes sm-bounce {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(0.97); }
+  60%  { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+.sm-lang-row__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-lang-row__label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sm-text);
+  transition: color 0.25s ease;
+}
+
+.sm-lang-row__native {
+  font-size: 11.5px;
+  color: var(--sm-text-sub);
+  transition: color 0.25s ease;
+}
+
+.sm-lang-row__check {
+  color: var(--sm-check);
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.25s ease;
+}
+.sm-lang-row__check.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Mobile ── */
+@media (max-width: 540px) {
+  .settings-overlay {
+    padding: 16px 14px;
+  }
+  .settings-modal {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+  .sm-page {
+    max-height: min(65vh, 460px);
+  }
+}

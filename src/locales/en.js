@@ -131,7 +131,7 @@ const en = {
     signIn: 'Sign In',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
-    darkNight: 'Dark Night Mode',
+    settings: 'Settings',
   },
 
   // ── FOOTER ──
@@ -497,6 +497,24 @@ const en = {
     privacy: 'Privacy Policy',
     terms: 'Terms of Use',
     contact: 'Contact & Report',
+  },
+
+  // ── SETTINGS ──
+  settings: {
+    title: 'Settings',
+    display: 'Display',
+    language: 'Language',
+    appearance: 'Appearance',
+    appearanceDesc: 'Adjust the interface to reduce glare and give your eyes a rest.',
+    displaySub: 'Appearance',
+    dark: 'Dark',
+    light: 'Light',
+    auto: 'Automatic',
+    autoNote: 'We will automatically adjust the theme based on your device system settings.',
+    selectLang: 'Select language',
+    selectLangDesc: 'Display language for the interface and page URLs.',
+    back: 'Back',
+    close: 'Close',
   },
 };
 
