@@ -30,7 +30,10 @@ const XIcon = () => (
 /* ─── Danh sách ngôn ngữ ─── */
 const LANGUAGES = [
   { code: 'vi', label: 'Tiếng Việt', native: 'Tiếng Việt' },
-  { code: 'en', label: 'English (US)', native: 'Tiếng Anh (Mỹ)' },
+  { code: 'en', label: 'English (US)', native: 'English' },
+  { code: 'ja', label: '日本語', native: 'Japanese' },
+  { code: 'ko', label: '한국어', native: 'Korean' },
+  { code: 'zh', label: '简体中文', native: 'Chinese' },
 ];
 
 /* ─── Helpers theme ─── */

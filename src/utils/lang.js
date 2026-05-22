@@ -1,5 +1,8 @@
 import vi from '@/locales/vi';
 import en from '@/locales/en';
+import ja from '@/locales/ja';
+import ko from '@/locales/ko';
+import zh from '@/locales/zh';
 
 export const getLang = () => {
   const savedLang = localStorage.getItem('gp_lang');
@@ -35,6 +38,10 @@ export const getLang = () => {
   }
 
   if (detected) {
+    // Nếu phát hiện URL tiếng Anh mà savedLang là ja/ko/zh, giữ nguyên savedLang
+    if (detected === 'en' && ['en', 'ja', 'ko', 'zh'].includes(savedLang)) {
+      return savedLang;
+    }
     if (savedLang !== detected) localStorage.setItem('gp_lang', detected);
     return detected;
   }
@@ -78,14 +85,16 @@ export const PATHS = {
 
 export const getPath = (key) => {
   const lang = getLang();
-  return PATHS[key]?.[lang] || PATHS[key]?.['vi'] || '/';
+  const targetLang = lang === 'vi' ? 'vi' : 'en';
+  return PATHS[key]?.[targetLang] || PATHS[key]?.['vi'] || '/';
 };
 
 export const getSwitchPath = (currentPath, newLang) => {
+  const targetLang = newLang === 'vi' ? 'vi' : 'en';
   // 1. Tìm chính xác
   for (const key in PATHS) {
     if (PATHS[key].vi === currentPath || PATHS[key].en === currentPath) {
-      return PATHS[key][newLang];
+      return PATHS[key][targetLang];
     }
   }
   
@@ -100,19 +109,23 @@ export const getSwitchPath = (currentPath, newLang) => {
     if (viPath === '/' || enPath === '/') continue;
 
     if (currentPath.startsWith(viPath)) {
-      return currentPath.replace(viPath, PATHS[key][newLang]);
+      return currentPath.replace(viPath, PATHS[key][targetLang]);
     }
     if (currentPath.startsWith(enPath)) {
-      return currentPath.replace(enPath, PATHS[key][newLang]);
+      return currentPath.replace(enPath, PATHS[key][targetLang]);
     }
   }
   
-  return PATHS.home[newLang];
+  return PATHS.home[targetLang];
 };
 
 export const getT = () => {
   const lang = getLang();
-  return lang === 'en' ? en : vi;
+  if (lang === 'en') return en;
+  if (lang === 'ja') return ja;
+  if (lang === 'ko') return ko;
+  if (lang === 'zh') return zh;
+  return vi;
 };
 
 // ── REACT HOOK ──
