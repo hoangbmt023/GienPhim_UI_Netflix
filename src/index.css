@@ -377,3 +377,14 @@ img {
     /* Better performance on mobile */
   }
 }
+
+/* Tắt tạm thời toàn bộ transition trong lúc đổi theme (50ms)
+   để tránh các hiệu ứng hover, active cũ bị biến đổi chậm gây khựng mắt. */
+body.gp-theme-changing,
+body.gp-theme-changing * {
+  transition: none !important;
+}
+
+
+
+
