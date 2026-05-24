@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getSwitchPath, setLang } from '@/utils/lang';
 import { useLang } from '@/utils/lang';
+import { useTheme } from '@/contexts/ThemeContext';
+import { LANGUAGES, getLanguage } from '@/constants/languages';
 import './SettingsModal.css';
 
 /* ─── Icons ─── */
@@ -27,38 +29,13 @@ const XIcon = () => (
   </svg>
 );
 
-/* ─── Danh sách ngôn ngữ ─── */
-const LANGUAGES = [
-  { code: 'vi', label: 'Tiếng Việt', native: 'Tiếng Việt' },
-  { code: 'en', label: 'English (US)', native: 'English' },
-  { code: 'ja', label: '日本語', native: 'Japanese' },
-  { code: 'ko', label: '한국어', native: 'Korean' },
-  { code: 'zh', label: '简体中文', native: 'Chinese' },
-];
-
-/* ─── Helpers theme ─── */
-const getThemeMode = () => localStorage.getItem('gp_theme_mode') || 'dark';
-
-const applyThemeMode = (mode) => {
-  localStorage.setItem('gp_theme_mode', mode);
-  if (mode === 'light') {
-    document.body.classList.add('dark-night');
-    localStorage.setItem('gp_dark_night', 'true');
-  } else if (mode === 'dark') {
-    document.body.classList.remove('dark-night');
-    localStorage.setItem('gp_dark_night', 'false');
-  } else {
-    // auto: sáng khi thiết bị sáng
-    const prefersLight = !window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.body.classList.toggle('dark-night', prefersLight);
-    localStorage.setItem('gp_dark_night', String(prefersLight));
-  }
-};
-
 /* ─── Component ─── */
 export default function SettingsModal({ open, onClose, lang }) {
   const { t } = useLang();
   const s = t.settings; // shortcut
+
+  // ── Theme: đọc/ghi qua context, KHÔNG tự quản lý localStorage ──
+  const { themeMode, setThemeMode } = useTheme();
 
   const THEME_MODES = [
     { value: 'dark',  label: s.dark  },
@@ -66,12 +43,11 @@ export default function SettingsModal({ open, onClose, lang }) {
     { value: 'auto',  label: s.auto, note: s.autoNote },
   ];
 
-  const [page, setPage]           = useState('main');
-  const [direction, setDir]       = useState('forward');
-  const [animKey, setAnimKey]     = useState(0);
-  const [themeMode, setTheme]     = useState(getThemeMode);
+  const [page, setPage]             = useState('main');
+  const [direction, setDir]         = useState('forward');
+  const [animKey, setAnimKey]       = useState(0);
   const [langBounce, setLangBounce] = useState(null);
-  const [overlayOut, setOOut]     = useState(false);
+  const [overlayOut, setOOut]       = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,11 +83,8 @@ export default function SettingsModal({ open, onClose, lang }) {
     if (open) { setPage('main'); setDir('forward'); setAnimKey(0); setOOut(false); }
   }, [open]);
 
-  /* Theme change */
-  const handleTheme = (mode) => {
-    setTheme(mode);
-    applyThemeMode(mode);
-  };
+  /* Theme change — chỉ cần gọi setThemeMode, hook useAutoTheme tự xử lý body class */
+  const handleTheme = (mode) => setThemeMode(mode);
 
   /* Language change */
   const handleLang = (code) => {
@@ -126,7 +99,8 @@ export default function SettingsModal({ open, onClose, lang }) {
     }, 280);
   };
 
-  const curLang = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+  // Dùng getLanguage() thay vì LANGUAGES.find() lặp lại
+  const curLang = getLanguage(lang);
 
   if (!open) return null;
 
@@ -170,78 +144,91 @@ export default function SettingsModal({ open, onClose, lang }) {
           {/* MAIN */}
           {page === 'main' && (
             <div key={`main-${animKey}`} className={pageClass}>
-              <button className="sm-row" onClick={() => goTo('display')}>
-                <div className="sm-row__info">
-                  <span className="sm-row__label">{s.display}</span>
-                  <span className="sm-row__sub">
-                    {s.displaySub} ·{' '}
-                    <em className="sm-row__sub--em">
-                      {THEME_MODES.find(m => m.value === themeMode)?.label}
-                    </em>
-                  </span>
-                </div>
-                <span className="sm-row__chevron"><ChevronRight /></span>
-              </button>
+              <div className="sm-page-scroll">
+                <button className="sm-row" onClick={() => goTo('display')}>
+                  <div className="sm-row__info">
+                    <span className="sm-row__label">{s.display}</span>
+                    <span className="sm-row__sub">
+                      {s.displaySub} ·{' '}
+                      <em className="sm-row__sub--em">
+                        {THEME_MODES.find(m => m.value === themeMode)?.label}
+                      </em>
+                    </span>
+                  </div>
+                  <span className="sm-row__chevron"><ChevronRight /></span>
+                </button>
 
-              <div className="sm-divider" />
+                <div className="sm-divider" />
 
-              <button className="sm-row" onClick={() => goTo('language')}>
-                <div className="sm-row__info">
-                  <span className="sm-row__label">{s.language}</span>
-                  <span className="sm-row__sub">{curLang.label}</span>
-                </div>
-                <span className="sm-row__chevron"><ChevronRight /></span>
-              </button>
+                <button className="sm-row" onClick={() => goTo('language')}>
+                  <div className="sm-row__info">
+                    <span className="sm-row__label">{s.language}</span>
+                    <span className="sm-row__sub">
+                      {curLang.flag} {curLang.label}
+                    </span>
+                  </div>
+                  <span className="sm-row__chevron"><ChevronRight /></span>
+                </button>
+              </div>
             </div>
           )}
 
           {/* DISPLAY */}
           {page === 'display' && (
             <div key={`display-${animKey}`} className={pageClass}>
-              <div className="sm-section-title">{s.appearance}</div>
-              <div className="sm-section-desc">{s.appearanceDesc}</div>
+              <div className="sm-page-header">
+                <div className="sm-section-title">{s.appearance}</div>
+                <div className="sm-section-desc">{s.appearanceDesc}</div>
+              </div>
 
-              {THEME_MODES.map((mode) => (
-                <button
-                  key={mode.value}
-                  className={`sm-radio-row${themeMode === mode.value ? ' selected' : ''}`}
-                  onClick={() => handleTheme(mode.value)}
-                >
-                  <div className="sm-radio-row__info">
-                    <span className="sm-radio-row__label">{mode.label}</span>
-                    {mode.note && (
-                      <span className="sm-radio-row__note">{mode.note}</span>
-                    )}
-                  </div>
-                  <div className={`sm-radio${themeMode === mode.value ? ' sm-radio--on' : ''}`}>
-                    <div className="sm-radio__dot" />
-                  </div>
-                </button>
-              ))}
+              <div className="sm-page-scroll">
+                {THEME_MODES.map((mode) => (
+                  <button
+                    key={mode.value}
+                    className={`sm-radio-row${themeMode === mode.value ? ' selected' : ''}`}
+                    onClick={() => handleTheme(mode.value)}
+                  >
+                    <div className="sm-radio-row__info">
+                      <span className="sm-radio-row__label">{mode.label}</span>
+                      {mode.note && (
+                        <span className="sm-radio-row__note">{mode.note}</span>
+                      )}
+                    </div>
+                    <div className={`sm-radio${themeMode === mode.value ? ' sm-radio--on' : ''}`}>
+                      <div className="sm-radio__dot" />
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
           {/* LANGUAGE */}
           {page === 'language' && (
             <div key={`language-${animKey}`} className={pageClass}>
-              <div className="sm-section-title">{s.selectLang}</div>
-              <div className="sm-section-desc">{s.selectLangDesc}</div>
+              <div className="sm-page-header">
+                <div className="sm-section-title">{s.selectLang}</div>
+                <div className="sm-section-desc">{s.selectLangDesc}</div>
+              </div>
 
-              {LANGUAGES.map((l) => (
-                <button
-                  key={l.code}
-                  className={`sm-lang-row${lang === l.code ? ' selected' : ''}${langBounce === l.code ? ' bouncing' : ''}`}
-                  onClick={() => handleLang(l.code)}
-                >
-                  <div className="sm-lang-row__info">
-                    <span className="sm-lang-row__label">{l.label}</span>
-                    <span className="sm-lang-row__native">{l.native}</span>
-                  </div>
-                  <span className={`sm-lang-row__check${lang === l.code ? ' show' : ''}`}>
-                    <CheckIcon />
-                  </span>
-                </button>
-              ))}
+              <div className="sm-page-scroll">
+                {LANGUAGES.map((l) => (
+                  <button
+                    key={l.code}
+                    className={`sm-lang-row${lang === l.code ? ' selected' : ''}${langBounce === l.code ? ' bouncing' : ''}`}
+                    onClick={() => handleLang(l.code)}
+                  >
+                    <div className="sm-lang-row__info">
+                      <span className="sm-lang-row__flag">{l.flag}</span>
+                      <span className="sm-lang-row__label">{l.label}</span>
+                      <span className="sm-lang-row__native">{l.native}</span>
+                    </div>
+                    <span className={`sm-lang-row__check${lang === l.code ? ' show' : ''}`}>
+                      <CheckIcon />
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
