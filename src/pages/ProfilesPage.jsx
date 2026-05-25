@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import posterCinema from '@/assets/poster_cinema.png';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { profileApi } from '@/services/profileApi';
 import { useAuth } from '@/contexts/AuthContext';
 import './ProfilesPage.css';
@@ -28,6 +28,7 @@ export default function ProfilesPage() {
   const [editPin, setEditPin] = useState('');
   const [editUsePin, setEditUsePin] = useState(false);
   const [editError, setEditError] = useState('');
+
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [pinAction, setPinAction] = useState('switch'); // 'switch' or 'edit'
   const [verifiedPin, setVerifiedPin] = useState('');
@@ -69,17 +70,7 @@ export default function ProfilesPage() {
     }
   }, [editProfile, editUsePin]);
 
-  useEffect(() => {
-    if (authLoading) return;
-    
-    if (!isAuthenticated) {
-      navigate(getPath('login'));
-      return;
-    }
-    fetchProfiles();
-  }, [isAuthenticated, authLoading, navigate]);
-
-  const fetchProfiles = async () => {
+  const fetchProfiles = React.useCallback(async () => {
     try {
       const res = await profileApi.getProfiles();
       if (res.data.success) {
@@ -90,7 +81,17 @@ export default function ProfilesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading) return;
+    
+    if (!isAuthenticated) {
+      navigate(getPath('login'));
+      return;
+    }
+    fetchProfiles();
+  }, [isAuthenticated, authLoading, navigate, fetchProfiles]);
 
   const openEditModal = (profile, validPin = '') => {
     setEditProfile(profile);
@@ -100,6 +101,7 @@ export default function ProfilesPage() {
     setEditError('');
     setAddFieldErrors({});
     setVerifiedPin(validPin);
+
   };
 
   const handleProfileClick = async (profile) => {
@@ -154,6 +156,7 @@ export default function ProfilesPage() {
 
       const res = await profileApi.updateProfile(editProfile.id, payload);
       if (res.data.success) {
+
         setEditProfile(null);
         setVerifiedPin('');
         fetchProfiles();

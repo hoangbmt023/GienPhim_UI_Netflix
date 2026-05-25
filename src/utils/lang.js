@@ -79,7 +79,7 @@ export const PATHS = {
   terms: { vi: '/dieu-khoan-su-dung', en: '/terms-of-use' },
   faq: { vi: '/cau-hoi-thuong-gap', en: '/faq' },
   contact: { vi: '/lien-he', en: '/contact' },
-  moderator: { vi: '/quan-ly', en: '/moderator' },
+  moderator: { vi: '/quan-ly', en: '/manager' },
   myTickets: { vi: '/lich-su-ho-tro', en: '/support-history' },
 };
 

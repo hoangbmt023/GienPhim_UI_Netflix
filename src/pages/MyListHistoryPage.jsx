@@ -80,18 +80,7 @@ export default function MyListHistoryPage() {
     setSearchParams({ tab });
   };
 
-  useEffect(() => {
-    if (authLoading || !selectedProfile) return;
-    if (activeTab === "history") fetchHistory(1);
-    else fetchSaved(1);
-  }, [activeTab, selectedProfile, authLoading, pageSize]);
-
-  // Scroll to top whenever page number changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [historyPage, savedPage]);
-
-  const fetchHistory = async (page = 1) => {
+  const fetchHistory = React.useCallback(async (page = 1) => {
     setLoading(true);
     try {
       const res = await movieApi.getHistory(page, pageSize);
@@ -105,9 +94,9 @@ export default function MyListHistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pageSize]);
 
-  const fetchSaved = async (page = 1) => {
+  const fetchSaved = React.useCallback(async (page = 1) => {
     setLoading(true);
     try {
       const res = await movieApi.getFavorites(page, pageSize);
@@ -121,7 +110,18 @@ export default function MyListHistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pageSize]);
+
+  useEffect(() => {
+    if (authLoading || !selectedProfile) return;
+    if (activeTab === "history") fetchHistory(1);
+    else fetchSaved(1);
+  }, [activeTab, selectedProfile, authLoading, pageSize, fetchHistory, fetchSaved]);
+
+  // Scroll to top whenever page number changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [historyPage, savedPage]);
 
   const handleRemoveHistory = async (historyId) => {
     try {

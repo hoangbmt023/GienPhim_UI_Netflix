@@ -10,4 +10,6 @@ export const profileApi = {
     return api.post(`/api/profiles/${id}/switch`, body);
   },
   resetPinWithPassword: (id, password) => api.post(`/api/profiles/${id}/reset-pin`, { password }),
+  updateNotifSettings: (id, data) =>
+    api.patch(`/api/profiles/${id}/notification-settings`, data),
 };

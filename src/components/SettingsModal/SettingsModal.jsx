@@ -4,6 +4,8 @@ import { getSwitchPath, setLang } from '@/utils/lang';
 import { useLang } from '@/utils/lang';
 import { useTheme } from '@/contexts/ThemeContext';
 import { LANGUAGES, getLanguage } from '@/constants/languages';
+import { useAuth } from '@/contexts/AuthContext';
+import { profileApi } from '@/services/profileApi';
 import './SettingsModal.css';
 
 /* ─── Icons ─── */
@@ -48,6 +50,8 @@ export default function SettingsModal({ open, onClose, lang }) {
   const [animKey, setAnimKey]       = useState(0);
   const [langBounce, setLangBounce] = useState(null);
   const [overlayOut, setOOut]       = useState(false);
+  const { user, selectedProfile, selectProfile } = useAuth();
+  const [savingNotif, setSavingNotif] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -102,6 +106,24 @@ export default function SettingsModal({ open, onClose, lang }) {
   // Dùng getLanguage() thay vì LANGUAGES.find() lặp lại
   const curLang = getLanguage(lang);
 
+  const handleNotifChange = async (muteDays, mutedForever) => {
+    if (!selectedProfile) return;
+    setSavingNotif(true);
+    try {
+      const res = await profileApi.updateNotifSettings(selectedProfile.id, {
+        notifMuteDays: muteDays,
+        notifMutedForever: mutedForever
+      });
+      if (res.data.success) {
+        selectProfile(res.data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSavingNotif(false);
+    }
+  };
+
   if (!open) return null;
 
   const pageClass = `sm-page sm-page--${direction}`;
@@ -131,6 +153,7 @@ export default function SettingsModal({ open, onClose, lang }) {
             {page === 'main'     && s.title}
             {page === 'display'  && s.display}
             {page === 'language' && s.language}
+            {page === 'notifications' && s.notifications}
           </span>
 
           <button className="sm-icon-btn" onClick={handleClose} aria-label={s.close}>
@@ -169,6 +192,21 @@ export default function SettingsModal({ open, onClose, lang }) {
                   </div>
                   <span className="sm-row__chevron"><ChevronRight /></span>
                 </button>
+
+                {selectedProfile && (
+                  <>
+                    <div className="sm-divider" />
+                    <button className="sm-row" onClick={() => goTo('notifications')}>
+                      <div className="sm-row__info">
+                        <span className="sm-row__label">{s.notifications}</span>
+                        <span className="sm-row__sub">
+                          {selectedProfile.notifMutedForever ? s.notifOptions.forever : s.notifOptions[selectedProfile.notifMuteDays] || s.notifOptions[1]}
+                        </span>
+                      </div>
+                      <span className="sm-row__chevron"><ChevronRight /></span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -228,6 +266,49 @@ export default function SettingsModal({ open, onClose, lang }) {
                     </span>
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* NOTIFICATIONS */}
+          {page === 'notifications' && selectedProfile && (
+            <div key={`notifications-${animKey}`} className={pageClass}>
+              <div className="sm-page-header">
+                <div className="sm-section-title">{s.notifMuteDays}</div>
+                <div className="sm-section-desc">{s.notificationDesc}</div>
+              </div>
+
+              <div className="sm-page-scroll">
+                {[1, 3, 7, 15, 30].map(days => {
+                  const isActive = !selectedProfile.notifMutedForever && selectedProfile.notifMuteDays === days;
+                  return (
+                    <button
+                      key={days}
+                      className={`sm-radio-row${isActive ? ' selected' : ''}`}
+                      onClick={() => handleNotifChange(days, false)}
+                      disabled={savingNotif}
+                    >
+                      <div className="sm-radio-row__info">
+                        <span className="sm-radio-row__label">{s.notifOptions[days]}</span>
+                      </div>
+                      <div className={`sm-radio${isActive ? ' sm-radio--on' : ''}`}>
+                        <div className="sm-radio__dot" />
+                      </div>
+                    </button>
+                  );
+                })}
+                <button
+                  className={`sm-radio-row${selectedProfile.notifMutedForever ? ' selected' : ''}`}
+                  onClick={() => handleNotifChange(0, true)}
+                  disabled={savingNotif}
+                >
+                  <div className="sm-radio-row__info">
+                    <span className="sm-radio-row__label">{s.notifOptions.forever}</span>
+                  </div>
+                  <div className={`sm-radio${selectedProfile.notifMutedForever ? ' sm-radio--on' : ''}`}>
+                    <div className="sm-radio__dot" />
+                  </div>
+                </button>
               </div>
             </div>
           )}
