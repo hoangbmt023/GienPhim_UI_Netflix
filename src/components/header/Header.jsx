@@ -336,7 +336,7 @@ export default function Header() {
                       <>
                         <div className="profile__dropdown-divider" />
                         <Link to={getPath('moderator')} className="profile__dropdown-item profile__dropdown-item--mod" onClick={() => setProfileOpen(false)}>
-                          {t.header.moderatorPanel}
+                          {t.header.managerPanel}
                         </Link>
                       </>
                     )}
@@ -408,7 +408,7 @@ export default function Header() {
                 </Link>
                 {user && ['MODERATOR', 'ADMIN'].includes(user.role) && (
                   <Link to={getPath('moderator')} className="drawer__account-link drawer__account-link--mod" onClick={() => setMobileOpen(false)}>
-                    {t.header.moderatorPanel}
+                    {t.header.managerPanel}
                   </Link>
                 )}
                 <button className="drawer__account-link drawer__signout" onClick={() => { logout(); setMobileOpen(false); }}>

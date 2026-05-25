@@ -130,30 +130,32 @@ export default function MovieDetailPage() {
   }, []);
 
   useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      try {
+        const res = await movieApi.checkFavorite(slug);
+        if (res.data.success && res.data.data.isFavorited) {
+          setIsSaved(true);
+          if (res.data.data.favoriteId) setFavoriteId(res.data.data.favoriteId);
+        } else {
+          setIsSaved(false);
+        }
+      } catch (err) {
+        console.error('Failed to check favorite status', err);
+      }
+    };
+
     if (isAuthenticated && selectedProfile && slug) {
       checkFavoriteStatus();
     }
   }, [isAuthenticated, selectedProfile, slug]);
 
-  const checkFavoriteStatus = async () => {
-    try {
-      const res = await movieApi.checkFavorite(slug);
-      if (res.data.success && res.data.data.isFavorited) {
-        setIsSaved(true);
-        if (res.data.data.favoriteId) setFavoriteId(res.data.data.favoriteId);
-      } else {
-        setIsSaved(false);
-      }
-    } catch (err) {
-      console.error('Failed to check favorite status', err);
-    }
-  };
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setLoading(true);
-    setTab('info');
-    setDescExpanded(false);
+    setTimeout(() => {
+      setLoading(true);
+      setTab('info');
+      setDescExpanded(false);
+    }, 0);
 
     getMovieDetail(slug)
       .then(r => {
