@@ -588,7 +588,22 @@ const en = {
     actionDelete: 'Delete',
     actionPublish: 'Publish',
     actionUnpublish: 'Unpublish',
-    all: 'All'
+    all: 'All',
+    // Trash
+    trash: 'Trash',
+    deleteTitle: 'Move to Trash',
+    deleteDesc: 'The announcement will be hidden and moved to trash. You can restore it later.',
+    deleteBtn: 'Soft Delete',
+    restoreTitle: 'Restore Announcement',
+    restoreDesc: 'The announcement will be restored to Draft status. Publish it again if you want to display it.',
+    restoreBtn: 'Restore',
+    forceDeleteTitle: 'Delete Permanently',
+    forceDeleteDesc: 'This action CANNOT be undone. The announcement will be completely removed from the system.',
+    forceDeleteBtn: 'Delete Permanently',
+    actionDelete: 'Delete (move to trash)',
+    actionRestore: 'Restore',
+    actionForceDelete: 'Delete Permanently',
+    deletedAt: 'Deleted at'
   }
 };
 

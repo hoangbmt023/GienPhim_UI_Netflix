@@ -589,7 +589,22 @@ const zh = {
     actionDelete: '删除',
     actionPublish: '发布',
     actionUnpublish: '取消发布',
-    all: '全部'
+    all: '全部',
+    // Trash
+    trash: '回收站',
+    deleteTitle: '移至回收站',
+    deleteDesc: '该公告将被隐藏并移至回收站。您稍后可以恢复它。',
+    deleteBtn: '软删除',
+    restoreTitle: '恢复公告',
+    restoreDesc: '该公告将恢复为草稿状态。如果需要显示，请重新发布。',
+    restoreBtn: '恢复',
+    forceDeleteTitle: '永久删除',
+    forceDeleteDesc: '此操作无法撤销。该公告将从系统中彻底删除。',
+    forceDeleteBtn: '永久删除',
+    actionDelete: '删除 (移至回收站)',
+    actionRestore: '恢复',
+    actionForceDelete: '永久删除',
+    deletedAt: '删除时间'
   }
 };
 

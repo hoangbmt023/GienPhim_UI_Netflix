@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { announcementApi } from '@/services/announcementApi';
-import { Plus, Edit2, Trash2, CheckCircle, XCircle, Megaphone, Check, ChevronDown, Eye } from 'lucide-react';
+import { Plus, Trash2, CheckCircle, XCircle, RotateCcw, Flame } from 'lucide-react';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import StatusModal from '@/components/StatusModal/StatusModal';
 import Pagination from '@/components/Pagination/Pagination';
@@ -36,8 +36,11 @@ export default function AnnouncementPanel() {
 
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmToggle, setConfirmToggle] = useState(null);
+  const [confirmRestore, setConfirmRestore] = useState(null);
+  const [confirmForceDelete, setConfirmForceDelete] = useState(null);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [filterScope, setFilterScope] = useState('');
+  const [viewMode, setViewMode] = useState('active'); // 'active' | 'trash'
   const [statusModal, setStatusModal] = useState({ open: false, type: 'success', title: '', description: '' });
   const [activeDatePickerField, setActiveDatePickerField] = useState(null);
   const [tempDate, setTempDate] = useState({ day: '1', month: '1', year: '2026', hour: '12', minute: '00', ampm: 'AM' });
@@ -45,7 +48,9 @@ export default function AnnouncementPanel() {
   const fetchAnnouncements = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await announcementApi.getAll({ page, size: 10, scope: filterScope });
+      const res = viewMode === 'trash'
+        ? await announcementApi.getDeleted({ page, size: 10 })
+        : await announcementApi.getAll({ page, size: 10, scope: filterScope });
       if (res.data.success) {
         setAnnouncements(res.data.data);
         setCurrentPage(res.data.pagination?.page || 1);
@@ -60,7 +65,7 @@ export default function AnnouncementPanel() {
 
   useEffect(() => {
     fetchAnnouncements(1);
-  }, [filterScope]);
+  }, [filterScope, viewMode]);
 
   const openAddForm = () => {
     setEditItem(null);
@@ -130,9 +135,31 @@ export default function AnnouncementPanel() {
       await announcementApi.delete(confirmDelete.id);
       setConfirmDelete(null);
       fetchAnnouncements(currentPage);
-      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: s.successDelete || 'Xóa thông báo thành công' });
+      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: s.successDelete || 'Đã chuyển thông báo vào thùng rác' });
     } catch (err) {
       setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Lỗi khi xóa' });
+    }
+  };
+
+  const handleRestore = async () => {
+    try {
+      await announcementApi.restore(confirmRestore.id);
+      setConfirmRestore(null);
+      fetchAnnouncements(currentPage);
+      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: 'Đã khôi phục thông báo' });
+    } catch (err) {
+      setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Lỗi khi khôi phục' });
+    }
+  };
+
+  const handleForceDelete = async () => {
+    try {
+      await announcementApi.forceDelete(confirmForceDelete.id);
+      setConfirmForceDelete(null);
+      fetchAnnouncements(currentPage);
+      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: 'Đã xóa vĩnh viễn thông báo' });
+    } catch (err) {
+      setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Lỗi khi xóa vĩnh viễn' });
     }
   };
 
@@ -174,20 +201,43 @@ export default function AnnouncementPanel() {
     else if (action === 'toggle') setConfirmToggle(item);
     else if (action === 'edit') openEditForm(item);
     else if (action === 'delete') setConfirmDelete(item);
+    else if (action === 'restore') setConfirmRestore(item);
+    else if (action === 'forceDelete') setConfirmForceDelete(item);
   };
 
   const filteredAnnouncements = announcements;
 
   return (
     <div className="admin-panel-content">
-      <div className="mod-header-section" style={{ padding: '0 0 20px 0', display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', marginBottom: '24px' }}>
-        <h2 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '24px', fontWeight: '600' }}>{s.manageAnnouncements || 'Quản lý thông báo'}</h2>
-        <button className="btn-primary" onClick={openAddForm} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          <Plus size={16} /> {s.addAnnouncement || 'Thêm mới'}
-        </button>
+      <div className="mod-header-section" style={{ padding: '0 0 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <h2 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '24px', fontWeight: '600' }}>{s.manageAnnouncements || 'Quản lý thông báo'}</h2>
+          {user?.role === 'ADMIN' && (
+            <div style={{ display: 'flex', gap: '6px' }}>
+              <button
+                className={`studio-filter-btn${viewMode === 'active' ? ' active' : ''}`}
+                onClick={() => { setViewMode('active'); setFilterScope(''); }}
+              >
+                {s.active || 'Đang hoạt động'}
+              </button>
+              <button
+                className={`studio-filter-btn${viewMode === 'trash' ? ' active' : ''}`}
+                onClick={() => setViewMode('trash')}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+              >
+                <Trash2 size={13} /> {s.trash || 'Thùng rác'}
+              </button>
+            </div>
+          )}
+        </div>
+        {viewMode === 'active' && (
+          <button className="btn-primary" onClick={openAddForm} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Plus size={16} /> {s.addAnnouncement || 'Thêm mới'}
+          </button>
+        )}
       </div>
 
-      {!showForm && (
+      {!showForm && viewMode === 'active' && (
         <div className="studio-filter-bar">
           <button className={`studio-filter-btn ${filterScope === '' ? 'active' : ''}`} onClick={() => setFilterScope('')}>{s.all || 'Tất cả'}</button>
           <button className={`studio-filter-btn ${filterScope === 'MARKETING' ? 'active' : ''}`} onClick={() => setFilterScope('MARKETING')}>MARKETING</button>
@@ -351,19 +401,33 @@ export default function AnnouncementPanel() {
                           {!a.startAt && !a.endAt && <div>{s.forever || 'Vĩnh viễn'}</div>}
                         </td>
                       <td style={{ padding: '12px', textAlign: 'right' }}>
-                        {(user?.role === 'ADMIN' || (user?.role === 'MODERATOR' && a.scope !== 'SYSTEM')) && (
-                          <CustomSelect 
+                        {viewMode === 'trash' ? (
+                          <CustomSelect
                             isFixed={true}
                             triggerText={s.actions || 'Thao tác...'}
                             triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
                             onChange={(action) => handleActionSelect(action, a)}
                             options={[
                               { value: 'detail', label: s.actionDetail || 'Thông tin' },
-                              ...(user?.role === 'ADMIN' ? [{ value: 'toggle', label: a.isActive ? (s.actionUnpublish || 'Ẩn thông báo') : (s.actionPublish || 'Hiện thông báo') }] : []),
-                              { value: 'edit', label: s.actionEdit || 'Chỉnh sửa' },
-                              ...(user?.role === 'ADMIN' ? [{ value: 'delete', label: s.actionDelete || 'Xóa' }] : []),
+                              { value: 'restore', label: s.actionRestore || 'Khôi phục' },
+                              { value: 'forceDelete', label: s.actionForceDelete || 'Xóa vĩnh viễn' }
                             ]}
                           />
+                        ) : (
+                          (user?.role === 'ADMIN' || (user?.role === 'MODERATOR' && a.scope !== 'SYSTEM')) && (
+                            <CustomSelect
+                              isFixed={true}
+                              triggerText={s.actions || 'Thao tác...'}
+                              triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
+                              onChange={(action) => handleActionSelect(action, a)}
+                              options={[
+                                { value: 'detail', label: s.actionDetail || 'Thông tin' },
+                                ...(user?.role === 'ADMIN' ? [{ value: 'toggle', label: a.isActive ? (s.actionUnpublish || 'Ẩn thông báo') : (s.actionPublish || 'Hiện thông báo') }] : []),
+                                { value: 'edit', label: s.actionEdit || 'Chỉnh sửa' },
+                                ...(user?.role === 'ADMIN' ? [{ value: 'delete', label: s.actionDelete || 'Xóa (vào thùng rác)' }] : []),
+                              ]}
+                            />
+                          )
                         )}
                       </td>
                     </tr>
@@ -388,11 +452,32 @@ export default function AnnouncementPanel() {
       <ConfirmModal
         isOpen={!!confirmDelete}
         onClose={() => setConfirmDelete(null)}
-        title={s.deleteTitle || "Xóa thông báo"}
-        description={s.deleteDesc || "Bạn có chắc chắn muốn xóa thông báo này không? Hành động này không thể hoàn tác."}
-        confirmText={s.deleteBtn || "Xóa"}
-        cancelText={s.cancel || "Hủy"}
+        title={s.deleteTitle || 'Chuyển vào thùng rác'}
+        description={s.deleteDesc || 'Thông báo sẽ bị ẩn và chuyển vào thùng rác. Bạn có thể khôi phục sau.'}
+        confirmText={s.deleteBtn || 'Xóa mềm'}
+        cancelText={s.cancel || 'Hủy'}
         onConfirm={handleDelete}
+        confirmButtonClass="modal-btn-danger"
+      />
+
+      <ConfirmModal
+        isOpen={!!confirmRestore}
+        onClose={() => setConfirmRestore(null)}
+        title={s.restoreTitle || 'Khôi phục thông báo'}
+        description={s.restoreDesc || 'Thông báo sẽ được khôi phục về trạng thái Draft. Bạn cần publish lại nếu muốn hiển thị.'}
+        confirmText={s.restoreBtn || 'Khôi phục'}
+        cancelText={s.cancel || 'Hủy'}
+        onConfirm={handleRestore}
+      />
+
+      <ConfirmModal
+        isOpen={!!confirmForceDelete}
+        onClose={() => setConfirmForceDelete(null)}
+        title={s.forceDeleteTitle || 'Xóa vĩnh viễn'}
+        description={s.forceDeleteDesc || 'Hành động này KHÔNG THỂ hoàn tác. Thông báo sẽ bị xóa hoàn toàn khỏi hệ thống.'}
+        confirmText={s.forceDeleteBtn || 'Xóa vĩnh viễn'}
+        cancelText={s.cancel || 'Hủy'}
+        onConfirm={handleForceDelete}
         confirmButtonClass="modal-btn-danger"
       />
 

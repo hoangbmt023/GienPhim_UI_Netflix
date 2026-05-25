@@ -589,7 +589,22 @@ const ja = {
     actionDelete: '削除',
     actionPublish: '公開',
     actionUnpublish: '非公開',
-    all: 'すべて'
+    all: 'すべて',
+    // Trash
+    trash: 'ゴミ筱',
+    deleteTitle: 'ゴミ筱に移動',
+    deleteDesc: 'お知らせは非表示になり、ゴミ筱に移動されます。後で復元できます。',
+    deleteBtn: 'ソフト削除',
+    restoreTitle: 'お知らせを復元',
+    restoreDesc: 'お知らせはドラフト状態に復元されます。表示するには再度公開してください。',
+    restoreBtn: '復元',
+    forceDeleteTitle: '永久制除',
+    forceDeleteDesc: 'この操作は元に戻せません。お知らせはシステムから完全に削除されます。',
+    forceDeleteBtn: '永久制除',
+    actionDelete: '削除（ゴミ筱へ）',
+    actionRestore: '復元',
+    actionForceDelete: '永久制除',
+    deletedAt: '削除日時'
   }
 };
 

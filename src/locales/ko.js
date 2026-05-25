@@ -589,7 +589,22 @@ const ko = {
     actionDelete: '삭제',
     actionPublish: '게시',
     actionUnpublish: '게시 취소',
-    all: '모두'
+    all: '모두',
+    // Trash
+    trash: '휴지통',
+    deleteTitle: '휴지통으로 이동',
+    deleteDesc: '공지가 숨겨지고 휴지통으로 이동됩니다. 나중에 복원할 수 있습니다.',
+    deleteBtn: '소프트 삭제',
+    restoreTitle: '공지 복원',
+    restoreDesc: '공지가 드래프트 상태로 복원됩니다. 표시하려면 다시 게시해 주세요.',
+    restoreBtn: '복원',
+    forceDeleteTitle: '영구 삭제',
+    forceDeleteDesc: '이 작업은 되돌릴 수 없습니다. 공지가 시스템에서 완전히 삭제됩니다.',
+    forceDeleteBtn: '영구 삭제',
+    actionDelete: '삭제 (휴지통으로)',
+    actionRestore: '복원',
+    actionForceDelete: '영구 삭제',
+    deletedAt: '삭제 일시'
   }
 };
 
