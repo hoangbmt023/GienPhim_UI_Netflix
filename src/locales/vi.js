@@ -589,7 +589,22 @@ const vi = {
     actionDelete: 'Xóa',
     actionPublish: 'Hiện thông báo',
     actionUnpublish: 'Ẩn thông báo',
-    all: 'Tất cả'
+    all: 'Tất cả',
+    // Trash
+    trash: 'Thùng rác',
+    deleteTitle: 'Chuyển vào thùng rác',
+    deleteDesc: 'Thông báo sẽ bị ẩn và chuyển vào thùng rác. Bạn có thể khôi phục sau.',
+    deleteBtn: 'Xóa mềm',
+    restoreTitle: 'Khôi phục thông báo',
+    restoreDesc: 'Thông báo sẽ được khôi phục về trạng thái Draft. Bạn cần publish lại nếu muốn hiển thị.',
+    restoreBtn: 'Khôi phục',
+    forceDeleteTitle: 'Xóa vĩnh viễn',
+    forceDeleteDesc: 'Hành động này KHÔNG THỂ hoàn tác. Thông báo sẽ bị xóa hoàn toàn khỏi hệ thống.',
+    forceDeleteBtn: 'Xóa vĩnh viễn',
+    actionDelete: 'Xóa (vào thùng rác)',
+    actionRestore: 'Khôi phục',
+    actionForceDelete: 'Xóa vĩnh viễn',
+    deletedAt: 'Xóa lúc'
   }
 };
 
