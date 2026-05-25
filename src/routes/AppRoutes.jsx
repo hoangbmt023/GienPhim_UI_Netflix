@@ -41,6 +41,7 @@ export default function AppRoutes() {
       {renderDualRoute('verifyOtp', <AuthPage initialView="VERIFY_OTP" />)}
       {renderDualRoute('resetPassword', <AuthPage initialView="RESET_PASSWORD" />)}
       {renderDualRoute('profiles', <ProfilesPage />)}
+      {renderDualRoute('moderator', <ModeratorPage />)}
 
 
       <Route element={<MainLayout />}>
@@ -75,7 +76,6 @@ export default function AppRoutes() {
 
         {renderDualRoute('myList', <MyListHistoryPage />)}
         {renderDualRoute('myTickets', <MyTicketsPage />)}
-        {renderDualRoute('moderator', <ModeratorPage />)}
 
       </Route>
 

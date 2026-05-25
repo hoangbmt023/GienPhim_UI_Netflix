@@ -1,0 +1,33 @@
+/* Filter bar */
+.studio-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.studio-filter-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.studio-filter-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.studio-filter-btn.active {
+  background: var(--netflix-red, #e50914);
+  border-color: var(--netflix-red, #e50914);
+  color: #ffffff;
+}
+
+/* Modal and Datetime picker styles could also go here if they are only for Announcement Panel */

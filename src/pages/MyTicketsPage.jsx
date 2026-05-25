@@ -56,27 +56,27 @@ export default function MyTicketsPage() {
     if (!isAuthenticated) { navigate(getPath('login')); return; }
   }, [isAuthenticated, authLoading, navigate]);
 
-  useEffect(() => {
-    if (!authLoading && isAuthenticated) fetchTickets();
-  }, [authLoading, isAuthenticated]);
-
-  const fetchTickets = async () => {
+  const fetchTickets = React.useCallback(async () => {
     setLoading(true);
     try {
       const res = await contactApi.getMyTickets({ page: 1, limit: 100 });
       if (res.data.success) {
         setTickets(res.data.data);
-        if (selectedTicket) {
-          const updated = res.data.data.find(t => t.id === selectedTicket.id);
-          if (updated) setSelectedTicket(updated);
-        }
+        setSelectedTicket(prev => {
+          if (!prev) return null;
+          return res.data.data.find(t => t.id === prev.id) || prev;
+        });
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) fetchTickets();
+  }, [authLoading, isAuthenticated, fetchTickets]);
 
   const formatDate = (d) => new Date(d).toLocaleString('vi-VN', {
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'

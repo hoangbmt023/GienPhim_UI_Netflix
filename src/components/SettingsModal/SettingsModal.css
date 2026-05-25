@@ -76,7 +76,6 @@ body.dark-night .settings-modal {
 @keyframes sm-overlay-in  { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sm-overlay-out { from { opacity: 1; } to { opacity: 0; } }
 
-/* ── Modal box ── */
 .settings-modal {
   position: absolute;
   top: 50%;
@@ -91,10 +90,7 @@ body.dark-night .settings-modal {
   display: flex;
   flex-direction: column;
   box-shadow: var(--sm-shadow);
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    box-shadow 0.25s ease;
+  /* Tránh dùng transition màu sắc tại đây để thay đổi theme lập tức (snappy) và mượt mà hơn */
   animation: sm-modal-in 0.24s cubic-bezier(0.175, 0.885, 0.32, 1.15) both;
 }
 .settings-modal--out {
@@ -117,7 +113,6 @@ body.dark-night .settings-modal {
   border-bottom: 1px solid var(--sm-border);
   flex-shrink: 0;
   gap: 8px;
-  transition: border-color 0.25s ease;
 }
 
 .sm-header__title {
@@ -127,7 +122,6 @@ body.dark-night .settings-modal {
   font-weight: 800;
   letter-spacing: -0.3px;
   color: var(--sm-text);
-  transition: color 0.25s ease;
 }
 
 .sm-header__title--main {
@@ -147,19 +141,18 @@ body.dark-night .settings-modal {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    transform 0.12s ease;
+  transition: transform 0.12s ease;
 }
 .sm-icon-btn:hover  { background: var(--sm-btn-hover); }
 .sm-icon-btn:active { transform: scale(0.9); }
 
 /* ── Scrollable body wrapper ── */
 .sm-body {
-  overflow: hidden;
+  /* overflow: hidden ở đây sẽ chặn scroll của sm-page */
+  /* Để sm-section-title + sm-section-desc cuộn cùng content,
+     sm-page tự quản lý scroll — sm-body không clip */
+  overflow: visible;
   position: relative;
-  /* min-height để không bị nhảy khi slide */
   min-height: 120px;
 }
 
@@ -167,8 +160,25 @@ body.dark-night .settings-modal {
 /* Forward: đi vào từ phải, ra về trái */
 .sm-page {
   width: 100%;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   max-height: min(72vh, 500px);
+}
+
+.sm-page-header {
+  flex-shrink: 0;
+  background: var(--sm-bg);
+  z-index: 2;
+  padding-bottom: 12px;
+  /* Đường kẻ mờ để phân tách header với danh sách scroll */
+  box-shadow: 0 4px 8px -4px var(--sm-bg);
+}
+
+.sm-page-scroll {
+  flex: 1;
+  overflow-y: auto;
+  /* Scrollbar mượt trên iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 .sm-page--forward {
@@ -204,24 +214,21 @@ body.dark-night .settings-modal {
    row-note       → 11.5px  (nhỏ nhất)
    ───────────────────────────────────────── */
 
-/* ── Section title ── */
+/* ── Section title + desc ── */
 .sm-section-title {
-  padding: 18px 16px 4px;
+  padding: 14px 16px 4px;
   font-size: 18px;
   font-weight: 800;
   color: var(--sm-text);
   letter-spacing: -0.2px;
   line-height: 1.2;
-  transition: color 0.25s ease;
 }
 
-/* ── Section description ── */
 .sm-section-desc {
-  padding: 4px 16px 14px;
+  padding: 0 16px;
   font-size: 14px;
   color: var(--sm-text-sub);
   line-height: 1.6;
-  transition: color 0.25s ease;
 }
 
 /* ── Main rows (Màn hình / Ngôn ngữ) ── */
@@ -236,9 +243,7 @@ body.dark-night .settings-modal {
   cursor: pointer;
   text-align: left;
   color: var(--sm-text);
-  transition:
-    background-color 0.15s ease,
-    color 0.25s ease;
+  transition: background-color 0.15s ease;
 }
 .sm-row:hover  { background: var(--sm-hover); }
 .sm-row:active { background: var(--sm-active); transition: background-color 0.06s; }
@@ -254,20 +259,17 @@ body.dark-night .settings-modal {
   font-size: 14.5px;
   font-weight: 600;
   color: var(--sm-text);
-  transition: color 0.25s ease;
 }
 
 .sm-row__sub {
   font-size: 12.5px;
   color: var(--sm-text-sub);
-  transition: color 0.25s ease;
 }
 
 .sm-row__sub--em {
   font-style: normal;
   font-weight: 600;
   color: var(--sm-text-em);
-  transition: color 0.25s ease;
 }
 
 .sm-row__chevron {
@@ -275,7 +277,7 @@ body.dark-night .settings-modal {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  transition: color 0.25s ease, transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 .sm-row:hover .sm-row__chevron { transform: translateX(3px); }
 
@@ -283,7 +285,6 @@ body.dark-night .settings-modal {
   height: 1px;
   background: var(--sm-border);
   margin: 2px 0;
-  transition: background-color 0.25s ease;
 }
 
 /* ── Radio rows (Display page) ── */
@@ -299,9 +300,7 @@ body.dark-night .settings-modal {
   cursor: pointer;
   text-align: left;
   color: var(--sm-text);
-  transition:
-    background-color 0.15s ease,
-    border-color 0.25s ease;
+  transition: background-color 0.15s ease;
 }
 .sm-radio-row:first-of-type { border-top: none; }
 .sm-radio-row:hover  { background: var(--sm-hover); }
@@ -321,7 +320,6 @@ body.dark-night .settings-modal {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--sm-text);
-  transition: color 0.25s ease;
 }
 
 /* Option note: nhỏ nhất */
@@ -329,7 +327,6 @@ body.dark-night .settings-modal {
   font-size: 11.5px;
   color: var(--sm-text-sub);
   line-height: 1.55;
-  transition: color 0.25s ease;
 }
 
 /* ── Radio button ── */
@@ -378,7 +375,6 @@ body.dark-night .settings-modal {
   color: var(--sm-text);
   transition:
     background-color 0.15s ease,
-    border-color 0.25s ease,
     transform 0.15s ease;
 }
 .sm-lang-row:first-child { border-top: none; }
@@ -408,13 +404,11 @@ body.dark-night .settings-modal {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--sm-text);
-  transition: color 0.25s ease;
 }
 
 .sm-lang-row__native {
   font-size: 11.5px;
   color: var(--sm-text-sub);
-  transition: color 0.25s ease;
 }
 
 .sm-lang-row__check {
@@ -445,4 +439,23 @@ body.dark-night .settings-modal {
   .sm-page {
     max-height: min(65vh, 460px);
   }
+}
+
+/* ── Tắt hover trên thiết bị touch (mobile/tablet) ──
+   Dùng (hover: none) để detect đúng touch device.
+   Khi user ấn màn hình rồi navigate sang page mới,
+   trạng thái :hover sẽ không bị "đóng băng" ở row cũ. ── */
+@media (hover: none) {
+  .sm-row:hover,
+  .sm-radio-row:hover,
+  .sm-lang-row:hover,
+  .sm-icon-btn:hover {
+    background: none;
+  }
+  /* Vẫn giữ selected state */
+  .sm-radio-row.selected { background: var(--sm-sel-bg); }
+  .sm-lang-row.selected  { background: var(--sm-sel-bg); }
+
+  /* Chevron cũng không translate khi hover trên touch */
+  .sm-row:hover .sm-row__chevron { transform: none; }
 }
