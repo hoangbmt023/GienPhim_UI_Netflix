@@ -72,3 +72,11 @@
   background: var(--netflix-red, #e50914) !important;
   color: #ffffff;
 }
+
+/* Action select dropdown menu overrides when isFixed (Portalled) */
+.action-select-menu {
+  left: auto !important;
+  width: max-content !important;
+  white-space: nowrap;
+}
+

@@ -8,6 +8,7 @@ import AnnouncementPanel from '@/components/Moderator/AnnouncementPanel';
 import SettingsModal from '@/components/SettingsModal/SettingsModal';
 import './ModeratorPage.css';
 import './AdminPanel.css';
+import './TicketShared.css';
 
 export default function ModeratorPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -17,7 +18,7 @@ export default function ModeratorPage() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get('tab') || 'contacts';
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
 
   const handleTabChange = (tab) => {
     setSearchParams({ tab });
@@ -47,7 +48,7 @@ export default function ModeratorPage() {
           <Menu size={24} />
         </button>
       )}
-      
+
       {isSidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
 
       <div className={`admin-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
@@ -69,34 +70,35 @@ export default function ModeratorPage() {
         </div>
 
         <div className="sidebar-menu">
-          <button 
+          <button
             className={`sidebar-menu-item ${activeTab === 'contacts' ? 'active' : ''}`}
             onClick={() => handleTabChange('contacts')}
           >
             <MessageSquare size={20} />
             {isSidebarOpen && <span>{t.admin.manageContacts}</span>}
           </button>
-          <button 
+          <button
             className={`sidebar-menu-item ${activeTab === 'announcements' ? 'active' : ''}`}
             onClick={() => handleTabChange('announcements')}
           >
             <Megaphone size={20} />
             {isSidebarOpen && <span>{t.admin.manageAnnouncements}</span>}
           </button>
+        </div>
 
-          <div style={{ flex: 1 }} />
-          <button 
+        <div className={`sidebar-footer ${isSidebarOpen ? '' : 'closed'}`} style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: isSidebarOpen ? '20px' : '20px 0' }}>
+          <button
             className="sidebar-menu-item"
             onClick={() => navigate(getPath('home'))}
-            style={{ marginTop: 'auto', borderTop: '1px solid var(--border-color)', borderRadius: 0 }}
+            style={{ justifyContent: isSidebarOpen ? 'flex-start' : 'center', padding: isSidebarOpen ? '12px 20px' : '12px 0' }}
           >
             <Home size={20} />
             {isSidebarOpen && <span>{t.common?.home || 'Trang chủ'}</span>}
           </button>
-          <button 
+          <button
             className="sidebar-menu-item"
             onClick={() => setSettingsOpen(true)}
-            style={{ borderRadius: 0, marginBottom: '8px' }}
+            style={{ justifyContent: isSidebarOpen ? 'flex-start' : 'center', padding: isSidebarOpen ? '12px 20px' : '12px 0' }}
           >
             <Settings size={20} />
             {isSidebarOpen && <span>{t.header?.settings || 'Cài đặt'}</span>}
