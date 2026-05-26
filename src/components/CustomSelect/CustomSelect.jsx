@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown } from 'lucide-react';
 import './CustomSelect.css';
 
@@ -20,22 +21,30 @@ export default function CustomSelect({
   useEffect(() => {
     const onClickOutside = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
+        // If clicking on the portalled menu options, do not close immediately on mousedown
+        if (isFixed && e.target.closest('.custom-select-menu')) {
+          return;
+        }
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', onClickOutside);
     
-    if (isFixed) {
-      document.addEventListener('scroll', () => setIsOpen(false), true);
+    const handleScrollOrResize = () => {
+      setIsOpen(false);
+    };
+
+    if (isFixed && isOpen) {
+      window.addEventListener('scroll', handleScrollOrResize, true);
+      window.addEventListener('resize', handleScrollOrResize, true);
     }
     
     return () => {
       document.removeEventListener('mousedown', onClickOutside);
-      if (isFixed) {
-        document.removeEventListener('scroll', () => setIsOpen(false), true);
-      }
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+      window.removeEventListener('resize', handleScrollOrResize, true);
     };
-  }, [isFixed]);
+  }, [isFixed, isOpen]);
 
   const toggleDropdown = (e) => {
     if (disabled) return;
@@ -45,9 +54,11 @@ export default function CustomSelect({
       setMenuStyle({
         position: 'fixed',
         top: rect.bottom + 4 + 'px',
-        left: (rect.right - 140) + 'px', // align right, width is ~140px
-        width: '140px',
-        zIndex: 99999
+        right: (window.innerWidth - rect.right) + 'px',
+        minWidth: rect.width + 'px',
+        width: 'max-content',
+        whiteSpace: 'nowrap',
+        zIndex: 999999
       });
     }
     setIsOpen(!isOpen);
@@ -55,6 +66,26 @@ export default function CustomSelect({
 
   const selectedOpt = options.find(o => o.value === value) || options[0];
   const displayLabel = triggerText || (selectedOpt ? selectedOpt.label : '');
+
+  const menuContent = (
+    <div 
+      className={`custom-select-menu ${isFixed ? 'action-select-menu' : ''}`} 
+      style={isFixed ? { ...menuStyle, left: 'auto', bottom: 'auto', textAlign: 'left', margin: 0 } : {}}
+    >
+      {options.map((opt) => (
+        <div
+          key={opt.value}
+          onClick={() => {
+            if (onChange) onChange(opt.value);
+            setIsOpen(false);
+          }}
+          className={`custom-select-option ${opt.value === value && !isFixed ? 'selected' : ''}`}
+        >
+          {opt.label}
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div ref={containerRef} className={`custom-select-container ${className}`} style={{ ...style, width: isFixed ? 'auto' : '100%', display: isFixed ? 'inline-block' : 'block' }}>
@@ -68,25 +99,7 @@ export default function CustomSelect({
         <span>{displayLabel}</span>
         <ChevronDown size={isFixed ? 14 : 16} className={`custom-select-chevron ${isOpen ? 'open' : ''}`} style={isFixed ? { marginLeft: '8px' } : {}} />
       </button>
-      {isOpen && (
-        <div 
-          className={`custom-select-menu ${isFixed ? 'action-select-menu' : ''}`} 
-          style={isFixed ? { ...menuStyle, right: 'auto', bottom: 'auto', textAlign: 'left', margin: 0 } : {}}
-        >
-          {options.map((opt) => (
-            <div
-              key={opt.value}
-              onClick={() => {
-                if (onChange) onChange(opt.value);
-                setIsOpen(false);
-              }}
-              className={`custom-select-option ${opt.value === value && !isFixed ? 'selected' : ''}`}
-            >
-              {opt.label}
-            </div>
-          ))}
-        </div>
-      )}
+      {isOpen && (isFixed ? createPortal(menuContent, document.body) : menuContent)}
     </div>
   );
 }

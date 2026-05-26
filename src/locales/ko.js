@@ -576,8 +576,7 @@ const ko = {
     scopeSystem: 'SYSTEM (유지 보수)',
     // Display Types
     displayBar: '가로 (BAR)',
-    displayModal: '팝업 (MODAL)',
-    displayToast: '플로팅 (TOAST)',
+    displayModal: '팝업 (BOX)',
     // Levels
     levelInfo: 'INFO (정보)',
     levelWarning: 'WARNING (경고)',
