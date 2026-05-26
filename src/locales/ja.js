@@ -576,8 +576,7 @@ const ja = {
     scopeSystem: 'SYSTEM (メンテナンス)',
     // Display Types
     displayBar: '水平 (BAR)',
-    displayModal: 'ポップアップ (MODAL)',
-    displayToast: 'フローティング (TOAST)',
+    displayModal: 'ポップアップ (BOX)',
     // Levels
     levelInfo: 'INFO (情報)',
     levelWarning: 'WARNING (警告)',

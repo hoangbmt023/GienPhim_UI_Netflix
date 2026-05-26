@@ -7,6 +7,7 @@ import { MessageSquare, Clock, CheckCircle, XCircle, AlertCircle, Edit2, X, Send
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import StatusModal from '@/components/StatusModal/StatusModal';
 import './MyTicketsPage.css';
+import './TicketShared.css';
 
 const STATUS_CONFIG = {
   OPEN: { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)', icon: AlertCircle },
@@ -91,19 +92,19 @@ export default function MyTicketsPage() {
       setShowReplyForm(false);
       setIsPreviewMode(false);
       await fetchTickets();
-      setStatusModal({ 
-        open: true, 
-        type: 'success', 
-        title: t.tickets.statusSuccessTitle, 
-        description: 'Phản hồi của bạn đã được gửi. Hỗ trợ viên sẽ sớm liên hệ lại.' 
+      setStatusModal({
+        open: true,
+        type: 'success',
+        title: t.tickets.statusSuccessTitle,
+        description: 'Phản hồi của bạn đã được gửi. Hỗ trợ viên sẽ sớm liên hệ lại.'
       });
     } catch (err) {
       console.error(err);
-      setStatusModal({ 
-        open: true, 
-        type: 'error', 
-        title: t.tickets.statusErrorTitle, 
-        description: err.response?.data?.message || 'Có lỗi xảy ra khi gửi phản hồi.' 
+      setStatusModal({
+        open: true,
+        type: 'error',
+        title: t.tickets.statusErrorTitle,
+        description: err.response?.data?.message || 'Có lỗi xảy ra khi gửi phản hồi.'
       });
     } finally {
       setIsReplying(false);
@@ -117,19 +118,19 @@ export default function MyTicketsPage() {
       await contactApi.userCloseTicket(selectedTicket.id);
       await fetchTickets();
       setShowReplyForm(false);
-      setStatusModal({ 
-        open: true, 
-        type: 'success', 
-        title: t.tickets.statusSuccessTitle, 
-        description: 'Yêu cầu hỗ trợ đã được đánh dấu là giải quyết.' 
+      setStatusModal({
+        open: true,
+        type: 'success',
+        title: t.tickets.statusSuccessTitle,
+        description: 'Yêu cầu hỗ trợ đã được đánh dấu là giải quyết.'
       });
     } catch (err) {
       console.error(err);
-      setStatusModal({ 
-        open: true, 
-        type: 'error', 
-        title: t.tickets.statusErrorTitle, 
-        description: err.response?.data?.message || 'Có lỗi xảy ra khi đóng yêu cầu.' 
+      setStatusModal({
+        open: true,
+        type: 'error',
+        title: t.tickets.statusErrorTitle,
+        description: err.response?.data?.message || 'Có lỗi xảy ra khi đóng yêu cầu.'
       });
     } finally {
       setIsClosing(false);

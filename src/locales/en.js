@@ -575,8 +575,7 @@ const en = {
     scopeSystem: 'SYSTEM (Maintenance)',
     // Display Types
     displayBar: 'Horizontal (BAR)',
-    displayModal: 'Popup (MODAL)',
-    displayToast: 'Floating (TOAST)',
+    displayModal: 'Popup (BOX)',
     // Levels
     levelInfo: 'INFO (Information)',
     levelWarning: 'WARNING (Alert)',

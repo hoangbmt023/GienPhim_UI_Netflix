@@ -1,0 +1,637 @@
+/*
+ * TicketShared.css
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Shared styles used by BOTH ModeratorPage and MyTicketsPage.
+ * DO NOT put page-specific (.mod-*, .mytickets-*) styles here.
+ * Import this file in both ModeratorPage.jsx and MyTicketsPage.jsx.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shared item sub-components ──────────────────────────────────────────── */
+.item-status-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.item-subject {
+  margin: 0 0 6px;
+  font-size: 15px;
+  color: #fff;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-bottom {
+  display: flex;
+}
+
+.item-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── Ticket Detail Wrapper ───────────────────────────────────────────────── */
+.ticket-detail-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ── Forum header ────────────────────────────────────────────────────────── */
+.ticket-forum-header {
+  padding: 24px;
+  border-bottom: 1px solid #2e2e2e;
+  background: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.forum-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.forum-title {
+  font-size: 20px;
+  color: #9ca3af;
+  margin: 0;
+  font-weight: 500;
+}
+
+.forum-id {
+  background: #3b82f6;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.forum-subtitle {
+  font-size: 15px;
+  color: #d1d5db;
+}
+
+.forum-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.forum-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid #444;
+  background: #252525;
+  color: #e5e5e5;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.forum-btn:hover {
+  background: #333;
+}
+
+.forum-btn-close {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+
+.forum-btn-close:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* ── Posts ───────────────────────────────────────────────────────────────── */
+.ticket-posts {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ticket-post {
+  background: #1f1f1f;
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.post-header {
+  background: #252525;
+  padding: 12px 20px;
+  border-bottom: 1px solid #2e2e2e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.post-meta {
+  color: #9ca3af;
+}
+
+.post-meta strong {
+  color: #e5e5e5;
+}
+
+.post-badge {
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.post-badge.owner {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.post-badge.operator {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.post-body {
+  padding: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #e5e5e5;
+}
+
+/* ── Post body markdown extras ───────────────────────────────────────────── */
+.post-body h3 {
+  margin: 0;
+  font-size: 17px;
+  color: #fff;
+}
+
+.post-body blockquote {
+  border-left: 4px solid #e50914;
+  margin: 15px 0;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ccc;
+  border-radius: 0 4px 4px 0;
+}
+
+.post-body ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.post-body li { margin: 0; }
+
+.post-body a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.post-body a:hover { text-decoration: underline; }
+
+.post-body strong { color: #fff; }
+
+/* ── Reply Form ──────────────────────────────────────────────────────────── */
+.reply-form-section {
+  margin: 0 24px 30px;
+  background: #1f1f1f;
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+  flex-shrink: 0;
+}
+
+.reply-form-header {
+  background: #252525;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: 1px solid #2e2e2e;
+}
+
+.reply-form-body {
+  padding: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.form-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-col.full-width { flex: 100%; }
+
+.form-col label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.form-col input,
+.form-col textarea {
+  background: #141414;
+  border: 1px solid #333;
+  padding: 12px;
+  border-radius: 4px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.form-col input.readonly-input {
+  background: #1a1a1a;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.form-col textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-col textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* ── Rich Text Editor ────────────────────────────────────────────────────── */
+.rich-text-container {
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #141414;
+  overflow: hidden;
+}
+
+.rich-text-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #252525;
+  border-bottom: 1px solid #333;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 4px;
+  border-right: 1px solid #444;
+  padding-right: 8px;
+}
+
+.toolbar-group:last-child { border-right: none; }
+
+.rich-text-toolbar button {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #ccc;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rich-text-toolbar button:hover {
+  background: #333;
+  border-color: #444;
+  color: #fff;
+}
+
+/* Preview button — soft red, readable */
+.rich-text-toolbar button.preview-btn {
+  background: rgba(229, 9, 20, 0.15);
+  color: #f87171;
+  border-color: rgba(229, 9, 20, 0.35);
+  font-size: 12px;
+  padding: 4px 10px;
+  font-weight: 600;
+}
+
+.rich-text-toolbar button.preview-btn:hover {
+  background: rgba(229, 9, 20, 0.28);
+  color: #fff;
+  border-color: rgba(229, 9, 20, 0.55);
+}
+
+.rich-text-container textarea {
+  border: none !important;
+  border-radius: 0 !important;
+  width: 100%;
+  margin: 0;
+  display: block;
+}
+
+.rich-text-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 4px 12px;
+  background: #1a1a1a;
+  border-top: 1px solid #333;
+  font-size: 11px;
+  color: #666;
+}
+
+/* ── Attachment fake ─────────────────────────────────────────────────────── */
+.attachment-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #141414;
+}
+
+.attachment-box {
+  flex: 1;
+  padding: 10px 12px;
+  color: #888;
+  font-size: 14px;
+  border-right: 1px solid #333;
+}
+
+.attachment-browse-btn {
+  background: #252525;
+  color: #ccc;
+  border: none;
+  padding: 10px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  border-right: 1px solid #333;
+}
+
+.attachment-browse-btn:hover { background: #333; }
+
+.attachment-add-btn {
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.attachment-add-btn:hover { background: #252525; }
+
+/* ── Actions ─────────────────────────────────────────────────────────────── */
+.reply-form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  background: var(--netflix-red);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) { background: #c11119; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-cancel {
+  background: transparent;
+  color: #d1d5db;
+  border: 1px solid #444;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
+
+.closed-notice {
+  margin: 0 24px 30px;
+  padding: 16px;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px dashed rgba(220, 38, 38, 0.3);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* ── Preview mode ────────────────────────────────────────────────────────── */
+.preview-mode-content {
+  background: #1a1a1a;
+  min-height: 160px;
+  padding: 12px;
+  color: #e5e5e5;
+  font-size: 14px;
+  line-height: 1.6;
+  border-top: 1px solid #333;
+  overflow-y: auto;
+}
+
+.preview-mode-content h3 { margin: 0 0 10px; }
+
+.preview-mode-content blockquote {
+  border-left: 3px solid #e50914;
+  margin: 0;
+  padding-left: 12px;
+  color: #aaa;
+}
+
+.preview-mode-content ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.preview-mode-content a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.preview-mode-content a:hover { text-decoration: underline; }
+
+/* ── Mobile (shared) ─────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .forum-header-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .forum-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .forum-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .reply-form-section {
+    margin: 0;
+  }
+
+  .ticket-posts {
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+
+  .ticket-detail-wrapper {
+    height: auto;
+  }
+}
+
+/* ── DARK NIGHT overrides (shared) ──────────────────────────────────────── */
+body.dark-night .item-subject { color: #111111; }
+
+body.dark-night .ticket-forum-header {
+  background: #ffffff;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .forum-title   { color: #333333; }
+body.dark-night .forum-subtitle { color: #555555; }
+
+body.dark-night .forum-btn {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #333333;
+}
+
+body.dark-night .forum-btn:hover { background: rgba(0, 0, 0, 0.05); }
+
+body.dark-night .ticket-post {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .post-header {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .post-meta strong { color: #111111; }
+body.dark-night .post-body        { color: #333333; }
+body.dark-night .post-body h3     { color: #111111; }
+body.dark-night .post-body strong { color: #111111; }
+
+body.dark-night .post-body blockquote {
+  background: rgba(0, 0, 0, 0.02);
+  color: #555555;
+}
+
+body.dark-night .reply-form-section {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .reply-form-header {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+  color: #111111;
+}
+
+body.dark-night .form-col label { color: #555555; }
+
+body.dark-night .form-col input,
+body.dark-night .form-col textarea {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #111111;
+}
+
+body.dark-night .form-col input.readonly-input {
+  background: rgba(0, 0, 0, 0.05);
+  color: #555555;
+}
+
+body.dark-night .rich-text-container {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-night .rich-text-toolbar {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .rich-text-toolbar button        { color: #555555; }
+body.dark-night .rich-text-toolbar button:hover  {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111111;
+}
+
+body.dark-night .preview-mode-content {
+  background: #ffffff;
+  color: #333333;
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-night .preview-mode-content blockquote { color: #555555; }

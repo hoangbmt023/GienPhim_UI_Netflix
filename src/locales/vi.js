@@ -576,8 +576,7 @@ const vi = {
     scopeSystem: 'SYSTEM (Hệ thống, Bảo trì)',
     // Display Types
     displayBar: 'Thanh ngang (BAR)',
-    displayModal: 'Hộp thoại (MODAL)',
-    displayToast: 'Thông báo nổi (TOAST)',
+    displayModal: 'Hộp thoại (BOX)',
     // Levels
     levelInfo: 'INFO (Thông tin)',
     levelWarning: 'WARNING (Cảnh báo)',
