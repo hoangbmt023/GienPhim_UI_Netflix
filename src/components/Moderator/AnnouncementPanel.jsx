@@ -21,7 +21,7 @@ export default function AnnouncementPanel() {
   const [totalPages, setTotalPages] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     title: '',
     badge: 'THÔNG BÁO',
@@ -209,7 +209,7 @@ export default function AnnouncementPanel() {
 
   return (
     <div className="admin-panel-content">
-      <div className="mod-header-section" style={{ padding: '0 0 20px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', marginBottom: '24px' }}>
+      <div className="mod-header-section">
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <h2 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '24px', fontWeight: '600' }}>{s.manageAnnouncements || 'Quản lý thông báo'}</h2>
           {user?.role === 'ADMIN' && (
@@ -254,25 +254,25 @@ export default function AnnouncementPanel() {
               <div className="admin-form-grid">
                 <div>
                   <label>{s.title || 'Tên nội bộ (Title)'}</label>
-                  <input type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
+                  <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
                 </div>
                 <div>
                   <label>{s.badge || 'Badge (nhãn)'}</label>
-                  <input type="text" value={formData.badge} onChange={e => setFormData({...formData, badge: e.target.value})} required />
+                  <input type="text" value={formData.badge} onChange={e => setFormData({ ...formData, badge: e.target.value })} required />
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label>{s.content || 'Nội dung hiển thị (Text)'}</label>
-                  <textarea value={formData.text} onChange={e => setFormData({...formData, text: e.target.value})} required rows="3"></textarea>
+                  <textarea value={formData.text} onChange={e => setFormData({ ...formData, text: e.target.value })} required rows="3"></textarea>
                 </div>
                 <div>
                   <label>{s.link || 'Đường dẫn (Link)'}</label>
-                  <input type="url" value={formData.link} onChange={e => setFormData({...formData, link: e.target.value})} />
+                  <input type="url" value={formData.link} onChange={e => setFormData({ ...formData, link: e.target.value })} />
                 </div>
                 <div>
                   <label>{s.scope || 'Phạm vi'}</label>
                   <CustomSelect
                     value={formData.scope}
-                    onChange={val => setFormData({...formData, scope: val})}
+                    onChange={val => setFormData({ ...formData, scope: val })}
                     options={[
                       { value: "MARKETING", label: s.scopeMarketing || "MARKETING (Khuyến mãi, Event)" },
                       { value: "CONTENT", label: s.scopeContent || "CONTENT (Cập nhật phim)" },
@@ -285,11 +285,10 @@ export default function AnnouncementPanel() {
                   <label>{s.displayType || 'Kiểu hiển thị'}</label>
                   <CustomSelect
                     value={formData.display}
-                    onChange={val => setFormData({...formData, display: val})}
+                    onChange={val => setFormData({ ...formData, display: val })}
                     options={[
                       { value: "BAR", label: s.displayBar || "Thanh ngang (BAR)" },
-                      { value: "BOX", label: s.displayModal || "Hộp thoại (MODAL)" },
-                      { value: "TOAST", label: s.displayToast || "Thông báo nổi (TOAST)" }
+                      { value: "BOX", label: s.displayModal || "Hộp thoại (BOX)" },
                     ]}
                   />
                 </div>
@@ -297,7 +296,7 @@ export default function AnnouncementPanel() {
                   <label>{s.level || 'Mức độ'}</label>
                   <CustomSelect
                     value={formData.type}
-                    onChange={val => setFormData({...formData, type: val})}
+                    onChange={val => setFormData({ ...formData, type: val })}
                     options={[
                       { value: "INFO", label: s.levelInfo || "INFO (Thông tin)" },
                       { value: "WARNING", label: s.levelWarning || "WARNING (Cảnh báo)" },
@@ -327,7 +326,7 @@ export default function AnnouncementPanel() {
                   </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+              <div className="ann-form-actions">
                 <button type="submit" className="btn-primary">{s.saveAnnouncement || 'Lưu'}</button>
                 <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>{s.cancel || 'Hủy'}</button>
               </div>
@@ -337,103 +336,104 @@ export default function AnnouncementPanel() {
           <div className="admin-data-card" style={{ padding: '0' }}>
             <div className="table-responsive">
               <table className="admin-table" style={{ width: '100%', color: 'var(--text-primary)', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: 'var(--bg-tertiary, rgba(255,255,255,0.05))', textAlign: 'left' }}>
-                  <th style={{ padding: '12px' }}>{s.status || 'Trạng thái'}</th>
-                  <th style={{ padding: '12px' }}>{s.title || 'Tiêu đề / Badge'}</th>
-                  <th>{s.displayType || 'Kiểu'}</th>
-                  <th>{s.scope || 'Phạm vi'}</th>
-                  <th>{s.time || 'Thời gian'}</th>
-                  <th style={{ padding: '12px', textAlign: 'right' }}>{s.actions || 'Thao tác'}</th>
-                </tr>
-              </thead>
-              <tbody style={{ opacity: (loading && filteredAnnouncements.length > 0) ? 0.5 : 1, transition: 'opacity 0.2s ease', pointerEvents: loading ? 'none' : 'auto' }}>
-                {loading && filteredAnnouncements.length === 0 ? (
-                  Array.from({ length: 2 }).map((_, i) => (
-                    <tr key={`skeleton-${i}`}>
-                      <td colSpan="6" style={{ padding: 0, borderBottom: '1px solid var(--border-color)' }}>
-                        <div className="mod-ticket-skeleton" style={{ height: '76px', borderBottom: 'none' }} />
-                      </td>
-                    </tr>
-                  ))
-                ) : !loading && filteredAnnouncements.length === 0 ? (
-                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>{s.noAnnouncements || 'Không có thông báo nào.'}</td></tr>
-                ) : (
-                  filteredAnnouncements.map(a => {
-                    let typeClass = 'default';
-                    if (a.type === 'INFO') typeClass = 'info';
-                    else if (a.type === 'WARNING') typeClass = 'warning';
-                    else if (a.type === 'DANGER') typeClass = 'danger';
-                    else if (a.type === 'SUCCESS') typeClass = 'success';
+                <thead>
+                  <tr style={{ background: 'var(--bg-tertiary, rgba(255,255,255,0.05))', textAlign: 'left' }}>
+                    <th style={{ padding: '12px' }}>{s.status || 'Trạng thái'}</th>
+                    <th style={{ padding: '12px' }}>{s.title || 'Tiêu đề / Badge'}</th>
+                    <th>{s.displayType || 'Kiểu'}</th>
+                    <th>{s.scope || 'Phạm vi'}</th>
+                    <th>{s.time || 'Thời gian'}</th>
+                    <th style={{ padding: '12px', textAlign: 'right' }}>{s.actions || 'Thao tác'}</th>
+                  </tr>
+                </thead>
+                <tbody style={{ opacity: (loading && filteredAnnouncements.length > 0) ? 0.5 : 1, transition: 'opacity 0.2s ease', pointerEvents: loading ? 'none' : 'auto' }}>
+                  {loading && filteredAnnouncements.length === 0 ? (
+                    Array.from({ length: 2 }).map((_, i) => (
+                      <tr key={`skeleton-${i}`}>
+                        <td colSpan="6" style={{ padding: 0, borderBottom: '1px solid var(--border-color)' }}>
+                          <div className="mod-ticket-skeleton" style={{ height: '76px', borderBottom: 'none' }} />
+                        </td>
+                      </tr>
+                    ))
+                  ) : !loading && filteredAnnouncements.length === 0 ? (
+                    <tr><td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>{s.noAnnouncements || 'Không có thông báo nào.'}</td></tr>
+                  ) : (
+                    filteredAnnouncements.map(a => {
+                      let typeClass = 'default';
+                      if (a.type === 'INFO') typeClass = 'info';
+                      else if (a.type === 'WARNING') typeClass = 'warning';
+                      else if (a.type === 'DANGER') typeClass = 'danger';
+                      else if (a.type === 'SUCCESS') typeClass = 'success';
 
-                    let scopeClass = 'default';
-                    if (a.scope === 'MARKETING') scopeClass = 'info';
-                    else if (a.scope === 'CONTENT') scopeClass = 'success';
-                    else if (a.scope === 'SYSTEM') scopeClass = 'danger';
+                      let scopeClass = 'default';
+                      if (a.scope === 'MARKETING') scopeClass = 'info';
+                      else if (a.scope === 'CONTENT') scopeClass = 'success';
+                      else if (a.scope === 'SYSTEM') scopeClass = 'danger';
 
-                    return (
-                      <tr key={a.id}>
-                        <td style={{ padding: '12px' }}>
-                          {a.isActive ? (
-                            <span className="badge-pill success"><CheckCircle size={12} /> {s.active || 'Active'}</span>
-                          ) : (
-                            <span className="badge-pill default"><XCircle size={12} /> {s.draft || 'Draft'}</span>
-                          )}
-                        </td>
-                        <td className="truncate-cell" style={{ padding: '12px' }} title={a.title}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <span style={{ background: 'var(--bg-tertiary, rgba(0,0,0,0.08))', border: '1px solid var(--border-color, rgba(0,0,0,0.12))', padding: '2px 6px', borderRadius: '4px', fontSize: '0.8em', color: 'var(--text-secondary)', alignSelf: 'flex-start' }}>{a.badge}</span>
-                            <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{a.title}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '12px' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
-                            <span className={`badge-pill ${typeClass}`}>{a.type}</span>
-                            <span className="badge-pill default">{a.display}</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '12px' }}>
-                          <span className={`badge-pill ${scopeClass}`}>{a.scope}</span>
-                        </td>
-                        <td style={{ padding: '12px', fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                          {a.startAt && <div>{s.from || 'Từ'}: {formatDate(a.startAt)}</div>}
-                          {a.endAt && <div>{s.to || 'Đến'}: {formatDate(a.endAt)}</div>}
-                          {!a.startAt && !a.endAt && <div>{s.forever || 'Vĩnh viễn'}</div>}
-                        </td>
-                      <td style={{ padding: '12px', textAlign: 'right' }}>
-                        {viewMode === 'trash' ? (
-                          <CustomSelect
-                            isFixed={true}
-                            triggerText={s.actions || 'Thao tác...'}
-                            triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
-                            onChange={(action) => handleActionSelect(action, a)}
-                            options={[
-                              { value: 'detail', label: s.actionDetail || 'Thông tin' },
-                              { value: 'restore', label: s.actionRestore || 'Khôi phục' },
-                              { value: 'forceDelete', label: s.actionForceDelete || 'Xóa vĩnh viễn' }
-                            ]}
-                          />
-                        ) : (
-                          (user?.role === 'ADMIN' || (user?.role === 'MODERATOR' && a.scope !== 'SYSTEM')) && (
-                            <CustomSelect
-                              isFixed={true}
-                              triggerText={s.actions || 'Thao tác...'}
-                              triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
-                              onChange={(action) => handleActionSelect(action, a)}
-                              options={[
-                                { value: 'detail', label: s.actionDetail || 'Thông tin' },
-                                ...(user?.role === 'ADMIN' ? [{ value: 'toggle', label: a.isActive ? (s.actionUnpublish || 'Ẩn thông báo') : (s.actionPublish || 'Hiện thông báo') }] : []),
-                                { value: 'edit', label: s.actionEdit || 'Chỉnh sửa' },
-                                ...(user?.role === 'ADMIN' ? [{ value: 'delete', label: s.actionDelete || 'Xóa (vào thùng rác)' }] : []),
-                              ]}
-                            />
-                          )
-                        )}
-                      </td>
-                    </tr>
-                  )})
-                )}
-              </tbody>
+                      return (
+                        <tr key={a.id}>
+                          <td style={{ padding: '12px' }}>
+                            {a.isActive ? (
+                              <span className="badge-pill success"><CheckCircle size={12} /> {s.active || 'Active'}</span>
+                            ) : (
+                              <span className="badge-pill default"><XCircle size={12} /> {s.draft || 'Draft'}</span>
+                            )}
+                          </td>
+                          <td className="truncate-cell" style={{ padding: '12px' }} title={a.title}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                              <span style={{ background: 'var(--bg-tertiary, rgba(0,0,0,0.08))', border: '1px solid var(--border-color, rgba(0,0,0,0.12))', padding: '2px 6px', borderRadius: '4px', fontSize: '0.8em', color: 'var(--text-secondary)', alignSelf: 'flex-start' }}>{a.badge}</span>
+                              <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{a.title}</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '12px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
+                              <span className={`badge-pill ${typeClass}`}>{a.type}</span>
+                              <span className="badge-pill default">{a.display}</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '12px' }}>
+                            <span className={`badge-pill ${scopeClass}`}>{a.scope}</span>
+                          </td>
+                          <td style={{ padding: '12px', fontSize: '0.9em', color: 'var(--text-secondary)' }}>
+                            {a.startAt && <div>{s.from || 'Từ'}: {formatDate(a.startAt)}</div>}
+                            {a.endAt && <div>{s.to || 'Đến'}: {formatDate(a.endAt)}</div>}
+                            {!a.startAt && !a.endAt && <div>{s.forever || 'Vĩnh viễn'}</div>}
+                          </td>
+                          <td style={{ padding: '12px', textAlign: 'right' }}>
+                            {viewMode === 'trash' ? (
+                              <CustomSelect
+                                isFixed={true}
+                                triggerText={s.actions || 'Thao tác...'}
+                                triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
+                                onChange={(action) => handleActionSelect(action, a)}
+                                options={[
+                                  { value: 'detail', label: s.actionDetail || 'Thông tin' },
+                                  { value: 'restore', label: s.actionRestore || 'Khôi phục' },
+                                  { value: 'forceDelete', label: s.actionForceDelete || 'Xóa vĩnh viễn' }
+                                ]}
+                              />
+                            ) : (
+                              (user?.role === 'ADMIN' || (user?.role === 'MODERATOR' && a.scope !== 'SYSTEM')) && (
+                                <CustomSelect
+                                  isFixed={true}
+                                  triggerText={s.actions || 'Thao tác...'}
+                                  triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
+                                  onChange={(action) => handleActionSelect(action, a)}
+                                  options={[
+                                    { value: 'detail', label: s.actionDetail || 'Thông tin' },
+                                    ...(user?.role === 'ADMIN' ? [{ value: 'toggle', label: a.isActive ? (s.actionUnpublish || 'Ẩn thông báo') : (s.actionPublish || 'Hiện thông báo') }] : []),
+                                    { value: 'edit', label: s.actionEdit || 'Chỉnh sửa' },
+                                    ...(user?.role === 'ADMIN' ? [{ value: 'delete', label: s.actionDelete || 'Xóa (vào thùng rác)' }] : []),
+                                  ]}
+                                />
+                              )
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
+                </tbody>
               </table>
             </div>
 
@@ -507,12 +507,12 @@ export default function AnnouncementPanel() {
             <h3 style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '20px' }}>
               {t.common.info || 'Chi tiết thông báo'}
             </h3>
-            
+
             <div className="detail-modal-row">
               <span className="detail-modal-label">{s.title || 'Tiêu đề'}:</span>
               <span className="detail-modal-val" style={{ fontWeight: 'bold' }}>{selectedDetail.title}</span>
             </div>
-            
+
             <div className="detail-modal-row">
               <span className="detail-modal-label">{s.badge || 'Badge'}:</span>
               <span className="detail-modal-val">
@@ -549,6 +549,20 @@ export default function AnnouncementPanel() {
             </div>
 
             <div className="detail-modal-row">
+              <span className="detail-modal-label">{s.createdBy || 'Người tạo'}:</span>
+              <span className="detail-modal-val">
+                {selectedDetail.createdBy ? `${selectedDetail.createdBy.email} (${selectedDetail.createdBy.role})` : '---'}
+              </span>
+            </div>
+
+            <div className="detail-modal-row">
+              <span className="detail-modal-label">{s.updatedBy || 'Người sửa'}:</span>
+              <span className="detail-modal-val">
+                {selectedDetail.updatedBy ? `${selectedDetail.updatedBy.email} (${selectedDetail.updatedBy.role})` : '---'}
+              </span>
+            </div>
+
+            <div className="detail-modal-row">
               <span className="detail-modal-label">{s.time || 'Thời gian'}:</span>
               <span className="detail-modal-val">
                 {selectedDetail.startAt && <div>{s.from || 'Từ'}: {formatDate(selectedDetail.startAt)}</div>}
@@ -556,6 +570,15 @@ export default function AnnouncementPanel() {
                 {!selectedDetail.startAt && !selectedDetail.endAt && <div>{s.forever || 'Vĩnh viễn'}</div>}
               </span>
             </div>
+
+            {(selectedDetail.isDeleted || selectedDetail.deletedAt) && (
+              <div className="detail-modal-row">
+                <span className="detail-modal-label">{s.deletedAt || 'Thời gian xóa'}:</span>
+                <span className="detail-modal-val" style={{ color: '#ef4444' }}>
+                  {formatDate(selectedDetail.deletedAt)}
+                </span>
+              </div>
+            )}
 
             <div className="detail-modal-row">
               <span className="detail-modal-label">{s.status || 'Trạng thái'}:</span>
@@ -579,11 +602,11 @@ export default function AnnouncementPanel() {
             <h3 className="datepicker-modal-title">
               {activeDatePickerField === 'startAt' ? (s.startDate || 'Ngày bắt đầu') : (s.endDate || 'Ngày kết thúc')}
             </h3>
-            
+
             <div className="datepicker-grid">
               <div>
                 <label className="datepicker-label">Ngày</label>
-                <select value={tempDate.day} onChange={e => setTempDate({...tempDate, day: e.target.value})} className="datepicker-select">
+                <select value={tempDate.day} onChange={e => setTempDate({ ...tempDate, day: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
                     <option key={d} value={d}>{d}</option>
                   ))}
@@ -591,7 +614,7 @@ export default function AnnouncementPanel() {
               </div>
               <div>
                 <label className="datepicker-label">Tháng</label>
-                <select value={tempDate.month} onChange={e => setTempDate({...tempDate, month: e.target.value})} className="datepicker-select">
+                <select value={tempDate.month} onChange={e => setTempDate({ ...tempDate, month: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
                     <option key={m} value={m}>Tháng {m}</option>
                   ))}
@@ -599,7 +622,7 @@ export default function AnnouncementPanel() {
               </div>
               <div>
                 <label className="datepicker-label">Năm</label>
-                <select value={tempDate.year} onChange={e => setTempDate({...tempDate, year: e.target.value})} className="datepicker-select">
+                <select value={tempDate.year} onChange={e => setTempDate({ ...tempDate, year: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map(y => (
                     <option key={y} value={y}>{y}</option>
                   ))}
@@ -610,7 +633,7 @@ export default function AnnouncementPanel() {
             <div className="datepicker-grid time-grid">
               <div>
                 <label className="datepicker-label">Giờ</label>
-                <select value={tempDate.hour} onChange={e => setTempDate({...tempDate, hour: e.target.value})} className="datepicker-select">
+                <select value={tempDate.hour} onChange={e => setTempDate({ ...tempDate, hour: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
                     <option key={h} value={h}>{h}</option>
                   ))}
@@ -618,7 +641,7 @@ export default function AnnouncementPanel() {
               </div>
               <div>
                 <label className="datepicker-label">Phút</label>
-                <select value={tempDate.minute} onChange={e => setTempDate({...tempDate, minute: e.target.value})} className="datepicker-select">
+                <select value={tempDate.minute} onChange={e => setTempDate({ ...tempDate, minute: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0')).map(m => (
                     <option key={m} value={m}>{m}</option>
                   ))}
@@ -626,7 +649,7 @@ export default function AnnouncementPanel() {
               </div>
               <div>
                 <label className="datepicker-label">AM/PM</label>
-                <select value={tempDate.ampm} onChange={e => setTempDate({...tempDate, ampm: e.target.value})} className="datepicker-select">
+                <select value={tempDate.ampm} onChange={e => setTempDate({ ...tempDate, ampm: e.target.value })} className="datepicker-select">
                   <option value="AM">AM</option>
                   <option value="PM">PM</option>
                 </select>

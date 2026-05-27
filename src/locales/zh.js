@@ -576,8 +576,7 @@ const zh = {
     scopeSystem: 'SYSTEM (系统维护)',
     // Display Types
     displayBar: '横幅 (BAR)',
-    displayModal: '弹窗 (MODAL)',
-    displayToast: '提示框 (TOAST)',
+    displayModal: '弹窗 (BOX)',
     // Levels
     levelInfo: 'INFO (普通信息)',
     levelWarning: 'WARNING (警告)',
