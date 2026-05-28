@@ -603,7 +603,38 @@ const zh = {
     actionDelete: '删除 (移至回收站)',
     actionRestore: '恢复',
     actionForceDelete: '永久删除',
-    deletedAt: '删除时间'
+    deletedAt: '删除时间',
+    createdBy: '创建人',
+    updatedBy: '修改人',
+    // Computed Status
+    scheduled: '已预定',
+    expired: '已过期',
+    // Datepicker
+    setSchedule: '设置时间',
+    clearStartDate: '无开始时间',
+    clearEndDate: '无期限',
+    noteStartNull: '如果为空：发布后立即显示。',
+    noteEndNull: '如果为空：将没有过期时间，一直显示直到手动关闭。',
+    immediateStart: '立即',
+    successTitle: '成功',
+    successRestore: '公告已恢复',
+    successForceDelete: '公告已永久删除',
+    deletedStatus: '已删除',
+    day: '日',
+    month: '月',
+    year: '年',
+    hour: '时',
+    minute: '分',
+    selectDateTime: '选择日期和时间...',
+  },
+
+  // ── ANNOUNCEMENT BAR ──
+  announcementBar: {
+    back: '返回',
+    close: '关闭',
+    watchNow: '立即观看',
+    next: '下一个',
+    gotIt: '知道了'
   }
 };
 

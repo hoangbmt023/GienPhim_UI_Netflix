@@ -603,7 +603,38 @@ const vi = {
     actionDelete: 'Xóa (vào thùng rác)',
     actionRestore: 'Khôi phục',
     actionForceDelete: 'Xóa vĩnh viễn',
-    deletedAt: 'Xóa lúc'
+    deletedAt: 'Xóa lúc',
+    createdBy: 'Người tạo',
+    updatedBy: 'Người sửa',
+    // Computed Status
+    scheduled: 'Đã lên lịch',
+    expired: 'Đã hết hạn',
+    // Datepicker
+    setSchedule: 'Đặt lịch',
+    clearStartDate: 'Không đặt lịch bắt đầu',
+    clearEndDate: 'Không giới hạn thời gian',
+    noteStartNull: 'Nếu để trống: thông báo sẽ hiển thị ngay khi được Publish, không cần chờ lịch.',
+    noteEndNull: 'Nếu để trống: thông báo sẽ không có ngày hết hạn, hiển thị vĩnh viễn cho đến khi được tắt thủ công.',
+    immediateStart: 'Ngay lập tức',
+    successTitle: 'Thành công',
+    successRestore: 'Đã khôi phục thông báo',
+    successForceDelete: 'Đã xóa vĩnh viễn thông báo',
+    deletedStatus: 'Đã xóa',
+    day: 'Ngày',
+    month: 'Tháng',
+    year: 'Năm',
+    hour: 'Giờ',
+    minute: 'Phút',
+    selectDateTime: 'Chọn ngày giờ...',
+  },
+
+  // ── ANNOUNCEMENT BAR ──
+  announcementBar: {
+    back: 'Quay lại',
+    close: 'Đóng',
+    watchNow: 'Xem ngay',
+    next: 'Tiếp theo',
+    gotIt: 'Đã hiểu'
   }
 };
 
