@@ -603,7 +603,38 @@ const ko = {
     actionDelete: '삭제 (휴지통으로)',
     actionRestore: '복원',
     actionForceDelete: '영구 삭제',
-    deletedAt: '삭제 일시'
+    deletedAt: '삭제 일시',
+    createdBy: '작성자',
+    updatedBy: '수정자',
+    // Computed Status
+    scheduled: '예약됨',
+    expired: '만료됨',
+    // Datepicker
+    setSchedule: '일정 설정',
+    clearStartDate: '시작 일정 없음',
+    clearEndDate: '기한 없음',
+    noteStartNull: '비워둘 경우: 게시 후 즉시 표시됩니다.',
+    noteEndNull: '비워둘 경우: 만료일 없이 수동으로 종료할 때까지 계속 표시됩니다.',
+    immediateStart: '즉시',
+    successTitle: '성공',
+    successRestore: '공지사항이 복원되었습니다',
+    successForceDelete: '공지사항이 영구적으로 삭제되었습니다',
+    deletedStatus: '삭제됨',
+    day: '일',
+    month: '월',
+    year: '년',
+    hour: '시',
+    minute: '분',
+    selectDateTime: '날짜 및 시간 선택...',
+  },
+
+  // ── ANNOUNCEMENT BAR ──
+  announcementBar: {
+    back: '뒤로',
+    close: '닫기',
+    watchNow: '지금 보기',
+    next: '다음',
+    gotIt: '확인'
   }
 };
 

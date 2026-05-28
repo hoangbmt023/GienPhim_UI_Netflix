@@ -602,7 +602,38 @@ const en = {
     actionDelete: 'Delete (move to trash)',
     actionRestore: 'Restore',
     actionForceDelete: 'Delete Permanently',
-    deletedAt: 'Deleted at'
+    deletedAt: 'Deleted at',
+    createdBy: 'Created by',
+    updatedBy: 'Updated by',
+    // Computed Status
+    scheduled: 'Scheduled',
+    expired: 'Expired',
+    // Datepicker
+    setSchedule: 'Set Schedule',
+    clearStartDate: 'No start date',
+    clearEndDate: 'No expiration',
+    noteStartNull: 'If empty: The announcement will be displayed immediately upon publishing.',
+    noteEndNull: 'If empty: The announcement will not have an expiration date and will be displayed forever until manually unpublished.',
+    immediateStart: 'Immediately',
+    successTitle: 'Success',
+    successRestore: 'Announcement restored successfully',
+    successForceDelete: 'Announcement permanently deleted',
+    deletedStatus: 'Deleted',
+    day: 'Day',
+    month: 'Month',
+    year: 'Year',
+    hour: 'Hour',
+    minute: 'Minute',
+    selectDateTime: 'Select date & time...',
+  },
+
+  // ── ANNOUNCEMENT BAR ──
+  announcementBar: {
+    back: 'Back',
+    close: 'Close',
+    watchNow: 'Watch Now',
+    next: 'Next',
+    gotIt: 'Got It'
   }
 };
 

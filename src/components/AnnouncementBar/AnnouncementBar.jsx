@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { announcementApi } from '@/services/announcementApi';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLang } from '@/utils/lang';
 import './AnnouncementBar.css';
 
 const AnnouncementBar = () => {
+  const { t } = useLang();
+  const s = t.announcementBar || {};
   const { isAuthenticated, selectedProfile } = useAuth();
   const [announcements, setAnnouncements] = useState([]);
   const [visibleBars, setVisibleBars] = useState([]);
@@ -30,10 +33,37 @@ const AnnouncementBar = () => {
   const processAnnouncements = (activeAnns) => {
     const savedData = JSON.parse(localStorage.getItem('gienphim_seen_ids') || '{}');
     const now = new Date().getTime();
+    let hasChanges = false;
+
+    // --- GARBAGE COLLECTION (Dọn rác LocalStorage) ---
+    Object.keys(savedData).forEach(key => {
+      // 1. Xóa các key đã quá hạn TTL (không phải forever)
+      if (savedData[key] !== 'forever' && now > savedData[key]) {
+        delete savedData[key];
+        hasChanges = true;
+      }
+      
+      // 2. Xóa các key của phiên bản cũ (cùng ID nhưng khác updatedAt)
+      const idPart = key.split('_')[0];
+      const activeAnn = activeAnns.find(a => a.id === idPart);
+      if (activeAnn) {
+         const activeKey = `${activeAnn.id}_${new Date(activeAnn.updatedAt || 0).getTime()}`;
+         if (key !== activeKey) {
+            delete savedData[key];
+            hasChanges = true;
+         }
+      }
+    });
+
+    if (hasChanges) {
+       localStorage.setItem('gienphim_seen_ids', JSON.stringify(savedData));
+    }
+    // ------------------------------------------------
 
     // Lọc những thông báo chưa xem hoặc đã hết hạn TTL
     const filterFn = (a) => {
-      const seenTime = savedData[a.id];
+      const cacheKey = `${a.id}_${new Date(a.updatedAt || 0).getTime()}`;
+      const seenTime = savedData[cacheKey];
       if (!seenTime) return true;
       if (seenTime === 'forever') return false; // Tắt vĩnh viễn
       return now > seenTime; // Đã quá hạn TTL
@@ -50,21 +80,23 @@ const AnnouncementBar = () => {
     }
   };
 
-  const markAsSeen = (id) => {
+  const markAsSeen = (ann) => {
     const savedData = JSON.parse(localStorage.getItem('gienphim_seen_ids') || '{}');
     const now = new Date().getTime();
     
+    const cacheKey = `${ann.id}_${new Date(ann.updatedAt || 0).getTime()}`;
+
     // Tính toán TTL
     if (isAuthenticated && selectedProfile) {
       if (selectedProfile.notifMutedForever) {
-        savedData[id] = 'forever';
+        savedData[cacheKey] = 'forever';
       } else {
         const days = selectedProfile.notifMuteDays || 1;
-        savedData[id] = now + days * 24 * 60 * 60 * 1000;
+        savedData[cacheKey] = now + days * 24 * 60 * 60 * 1000;
       }
     } else {
       // Guest: mặc định 1 ngày
-      savedData[id] = now + 1 * 24 * 60 * 60 * 1000;
+      savedData[cacheKey] = now + 1 * 24 * 60 * 60 * 1000;
     }
 
     localStorage.setItem('gienphim_seen_ids', JSON.stringify(savedData));
@@ -72,7 +104,7 @@ const AnnouncementBar = () => {
 
   const handleAcknowledge = () => {
     const box = visibleBoxes[currentBoxIndex];
-    if (box) markAsSeen(box.id);
+    if (box) markAsSeen(box);
     
     if (currentBoxIndex < visibleBoxes.length - 1) {
       setCurrentBoxIndex(prev => prev + 1);
@@ -90,7 +122,8 @@ const AnnouncementBar = () => {
     const now = new Date().getTime();
     const bars = announcements.filter(a => {
       if (a.display !== 'BAR') return false;
-      const seenTime = savedData[a.id];
+      const cacheKey = `${a.id}_${new Date(a.updatedAt || 0).getTime()}`;
+      const seenTime = savedData[cacheKey];
       if (!seenTime) return true;
       if (seenTime === 'forever') return false;
       return now > seenTime;
@@ -102,20 +135,20 @@ const AnnouncementBar = () => {
   const handleCloseModal = () => {
     // Mark all visible boxes as seen when clicking X
     visibleBoxes.forEach(box => {
-      markAsSeen(box.id);
+      markAsSeen(box);
     });
     closeModal();
   };
 
   const handleCloseBar = () => {
     const bar = visibleBars[currentBarIndex];
-    if (bar) markAsSeen(bar.id);
+    if (bar) markAsSeen(bar);
     setVisibleBars([]);
   };
 
   const handleBarIteration = () => {
     const bar = visibleBars[currentBarIndex];
-    if (bar) markAsSeen(bar.id); // Chạy hết 1 vòng cũng coi như đã xem
+    if (bar) markAsSeen(bar); // Chạy hết 1 vòng cũng coi như đã xem
 
     if (currentBarIndex < visibleBars.length - 1) {
       setCurrentBarIndex(prev => prev + 1);
@@ -148,14 +181,14 @@ const AnnouncementBar = () => {
               <button 
                 className="ann-box__icon-btn ann-box__back" 
                 onClick={() => setCurrentBoxIndex(prev => prev - 1)}
-                title="Quay lại"
+                title={s.back || "Quay lại"}
               >
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="15 18 9 12 15 6" />
                 </svg>
               </button>
             )}
-            <button className="ann-box__icon-btn ann-box__close" onClick={handleCloseModal} title="Đóng">
+            <button className="ann-box__icon-btn ann-box__close" onClick={handleCloseModal} title={s.close || "Đóng"}>
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
@@ -190,9 +223,9 @@ const AnnouncementBar = () => {
               </div>
             )}
             <div className="ann-box__footer" key={`footer-${box.id}`}>
-              {box.link && <a href={box.link} target="_blank" rel="noopener noreferrer" className="ann-box__btn ann-box__btn--primary">Xem ngay</a>}
+              {box.link && <a href={box.link} target="_blank" rel="noopener noreferrer" className="ann-box__btn ann-box__btn--primary">{s.watchNow || 'Xem ngay'}</a>}
               <button className="ann-box__btn ann-box__btn--outline" onClick={handleAcknowledge}>
-                {visibleBoxes.length > 1 && currentBoxIndex < visibleBoxes.length - 1 ? 'Tiếp theo' : 'Đã hiểu'}
+                {visibleBoxes.length > 1 && currentBoxIndex < visibleBoxes.length - 1 ? (s.next || 'Tiếp theo') : (s.gotIt || 'Đã hiểu')}
               </button>
             </div>
           </div>

@@ -603,7 +603,38 @@ const ja = {
     actionDelete: '削除（ゴミ筱へ）',
     actionRestore: '復元',
     actionForceDelete: '永久制除',
-    deletedAt: '削除日時'
+    deletedAt: '削除日時',
+    createdBy: '作成者',
+    updatedBy: '更新者',
+    // Computed Status
+    scheduled: 'スケジュール済み',
+    expired: '期限切れ',
+    // Datepicker
+    setSchedule: 'スケジュール設定',
+    clearStartDate: '開始予定なし',
+    clearEndDate: '期限なし',
+    noteStartNull: '空白の場合：公開後すぐに表示されます。',
+    noteEndNull: '空白の場合：有効期限はなく、手動で非公開にするまで表示され続けます。',
+    immediateStart: '今すぐ',
+    successTitle: '成功',
+    successRestore: 'お知らせを復元しました',
+    successForceDelete: 'お知らせを完全に削除しました',
+    deletedStatus: '削除済み',
+    day: '日',
+    month: '月',
+    year: '年',
+    hour: '時',
+    minute: '分',
+    selectDateTime: '日時を選択...',
+  },
+
+  // ── ANNOUNCEMENT BAR ──
+  announcementBar: {
+    back: '戻る',
+    close: '閉じる',
+    watchNow: '今すぐ観る',
+    next: '次へ',
+    gotIt: '了解'
   }
 };
 
