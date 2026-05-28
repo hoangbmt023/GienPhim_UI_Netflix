@@ -21,6 +21,7 @@ export default function AnnouncementPanel() {
   const [totalPages, setTotalPages] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
 
   const [formData, setFormData] = useState({
     title: '',
@@ -69,6 +70,7 @@ export default function AnnouncementPanel() {
 
   const openAddForm = () => {
     setEditItem(null);
+    setFormErrors({});
     setFormData({
       title: '', badge: 'THÔNG BÁO', text: '', link: '',
       type: 'INFO', display: 'BAR', scope: 'MARKETING', startAt: '', endAt: ''
@@ -78,6 +80,7 @@ export default function AnnouncementPanel() {
 
   const openEditForm = (item) => {
     setEditItem(item);
+    setFormErrors({});
     setFormData({
       title: item.title,
       badge: item.badge,
@@ -96,22 +99,26 @@ export default function AnnouncementPanel() {
     e.preventDefault();
     try {
       const payload = { ...formData };
-      if (!payload.startAt) delete payload.startAt;
+      if (!payload.startAt) payload.startAt = null;
       else payload.startAt = new Date(payload.startAt).toISOString();
-      if (!payload.endAt) delete payload.endAt;
+      if (!payload.endAt) payload.endAt = null;
       else payload.endAt = new Date(payload.endAt).toISOString();
 
       if (editItem) {
         await announcementApi.update(editItem.id, payload);
-        setStatusModal({ open: true, type: 'success', title: 'Thành công', description: s.successUpdate || 'Cập nhật thông báo thành công' });
+        setStatusModal({ open: true, type: 'success', title: s.successTitle || 'Thành công', description: s.successUpdate || 'Cập nhật thông báo thành công' });
       } else {
         await announcementApi.create(payload);
-        setStatusModal({ open: true, type: 'success', title: 'Thành công', description: s.successCreate || 'Tạo thông báo thành công' });
+        setStatusModal({ open: true, type: 'success', title: s.successTitle || 'Thành công', description: s.successCreate || 'Tạo thông báo thành công' });
       }
       setShowForm(false);
       fetchAnnouncements(currentPage);
     } catch (err) {
-      setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Có lỗi xảy ra' });
+      if (err.response?.data?.errors) {
+        setFormErrors(err.response.data.errors);
+      } else {
+        setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Có lỗi xảy ra' });
+      }
     }
   };
 
@@ -135,7 +142,7 @@ export default function AnnouncementPanel() {
       await announcementApi.delete(confirmDelete.id);
       setConfirmDelete(null);
       fetchAnnouncements(currentPage);
-      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: s.successDelete || 'Đã chuyển thông báo vào thùng rác' });
+      setStatusModal({ open: true, type: 'success', title: s.successTitle || 'Thành công', description: s.successDelete || 'Đã chuyển thông báo vào thùng rác' });
     } catch (err) {
       setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Lỗi khi xóa' });
     }
@@ -146,7 +153,7 @@ export default function AnnouncementPanel() {
       await announcementApi.restore(confirmRestore.id);
       setConfirmRestore(null);
       fetchAnnouncements(currentPage);
-      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: 'Đã khôi phục thông báo' });
+      setStatusModal({ open: true, type: 'success', title: s.successTitle || 'Thành công', description: s.successRestore || 'Đã khôi phục thông báo' });
     } catch (err) {
       setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Lỗi khi khôi phục' });
     }
@@ -157,7 +164,7 @@ export default function AnnouncementPanel() {
       await announcementApi.forceDelete(confirmForceDelete.id);
       setConfirmForceDelete(null);
       fetchAnnouncements(currentPage);
-      setStatusModal({ open: true, type: 'success', title: 'Thành công', description: 'Đã xóa vĩnh viễn thông báo' });
+      setStatusModal({ open: true, type: 'success', title: s.successTitle || 'Thành công', description: s.successForceDelete || 'Đã xóa vĩnh viễn thông báo' });
     } catch (err) {
       setStatusModal({ open: true, type: 'error', title: s.error || 'Lỗi', description: err.response?.data?.message || 'Lỗi khi xóa vĩnh viễn' });
     }
@@ -193,6 +200,14 @@ export default function AnnouncementPanel() {
 
     const dateStr = `${tempDate.year}-${tempDate.month.padStart(2, '0')}-${tempDate.day.padStart(2, '0')}T${hour.toString().padStart(2, '0')}:${tempDate.minute.padStart(2, '0')}`;
     setFormData({ ...formData, [activeDatePickerField]: dateStr });
+    setFormErrors(prev => ({ ...prev, [activeDatePickerField]: null }));
+    setActiveDatePickerField(null);
+  };
+
+  // Xóa ngày → trả về null, hệ thống sẽ dùng giá trị mặc định
+  const handleClearTempDate = () => {
+    setFormData({ ...formData, [activeDatePickerField]: '' });
+    setFormErrors(prev => ({ ...prev, [activeDatePickerField]: null }));
     setActiveDatePickerField(null);
   };
 
@@ -254,19 +269,23 @@ export default function AnnouncementPanel() {
               <div className="admin-form-grid">
                 <div>
                   <label>{s.title || 'Tên nội bộ (Title)'}</label>
-                  <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                  <input type="text" value={formData.title} onChange={e => {setFormData({ ...formData, title: e.target.value }); setFormErrors(prev => ({...prev, title: null}))}} required />
+                  {formErrors.title && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.title}</span>}
                 </div>
                 <div>
                   <label>{s.badge || 'Badge (nhãn)'}</label>
-                  <input type="text" value={formData.badge} onChange={e => setFormData({ ...formData, badge: e.target.value })} required />
+                  <input type="text" value={formData.badge} onChange={e => {setFormData({ ...formData, badge: e.target.value }); setFormErrors(prev => ({...prev, badge: null}))}} required />
+                  {formErrors.badge && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.badge}</span>}
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label>{s.content || 'Nội dung hiển thị (Text)'}</label>
-                  <textarea value={formData.text} onChange={e => setFormData({ ...formData, text: e.target.value })} required rows="3"></textarea>
+                  <textarea value={formData.text} onChange={e => {setFormData({ ...formData, text: e.target.value }); setFormErrors(prev => ({...prev, text: null}))}} required rows="3"></textarea>
+                  {formErrors.text && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.text}</span>}
                 </div>
                 <div>
                   <label>{s.link || 'Đường dẫn (Link)'}</label>
-                  <input type="url" value={formData.link} onChange={e => setFormData({ ...formData, link: e.target.value })} />
+                  <input type="url" value={formData.link} onChange={e => {setFormData({ ...formData, link: e.target.value }); setFormErrors(prev => ({...prev, link: null}))}} />
+                  {formErrors.link && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.link}</span>}
                 </div>
                 <div>
                   <label>{s.scope || 'Phạm vi'}</label>
@@ -310,20 +329,24 @@ export default function AnnouncementPanel() {
                   <div
                     onClick={() => openDatePicker('startAt')}
                     className={`custom-datetime-trigger ${formData.startAt ? 'has-value' : ''}`}
+                    style={formErrors.startAt ? { borderColor: '#ef4444' } : {}}
                   >
-                    <span>{formData.startAt ? formatDate(formData.startAt) : 'Chọn ngày giờ...'}</span>
+                    <span>{formData.startAt ? formatDate(formData.startAt) : (s.selectDateTime || 'Chọn ngày giờ...')}</span>
                     <span className="calendar-icon">📅</span>
                   </div>
+                  {formErrors.startAt && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.startAt}</span>}
                 </div>
                 <div>
                   <label>{s.endDate || 'Ngày kết thúc'}</label>
                   <div
                     onClick={() => openDatePicker('endAt')}
                     className={`custom-datetime-trigger ${formData.endAt ? 'has-value' : ''}`}
+                    style={formErrors.endAt ? { borderColor: '#ef4444' } : {}}
                   >
-                    <span>{formData.endAt ? formatDate(formData.endAt) : 'Chọn ngày giờ...'}</span>
+                    <span>{formData.endAt ? formatDate(formData.endAt) : (s.selectDateTime || 'Chọn ngày giờ...')}</span>
                     <span className="calendar-icon">📅</span>
                   </div>
+                  {formErrors.endAt && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.endAt}</span>}
                 </div>
               </div>
               <div className="ann-form-actions">
@@ -373,10 +396,20 @@ export default function AnnouncementPanel() {
                       return (
                         <tr key={a.id}>
                           <td style={{ padding: '12px' }}>
-                            {a.isActive ? (
-                              <span className="badge-pill success"><CheckCircle size={12} /> {s.active || 'Active'}</span>
-                            ) : (
-                              <span className="badge-pill default"><XCircle size={12} /> {s.draft || 'Draft'}</span>
+                            {a.computedStatus === 'ACTIVE' && (
+                              <span className="badge-pill success"><CheckCircle size={12} /> {s.active || 'Đang hiển thị'}</span>
+                            )}
+                            {a.computedStatus === 'SCHEDULED' && (
+                              <span className="badge-pill warning"><CheckCircle size={12} /> {s.scheduled || 'Đã lên lịch'}</span>
+                            )}
+                            {a.computedStatus === 'EXPIRED' && (
+                              <span className="badge-pill danger"><XCircle size={12} /> {s.expired || 'Đã hết hạn'}</span>
+                            )}
+                            {a.computedStatus === 'DRAFT' && (
+                              <span className="badge-pill default"><XCircle size={12} /> {s.draft || 'Bản nháp'}</span>
+                            )}
+                            {(!a.computedStatus || a.computedStatus === 'DELETED') && (
+                              <span className="badge-pill default"><Trash2 size={12} /> {s.deletedStatus || 'Đã xóa'}</span>
                             )}
                           </td>
                           <td className="truncate-cell" style={{ padding: '12px' }} title={a.title}>
@@ -395,8 +428,8 @@ export default function AnnouncementPanel() {
                             <span className={`badge-pill ${scopeClass}`}>{a.scope}</span>
                           </td>
                           <td style={{ padding: '12px', fontSize: '0.9em', color: 'var(--text-secondary)' }}>
-                            {a.startAt && <div>{s.from || 'Từ'}: {formatDate(a.startAt)}</div>}
-                            {a.endAt && <div>{s.to || 'Đến'}: {formatDate(a.endAt)}</div>}
+                            {a.startAt ? <div>{s.from || 'Từ'}: {formatDate(a.startAt)}</div> : (a.endAt ? <div>{s.from || 'Từ'}: {s.immediateStart || 'Ngay lập tức'}</div> : null)}
+                            {a.endAt ? <div>{s.to || 'Đến'}: {formatDate(a.endAt)}</div> : (a.startAt ? <div>{s.to || 'Đến'}: {s.forever || 'Vĩnh viễn'}</div> : null)}
                             {!a.startAt && !a.endAt && <div>{s.forever || 'Vĩnh viễn'}</div>}
                           </td>
                           <td style={{ padding: '12px', textAlign: 'right' }}>
@@ -413,20 +446,20 @@ export default function AnnouncementPanel() {
                                 ]}
                               />
                             ) : (
-                              (user?.role === 'ADMIN' || (user?.role === 'MODERATOR' && a.scope !== 'SYSTEM')) && (
-                                <CustomSelect
-                                  isFixed={true}
-                                  triggerText={s.actions || 'Thao tác...'}
-                                  triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
-                                  onChange={(action) => handleActionSelect(action, a)}
-                                  options={[
-                                    { value: 'detail', label: s.actionDetail || 'Thông tin' },
+                              <CustomSelect
+                                isFixed={true}
+                                triggerText={s.actions || 'Thao tác...'}
+                                triggerStyle={{ padding: '6px 12px', minWidth: '110px' }}
+                                onChange={(action) => handleActionSelect(action, a)}
+                                options={[
+                                  { value: 'detail', label: s.actionDetail || 'Thông tin' },
+                                  ...(user?.role === 'ADMIN' || (user?.role === 'MODERATOR' && a.scope !== 'SYSTEM') ? [
                                     ...(user?.role === 'ADMIN' ? [{ value: 'toggle', label: a.isActive ? (s.actionUnpublish || 'Ẩn thông báo') : (s.actionPublish || 'Hiện thông báo') }] : []),
                                     { value: 'edit', label: s.actionEdit || 'Chỉnh sửa' },
                                     ...(user?.role === 'ADMIN' ? [{ value: 'delete', label: s.actionDelete || 'Xóa (vào thùng rác)' }] : []),
-                                  ]}
-                                />
-                              )
+                                  ] : [])
+                                ]}
+                              />
                             )}
                           </td>
                         </tr>
@@ -565,8 +598,8 @@ export default function AnnouncementPanel() {
             <div className="detail-modal-row">
               <span className="detail-modal-label">{s.time || 'Thời gian'}:</span>
               <span className="detail-modal-val">
-                {selectedDetail.startAt && <div>{s.from || 'Từ'}: {formatDate(selectedDetail.startAt)}</div>}
-                {selectedDetail.endAt && <div>{s.to || 'Đến'}: {formatDate(selectedDetail.endAt)}</div>}
+                {selectedDetail.startAt ? <div>{s.from || 'Từ'}: {formatDate(selectedDetail.startAt)}</div> : (selectedDetail.endAt ? <div>{s.from || 'Từ'}: {s.immediateStart || 'Ngay lập tức'}</div> : null)}
+                {selectedDetail.endAt ? <div>{s.to || 'Đến'}: {formatDate(selectedDetail.endAt)}</div> : (selectedDetail.startAt ? <div>{s.to || 'Đến'}: {s.forever || 'Vĩnh viễn'}</div> : null)}
                 {!selectedDetail.startAt && !selectedDetail.endAt && <div>{s.forever || 'Vĩnh viễn'}</div>}
               </span>
             </div>
@@ -582,8 +615,12 @@ export default function AnnouncementPanel() {
 
             <div className="detail-modal-row">
               <span className="detail-modal-label">{s.status || 'Trạng thái'}:</span>
-              <span className="detail-modal-val" style={{ color: selectedDetail.isActive ? '#10b981' : '#6b7280', fontWeight: 'bold' }}>
-                {selectedDetail.isActive ? (s.active || 'Active') : (s.draft || 'Draft')}
+              <span className="detail-modal-val" style={{ fontWeight: 'bold' }}>
+                {selectedDetail.computedStatus === 'ACTIVE' && <span style={{ color: '#10b981' }}>{s.active || 'Đang hiển thị'}</span>}
+                {selectedDetail.computedStatus === 'SCHEDULED' && <span style={{ color: '#f59e0b' }}>{s.scheduled || 'Đã lên lịch'}</span>}
+                {selectedDetail.computedStatus === 'EXPIRED' && <span style={{ color: '#ef4444' }}>{s.expired || 'Đã hết hạn'}</span>}
+                {selectedDetail.computedStatus === 'DRAFT' && <span style={{ color: '#6b7280' }}>{s.draft || 'Bản nháp'}</span>}
+                {(!selectedDetail.computedStatus || selectedDetail.computedStatus === 'DELETED') && <span style={{ color: '#6b7280' }}>{s.deletedStatus || 'Đã xóa'}</span>}
               </span>
             </div>
 
@@ -603,9 +640,31 @@ export default function AnnouncementPanel() {
               {activeDatePickerField === 'startAt' ? (s.startDate || 'Ngày bắt đầu') : (s.endDate || 'Ngày kết thúc')}
             </h3>
 
+            {/* Ghi chú ý nghĩa khi null */}
+            <div style={{
+              background: 'var(--bg-tertiary, rgba(255,255,255,0.05))',
+              border: '1px solid var(--border-color)',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              marginBottom: '18px',
+              fontSize: '0.82em',
+              color: 'var(--text-secondary)',
+              lineHeight: '1.5'
+            }}>
+              {activeDatePickerField === 'startAt' ? (
+                <>
+                  <strong style={{ color: 'var(--text-primary)' }}>💡 </strong> {s.noteStartNull || 'Nếu để trống: thông báo sẽ hiển thị ngay khi được Publish, không cần chờ lịch.'}
+                </>
+              ) : (
+                <>
+                  <strong style={{ color: 'var(--text-primary)' }}>💡 </strong> {s.noteEndNull || 'Nếu để trống: thông báo sẽ không có ngày hết hạn, hiển thị vĩnh viễn cho đến khi được tắt thủ công.'}
+                </>
+              )}
+            </div>
+
             <div className="datepicker-grid">
               <div>
-                <label className="datepicker-label">Ngày</label>
+                <label className="datepicker-label">{s.day || 'Ngày'}</label>
                 <select value={tempDate.day} onChange={e => setTempDate({ ...tempDate, day: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
                     <option key={d} value={d}>{d}</option>
@@ -613,15 +672,15 @@ export default function AnnouncementPanel() {
                 </select>
               </div>
               <div>
-                <label className="datepicker-label">Tháng</label>
+                <label className="datepicker-label">{s.month || 'Tháng'}</label>
                 <select value={tempDate.month} onChange={e => setTempDate({ ...tempDate, month: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-                    <option key={m} value={m}>Tháng {m}</option>
+                    <option key={m} value={m}>{s.month || 'Tháng'} {m}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="datepicker-label">Năm</label>
+                <label className="datepicker-label">{s.year || 'Năm'}</label>
                 <select value={tempDate.year} onChange={e => setTempDate({ ...tempDate, year: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i).map(y => (
                     <option key={y} value={y}>{y}</option>
@@ -632,7 +691,7 @@ export default function AnnouncementPanel() {
 
             <div className="datepicker-grid time-grid">
               <div>
-                <label className="datepicker-label">Giờ</label>
+                <label className="datepicker-label">{s.hour || 'Giờ'}</label>
                 <select value={tempDate.hour} onChange={e => setTempDate({ ...tempDate, hour: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
                     <option key={h} value={h}>{h}</option>
@@ -640,7 +699,7 @@ export default function AnnouncementPanel() {
                 </select>
               </div>
               <div>
-                <label className="datepicker-label">Phút</label>
+                <label className="datepicker-label">{s.minute || 'Phút'}</label>
                 <select value={tempDate.minute} onChange={e => setTempDate({ ...tempDate, minute: e.target.value })} className="datepicker-select">
                   {Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0')).map(m => (
                     <option key={m} value={m}>{m}</option>
@@ -657,8 +716,20 @@ export default function AnnouncementPanel() {
             </div>
 
             <div className="datepicker-actions-footer">
-              <button type="button" className="btn-secondary" onClick={() => setActiveDatePickerField(null)}>Hủy</button>
-              <button type="button" className="btn-primary" onClick={handleSaveTempDate}>Xác nhận</button>
+              {/* Nút xóa ngày — tên theo chức năng khi null */}
+              <button
+                type="button"
+                className="btn-secondary"
+                style={{ marginRight: 'auto' }}
+                onClick={handleClearTempDate}
+                title={activeDatePickerField === 'startAt' ? (s.clearStartDate || 'Không đặt lịch bắt đầu') : (s.clearEndDate || 'Không giới hạn thời gian')}
+              >
+                {activeDatePickerField === 'startAt' ? (s.clearStartDate || 'Không đặt lịch bắt đầu') : (s.clearEndDate || 'Không giới hạn thời gian')}
+              </button>
+              <button type="button" className="btn-secondary" onClick={() => setActiveDatePickerField(null)}>{s.cancel || 'Hủy'}</button>
+              <button type="button" className="btn-primary" onClick={handleSaveTempDate}>
+                {s.setSchedule || 'Đặt lịch'}
+              </button>
             </div>
           </div>
         </div>

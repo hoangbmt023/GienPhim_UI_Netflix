@@ -3,6 +3,7 @@ import en from '@/locales/en';
 import ja from '@/locales/ja';
 import ko from '@/locales/ko';
 import zh from '@/locales/zh';
+import { useState, useEffect } from 'react';
 
 export const getLang = () => {
   const savedLang = localStorage.getItem('gp_lang');
@@ -97,14 +98,14 @@ export const getSwitchPath = (currentPath, newLang) => {
       return PATHS[key][targetLang];
     }
   }
-  
+
   // 2. Tìm theo prefix (cho dynamic routes như /phim/:slug)
   const keys = Object.keys(PATHS).sort((a, b) => PATHS[b].vi.length - PATHS[a].vi.length);
-  
+
   for (const key of keys) {
     const viPath = PATHS[key].vi;
     const enPath = PATHS[key].en;
-    
+
     // Tránh khớp nhầm root '/'
     if (viPath === '/' || enPath === '/') continue;
 
@@ -115,21 +116,49 @@ export const getSwitchPath = (currentPath, newLang) => {
       return currentPath.replace(enPath, PATHS[key][targetLang]);
     }
   }
-  
+
   return PATHS.home[targetLang];
 };
 
-export const getT = () => {
-  const lang = getLang();
-  if (lang === 'en') return en;
-  if (lang === 'ja') return ja;
-  if (lang === 'ko') return ko;
-  if (lang === 'zh') return zh;
+export const getT = (lang) => {
+  const l = lang || getLang();
+  if (l === 'en') return en;
+  if (l === 'ja') return ja;
+  if (l === 'ko') return ko;
+  if (l === 'zh') return zh;
   return vi;
 };
 
 // ── REACT HOOK ──
+// Reactive: tự động cập nhật khi tab khác thay đổi ngôn ngữ qua storage event
+// hoặc khi người dùng quay lại tab này (visibilitychange)
 export const useLang = () => {
-  const lang = getLang();
-  return { t: getT(), lang };
+  const [lang, setLangState] = useState(() => getLang());
+
+  useEffect(() => {
+    // Lắng nghe khi tab KHÁC thay đổi gp_lang trong localStorage
+    const handleStorageChange = (e) => {
+      if (e.key === 'gp_lang' && e.newValue) {
+        setLangState(e.newValue);
+      }
+    };
+
+    // Lắng nghe khi tab này được focus trở lại sau khi bị ẩn
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        const freshLang = localStorage.getItem('gp_lang') || 'vi';
+        setLangState((prev) => (prev !== freshLang ? freshLang : prev));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  return { t: getT(lang), lang };
 };
