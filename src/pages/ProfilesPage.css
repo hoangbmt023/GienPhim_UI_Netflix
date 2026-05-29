@@ -324,37 +324,41 @@
   border: none;
   cursor: pointer;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.btn-primary {
+.profile-btn-primary {
   background: #e50914;
   color: #fff;
   transition: background 0.2s;
 }
 
-.btn-primary:hover:not(:disabled) {
+.profile-btn-primary:hover:not(:disabled) {
   background: #ff0f1b;
 }
 
-.btn-primary:disabled {
+.profile-btn-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.btn-secondary {
+.profile-btn-secondary {
   background: transparent;
   color: #fff;
   border: 1px solid #808080 !important;
 }
 
-.btn-delete {
+.profile-btn-delete {
   background: transparent;
   color: #808080;
   border: 1px solid #808080 !important;
   transition: all 0.2s;
 }
 
-.btn-delete:hover {
+.profile-btn-delete:hover {
   color: #e50914;
   border-color: #e50914 !important;
   background: rgba(229, 9, 20, 0.05);
@@ -372,7 +376,7 @@
   gap: 15px;
 }
 
-.primary-actions .btn-primary {
+.primary-actions .profile-btn-primary {
   padding-left: 45px;
   padding-right: 45px;
 }
@@ -464,12 +468,12 @@
   margin-top: 20px;
 }
 
-.pin-modal .btn-primary {
+.pin-modal .profile-btn-primary {
   padding: 12px 36px;
   font-size: 18px;
 }
 
-.pin-modal .btn-secondary {
+.pin-modal .profile-btn-secondary {
   padding: 12px 36px;
   font-size: 18px;
 }
@@ -558,9 +562,9 @@
   }
 
   .profiles-modal-actions button,
-  .pin-modal .btn-primary,
-  .pin-modal .btn-secondary,
-  .btn-delete {
+  .pin-modal .profile-btn-primary,
+  .pin-modal .profile-btn-secondary,
+  .profile-btn-delete {
     width: 100%;
     padding: 14px;
     font-size: 16px;
@@ -696,19 +700,19 @@ body.dark-night .profiles-pin-toggle-btn.active {
   color: var(--netflix-red);
 }
 
-body.dark-night .btn-secondary,
-body.dark-night .btn-delete {
+body.dark-night .profile-btn-secondary,
+body.dark-night .profile-btn-delete {
   color: #555555;
   border-color: #dee2e6 !important;
 }
 
-body.dark-night .btn-secondary:hover {
+body.dark-night .profile-btn-secondary:hover {
   color: #111111;
   border-color: #111111 !important;
   background: rgba(0, 0, 0, 0.05);
 }
 
-body.dark-night .btn-delete:hover {
+body.dark-night .profile-btn-delete:hover {
   color: var(--netflix-red);
   border-color: var(--netflix-red) !important;
   background: rgba(229, 9, 20, 0.05);
