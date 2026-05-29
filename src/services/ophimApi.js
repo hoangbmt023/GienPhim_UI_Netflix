@@ -1,3 +1,5 @@
+import ENV from '../config/env.config';
+
 /**
  * OPhim API Service
  * Docs  : /docs/ophim-api.md
@@ -5,8 +7,8 @@
  * CDN   : https://img.ophim.live/uploads/movies/{filename}
  */
 
-export const BASE_URL  = import.meta.env.VITE_API_BASE || 'https://ophim1.com';
-export const CDN_IMAGE = import.meta.env.VITE_CDN_IMAGE || 'https://img.ophim.live/uploads/movies';
+export const BASE_URL = ENV.OPHIM_BASE_URL;
+export const CDN_IMAGE = ENV.OPHIM_CDN_IMAGE;
 
 /* ─── Helpers ──────────────────────────────────────── */
 
@@ -32,10 +34,10 @@ export const parsePagination = (r) => {
   const pg = r?.data?.params?.pagination;
   if (!pg) return { currentPage: 1, totalPages: 1, totalItems: 0, totalItemsPerPage: 24, pageRanges: 5 };
   return {
-    currentPage       : pg.currentPage        ?? 1,
-    totalItems        : pg.totalItems         ?? 0,
-    totalItemsPerPage : pg.totalItemsPerPage  ?? 24,
-    pageRanges        : pg.pageRanges         ?? 5,
+    currentPage: pg.currentPage ?? 1,
+    totalItems: pg.totalItems ?? 0,
+    totalItemsPerPage: pg.totalItemsPerPage ?? 24,
+    pageRanges: pg.pageRanges ?? 5,
     /* totalPages computed from totalItems / perPage */
     totalPages: Math.ceil((pg.totalItems ?? 0) / (pg.totalItemsPerPage ?? 24)),
   };

@@ -1,23 +1,30 @@
 import axios from "axios";
-
+import ENV from "../config/env.config";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  baseURL: ENV.API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Auto-send HttpOnly cookies
 });
 
-// Interceptor cho Request: Thêm Access Token
+// In-memory token storage
+let inMemoryAccessToken = null;
+
+export const setAccessToken = (token) => {
+  inMemoryAccessToken = token;
+};
+
+export const getAccessToken = () => {
+  return inMemoryAccessToken;
+};
+
+// Interceptor cho Request: Thêm Access Token từ memory
 api.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    const profileToken = localStorage.getItem('profileToken');
-    if (profileToken) {
-      config.headers['x-profile-token'] = profileToken;
+    if (inMemoryAccessToken) {
+      config.headers.Authorization = `Bearer ${inMemoryAccessToken}`;
     }
     return config;
   },
@@ -51,6 +58,7 @@ api.interceptors.response.use(
         !originalRequest.url.includes('/api/auth/refresh-token') &&
         !originalRequest.url.includes('/switch') &&
         !originalRequest._retry) {
+      
       if (isRefreshing) {
         // Đang refresh, cho các request khác vào hàng đợi
         return new Promise(function (resolve, reject) {
@@ -66,24 +74,17 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (!refreshToken) {
-        // Không có refresh token -> Đăng xuất
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('selectedProfile');
-        window.location.href = '/login';
-        return Promise.reject(error);
-      }
-
       try {
-        const { data } = await axios.post(`${api.defaults.baseURL}/api/auth/refresh-token`, { refreshToken });
+        // Gọi API refresh token. 
+        // Cookie chứa refreshToken sẽ tự động được gửi đi nhờ withCredentials: true.
+        const { data } = await axios.post(`${api.defaults.baseURL}/api/auth/refresh-token`, {}, {
+          withCredentials: true 
+        });
 
         if (data.success && data.data?.accessToken) {
           const newAccessToken = data.data.accessToken;
-          localStorage.setItem('accessToken', newAccessToken);
+          setAccessToken(newAccessToken);
 
-          api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
           processQueue(null, newAccessToken);
@@ -93,8 +94,7 @@ api.interceptors.response.use(
         }
       } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        setAccessToken(null);
         localStorage.removeItem('selectedProfile');
         window.location.href = '/login';
         return Promise.reject(refreshError);

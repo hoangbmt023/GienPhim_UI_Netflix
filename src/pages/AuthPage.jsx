@@ -103,7 +103,7 @@ export default function AuthPage({ initialView = 'LOGIN' }) {
     try {
       const res = await authApi.login({ email, password });
       if (res.data.success) {
-        login(res.data.data.accessToken, res.data.data.refreshToken);
+        login(res.data.data.accessToken);
         navigate(getPath('profiles'));
       }
     } catch (err) {

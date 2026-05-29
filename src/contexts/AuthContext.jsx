@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { authApi } from '@/services/authApi';
-import { profileApi } from '@/services/profileApi';
+import api, { setAccessToken } from '@/services/api';
 
 const AuthContext = createContext();
 
@@ -19,28 +19,41 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // Check initial state from localStorage
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-      setIsAuthenticated(true);
-      const decodedUser = parseJwt(accessToken);
-      if (decodedUser) setUser(decodedUser);
+    const initAuth = async () => {
+      try {
+        // Silent refresh at startup
+        const res = await api.post('/api/auth/refresh-token');
+        if (res.data?.success && res.data.data?.accessToken) {
+          const token = res.data.data.accessToken;
+          setAccessToken(token);
+          setIsAuthenticated(true);
+          const decodedUser = parseJwt(token);
+          if (decodedUser) setUser(decodedUser);
 
-      const storedProfile = localStorage.getItem('selectedProfile');
-      if (storedProfile) {
-        try {
-          setSelectedProfile(JSON.parse(storedProfile));
-        } catch (e) {
-          console.error("Failed to parse selected profile from local storage", e);
+          const storedProfile = localStorage.getItem('selectedProfile');
+          if (storedProfile) {
+            try {
+              setSelectedProfile(JSON.parse(storedProfile));
+            } catch (e) {
+              console.error("Failed to parse selected profile from local storage", e);
+            }
+          }
         }
+      } catch (err) {
+        // Not authenticated or refresh token expired/missing
+        setIsAuthenticated(false);
+        setUser(null);
+        setSelectedProfile(null);
+        localStorage.removeItem('selectedProfile');
+      } finally {
+        setLoading(false);
       }
-    }
-    setLoading(false);
+    };
+    initAuth();
   }, []);
 
-  const login = (accessToken, refreshToken) => {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+  const login = (accessToken) => {
+    setAccessToken(accessToken);
     setIsAuthenticated(true);
     const decodedUser = parseJwt(accessToken);
     if (decodedUser) setUser(decodedUser);
@@ -48,35 +61,26 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
-        await authApi.logout(refreshToken);
-      }
+      await authApi.logout();
     } catch (e) {
       console.error('Logout API failed', e);
     } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      setAccessToken(null);
       localStorage.removeItem('selectedProfile');
-      localStorage.removeItem('profileToken');
       setIsAuthenticated(false);
       setSelectedProfile(null);
       setUser(null);
     }
   };
 
-  const selectProfile = (profile, profileToken) => {
+  const selectProfile = (profile) => {
     setSelectedProfile(profile);
     localStorage.setItem('selectedProfile', JSON.stringify(profile));
-    if (profileToken) {
-      localStorage.setItem('profileToken', profileToken);
-    }
   };
 
   const clearProfile = () => {
     setSelectedProfile(null);
     localStorage.removeItem('selectedProfile');
-    localStorage.removeItem('profileToken');
   };
 
   return (
