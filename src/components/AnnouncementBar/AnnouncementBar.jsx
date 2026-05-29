@@ -14,22 +14,27 @@ const AnnouncementBar = () => {
   const [currentBoxIndex, setCurrentBoxIndex] = useState(0);
   const [currentBarIndex, setCurrentBarIndex] = useState(0);
 
+  // Fetch data từ API đúng 1 lần
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
         const res = await announcementApi.getActive();
         if (res.data?.success) {
-          const activeAnns = res.data.data;
-          setAnnouncements(activeAnns);
-          processAnnouncements(activeAnns);
+          setAnnouncements(res.data.data);
         }
       } catch (err) {
         console.error("Failed to fetch announcements", err);
       }
     };
     fetchAnnouncements();
-  }, [isAuthenticated, selectedProfile]); // Re-run if profile changes (which changes TTL)
+  }, []);
 
+  // Xử lý logic hiển thị lại mỗi khi data hoặc profile thay đổi (không tốn Network request)
+  useEffect(() => {
+    if (announcements.length > 0) {
+      processAnnouncements(announcements);
+    }
+  }, [announcements, isAuthenticated, selectedProfile]);
   const processAnnouncements = (activeAnns) => {
     const savedData = JSON.parse(localStorage.getItem('gienphim_seen_ids') || '{}');
     const now = new Date().getTime();

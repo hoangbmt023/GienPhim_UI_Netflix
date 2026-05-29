@@ -2,7 +2,7 @@ import api from './api';
 
 export const authApi = {
   login: (data) => api.post('/api/auth/login', data),
-  logout: (refreshToken) => api.post('/api/auth/logout', { refreshToken }),
+  logout: () => api.post('/api/auth/logout'),
   sendActivateOtp: (email) => api.post('/api/auth/send-activate-otp', { email }),
   activateAccount: (email, otp) => api.post('/api/auth/activate-account', { email, otp }),
   forgotPassword: (email) => api.post('/api/auth/forgot-password', { email }),

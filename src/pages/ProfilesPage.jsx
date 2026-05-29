@@ -128,7 +128,7 @@ export default function ProfilesPage() {
       try {
         const res = await profileApi.switchProfile(profile.id);
         if (res.data.success) {
-          selectProfile(profile, res.data.data.profileToken);
+          selectProfile(profile);
           navigate(getPath('home'));
         }
       } catch (err) {
@@ -204,7 +204,7 @@ export default function ProfilesPage() {
           setShowPinModal(false);
           openEditModal(selectedPinProfile, pinValue);
         } else {
-          selectProfile(selectedPinProfile, res.data.data.profileToken);
+          selectProfile(selectedPinProfile);
           navigate(getPath('home'));
         }
       }
@@ -253,7 +253,7 @@ export default function ProfilesPage() {
               } else {
                 const switchRes = await profileApi.switchProfile(selectedPinProfile.id);
                 if (switchRes.data.success) {
-                  selectProfile(selectedPinProfile, switchRes.data.data.profileToken);
+                  selectProfile(selectedPinProfile);
                   navigate(getPath('home'));
                 }
               }
@@ -436,8 +436,8 @@ export default function ProfilesPage() {
               )}
 
               <div className="profiles-modal-actions">
-                <button type="submit" className="btn-primary">{t.common.continue}</button>
-                <button type="button" className="btn-secondary" onClick={() => setShowAddForm(false)}>{t.common.cancel}</button>
+                <button type="submit" className="profile-btn-primary">{t.common.continue}</button>
+                <button type="button" className="profile-btn-secondary" onClick={() => setShowAddForm(false)}>{t.common.cancel}</button>
               </div>
             </form>
           </div>
@@ -489,7 +489,7 @@ export default function ProfilesPage() {
               </button>
 
               <div className="profiles-modal-actions">
-                <button type="button" className="btn-secondary" style={{ width: '100%', maxWidth: '300px', margin: '0 auto' }} onClick={() => setShowPinModal(false)}>{t.common.cancel}</button>
+                <button type="button" className="profile-btn-secondary" style={{ width: '100%', maxWidth: '300px', margin: '0 auto' }} onClick={() => setShowPinModal(false)}>{t.common.cancel}</button>
               </div>
             </form>
           </div>
@@ -516,12 +516,12 @@ export default function ProfilesPage() {
                 />
               </div>
               <div className="profiles-modal-actions">
-                <button type="submit" className="btn-primary" disabled={isResettingPin}>
+                <button type="submit" className="profile-btn-primary" disabled={isResettingPin}>
                   {isResettingPin ? (t.common.loading || '...') : t.common.continue}
                 </button>
                 <button 
                   type="button" 
-                  className="btn-secondary" 
+                  className="profile-btn-secondary" 
                   onClick={() => {
                     setShowForgotPinModal(false);
                     setShowPinModal(true);
@@ -619,10 +619,10 @@ export default function ProfilesPage() {
 
                 <div className="profiles-modal-actions edit-actions" style={{marginTop: '30px'}}>
                   <div className="primary-actions">
-                    <button type="submit" className="btn-primary">{t.profiles.saveProfile}</button>
-                    <button type="button" className="btn-secondary" onClick={() => setEditProfile(null)}>{t.common.cancel}</button>
+                    <button type="submit" className="profile-btn-primary">{t.profiles.saveProfile}</button>
+                    <button type="button" className="profile-btn-secondary" onClick={() => setEditProfile(null)}>{t.common.cancel}</button>
                   </div>
-                  <button type="button" className="btn-delete" onClick={() => setDeleteConfirm(editProfile.id)}>{t.profiles.deleteProfile}</button>
+                  <button type="button" className="profile-btn-delete" onClick={() => setDeleteConfirm(editProfile.id)}>{t.profiles.deleteProfile}</button>
                 </div>
               </form>
           </div>

@@ -28,6 +28,9 @@ export default defineConfig({
     cssMinify: 'lightningcss',
     chunkSizeWarningLimit: 600,
     rollupOptions: {
+      checks: {
+        pluginTimings: false,
+      },
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
