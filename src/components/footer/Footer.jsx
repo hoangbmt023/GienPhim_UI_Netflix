@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { getLang, setLang, getPath, getSwitchPath, getT } from "@/utils/lang";
 import "./Footer.css";
+import ENV from "@/config/env.config";
 
 /* ─── INLINE SVG ICONS ─── */
 const FacebookIcon = () => (
@@ -200,8 +201,8 @@ export default function Footer() {
 
           <p className="footer__copyright">
             {t.footer.copyright(year)}{" "}
-            {import.meta.env.VITE_APP_VERSION &&
-              `(v${import.meta.env.VITE_APP_VERSION})`}
+            {ENV.APP_VERSION &&
+              `(v${ENV.APP_VERSION})`}
           </p>
         </div>
       </div>

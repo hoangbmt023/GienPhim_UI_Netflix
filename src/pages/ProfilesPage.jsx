@@ -128,7 +128,7 @@ export default function ProfilesPage() {
       try {
         const res = await profileApi.switchProfile(profile.id);
         if (res.data.success) {
-          selectProfile(profile, res.data.data.profileToken);
+          selectProfile(profile);
           navigate(getPath('home'));
         }
       } catch (err) {
@@ -204,7 +204,7 @@ export default function ProfilesPage() {
           setShowPinModal(false);
           openEditModal(selectedPinProfile, pinValue);
         } else {
-          selectProfile(selectedPinProfile, res.data.data.profileToken);
+          selectProfile(selectedPinProfile);
           navigate(getPath('home'));
         }
       }
@@ -253,7 +253,7 @@ export default function ProfilesPage() {
               } else {
                 const switchRes = await profileApi.switchProfile(selectedPinProfile.id);
                 if (switchRes.data.success) {
-                  selectProfile(selectedPinProfile, switchRes.data.data.profileToken);
+                  selectProfile(selectedPinProfile);
                   navigate(getPath('home'));
                 }
               }
