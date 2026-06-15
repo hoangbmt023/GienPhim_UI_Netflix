@@ -15,7 +15,7 @@ const PiPContext = createContext(null);
 
 export function PiPProvider({ children }) {
   const [video, setVideoState] = useState({
-    embedUrl: '', movieName: '', movieSlug: '', epName: '', epSlug: '', serverIdx: 0,
+    embedUrl: '', m3u8Url: '', movieName: '', movieSlug: '', epName: '', epSlug: '', serverIdx: 0,
   });
   const [isPiP, setIsPiP] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
@@ -23,7 +23,7 @@ export function PiPProvider({ children }) {
 
   /* ── Refs để tránh stale closure trong cleanup ── */
   const hasStartedRef = useRef(false);
-  const videoRef = useRef({ embedUrl: '' });
+  const videoRef = useRef({ embedUrl: '', m3u8Url: '' });
 
   useEffect(() => { hasStartedRef.current = hasStarted; }, [hasStarted]);
   useEffect(() => { videoRef.current = video; }, [video]);
@@ -36,14 +36,15 @@ export function PiPProvider({ children }) {
   const prevEmbedUrlRef = useRef('');
 
   /* ── Video registration ── */
-  const registerVideo = useCallback((embedUrl, movieName, movieSlug, epName = '', epSlug = '', serverIdx = 0) => {
-    // Reset banner Play mỗi khi đổi phim hoặc đổi tập (embedUrl thay đổi)
-    if (prevEmbedUrlRef.current && prevEmbedUrlRef.current !== embedUrl) {
+  const registerVideo = useCallback((embedUrl, m3u8Url, movieName, movieSlug, epName = '', epSlug = '', serverIdx = 0) => {
+    // Reset banner Play mỗi khi đổi phim hoặc đổi tập (embedUrl hoặc m3u8Url thay đổi)
+    const currentUrl = embedUrl || m3u8Url;
+    if (prevEmbedUrlRef.current && prevEmbedUrlRef.current !== currentUrl) {
       setHasStarted(false);
     }
-    prevEmbedUrlRef.current = embedUrl;
+    prevEmbedUrlRef.current = currentUrl;
 
-    setVideoState({ embedUrl, movieName, movieSlug, epName, epSlug, serverIdx });
+    setVideoState({ embedUrl, m3u8Url, movieName, movieSlug, epName, epSlug, serverIdx });
   }, []);
 
   /** WatchPage overlay click → bắt đầu phát */
@@ -54,7 +55,7 @@ export function PiPProvider({ children }) {
    * Dùng ref để đọc giá trị MỚI NHẤT, tránh stale closure.
    */
   const startPiP = useCallback(() => {
-    if (hasStartedRef.current && videoRef.current.embedUrl) {
+    if (hasStartedRef.current && (videoRef.current.embedUrl || videoRef.current.m3u8Url)) {
       setIsPiP(true);
     }
   }, []); // deps rỗng = hàm stable, không bao giờ stale
@@ -63,7 +64,7 @@ export function PiPProvider({ children }) {
   const stopPiP = useCallback(() => {
     setIsPiP(false);
     setHasStarted(false);
-    setVideoState({ embedUrl: '', movieName: '', movieSlug: '', epName: '', epSlug: '', serverIdx: 0 });
+    setVideoState({ embedUrl: '', m3u8Url: '', movieName: '', movieSlug: '', epName: '', epSlug: '', serverIdx: 0 });
   }, []);
 
   /**

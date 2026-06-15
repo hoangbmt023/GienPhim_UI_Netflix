@@ -204,12 +204,13 @@ export default function WatchPage() {
   };
 
   const embedUrl = currentEp?.link_embed || '';
+  const m3u8Url = currentEp?.link_m3u8 || '';
 
   useEffect(() => {
-    if (embedUrl && movie?.name) {
-      registerVideo(embedUrl, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
+    if ((embedUrl || m3u8Url) && movie?.name) {
+      registerVideo(embedUrl, m3u8Url, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
     }
-  }, [embedUrl, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
+  }, [embedUrl, m3u8Url, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
 
   useEffect(() => {
     if (movie?.name) {
@@ -269,7 +270,7 @@ export default function WatchPage() {
         </div>
 
         <div className="wp-player">
-          {embedUrl ? (
+          {(embedUrl || m3u8Url) ? (
             <>
               <div ref={slotCallbackRef} className="wp-player__slot" />
               {!hasStarted && (
