@@ -11,6 +11,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePiP } from '@/contexts/PiPContext';
 import { useLang } from '@/utils/lang';
+import ArtplayerPlayer from '@/components/Artplayer/Artplayer';
 import './PersistentPlayer.css';
 
 const CloseIcon = () => (
@@ -47,6 +48,8 @@ export default function PersistentPlayer() {
   const dragRef = useRef({});
 
   const isMobile = useMemo(() => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 1024, []);
+
+  const useArtplayer = !!video.m3u8Url;
 
   /* ── Đo slot khi watch mode ──
    * Đo bất kể isPiP vì effectiveIsPiP xử lý display.
@@ -158,7 +161,7 @@ export default function PersistentPlayer() {
   ══════════════════════════════════════════ */
   const containerStyle = useMemo(() => {
     // Chưa bắt đầu hoặc chưa có video → ẩn hoàn toàn
-    if (!hasStarted || !video.embedUrl) return { display: 'none' };
+    if (!hasStarted || (!video.embedUrl && !video.m3u8Url)) return { display: 'none' };
 
     if (effectiveIsPiP) {
       const pos = pipPos.x !== null
@@ -210,10 +213,10 @@ export default function PersistentPlayer() {
       overflow: 'hidden', opacity: 0,
       pointerEvents: 'none', zIndex: -1,
     };
-  }, [hasStarted, video.embedUrl, effectiveIsPiP, slotRect, pipPos, pipVisible, isDragging]);
+  }, [hasStarted, video.embedUrl, video.m3u8Url, effectiveIsPiP, slotRect, pipPos, pipVisible, isDragging]);
 
   /* Không render gì nếu chưa có URL video */
-  if (!video.embedUrl) return null;
+  if (!video.embedUrl && !video.m3u8Url) return null;
 
   /**
    * iframeSrc: thêm autoplay=1 vào URL.
@@ -221,8 +224,9 @@ export default function PersistentPlayer() {
    * - Không thay đổi giữa các lần render khác → iframe không reload.
    * - autoplay=1 hoạt động trên desktop và iPhone khi có user gesture trước.
    */
-  const sep = video.embedUrl.includes('?') ? '&' : '?';
-  const iframeSrc = `${video.embedUrl}${sep}autoplay=1`;
+  const iframeSrc = video.embedUrl
+    ? `${video.embedUrl}${video.embedUrl.includes('?') ? '&' : '?'}autoplay=1`
+    : '';
 
   const screenStyle = effectiveIsPiP
     ? { position: 'relative', aspectRatio: '16/9', width: '100%', background: '#000', touchAction: 'auto' }
@@ -269,21 +273,25 @@ export default function PersistentPlayer() {
       */}
       <div key="pp-screen" className="pp-screen" style={screenStyle}>
         {hasStarted && (
-          <iframe
-            src={iframeSrc}
-            title={video.movieName}
-            allowFullScreen
-            disablePictureInPicture
-            allow="accelerometer; autoplay *; clipboard-write; encrypted-media; gyroscope; fullscreen"
-            referrerPolicy="no-referrer"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              border: 'none',
-            }}
-          />
+          useArtplayer ? (
+            <ArtplayerPlayer url={video.m3u8Url} />
+          ) : (
+            <iframe
+              src={iframeSrc}
+              title={video.movieName}
+              allowFullScreen
+              disablePictureInPicture
+              allow="accelerometer; autoplay *; clipboard-write; encrypted-media; gyroscope; fullscreen"
+              referrerPolicy="no-referrer"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                border: 'none',
+              }}
+            />
+          )
         )}
       </div>
 

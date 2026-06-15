@@ -349,20 +349,16 @@ img {
 
 .art-state .art-icon-play {
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .art-state:hover .art-icon-play {
   transform: scale(1.15);
 }
 
-/* Center the triangle in the circle */
-.art-icon-play {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.art-icon-play svg {
+.art-state .art-icon-play svg {
   /* Manual offset adjustment for visual centering */
   transform: translateX(2px);
 }
