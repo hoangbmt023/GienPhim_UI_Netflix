@@ -118,6 +118,15 @@
   background: #000;
 }
 
+.wp-player.wp-player--active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.wp-player.wp-player--active .wp-player__slot {
+  background: transparent !important;
+}
+
 .wp-player__cover {
   position: absolute;
   inset: 0;

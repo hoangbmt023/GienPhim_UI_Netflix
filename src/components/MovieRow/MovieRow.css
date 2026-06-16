@@ -70,21 +70,29 @@
 .movie-row__nav--prev { left: -46px; }
 .movie-row__nav--next { right: -46px; }
 
+.movie-row__clip-pad {
+  overflow-x: auto;
+  overflow-y: hidden;    /* Ngăn cuộn dọc tuyệt đối */
+  padding-top: 14px;     /* không gian để card scale không bị clip trên */
+  margin-top: -14px;
+  padding-left: 12px;    /* không gian để card đầu không bị clip trái */
+  margin-left: -12px;
+  padding-right: 12px;
+  margin-right: -12px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.movie-row__clip-pad::-webkit-scrollbar { display: none; }
+
 /* List */
 .movie-row__list {
   display: flex;
   gap: 12px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
   padding-bottom: 8px;
-  /* scroll-snap */
-  scroll-snap-type: x mandatory;
 }
 
-.movie-row__list::-webkit-scrollbar { display: none; }
-
-/* Snap cards */
 .movie-row__list > * {
   scroll-snap-align: start;
 }

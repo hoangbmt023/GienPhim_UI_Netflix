@@ -269,7 +269,7 @@ export default function WatchPage() {
           </div>
         </div>
 
-        <div className="wp-player">
+        <div className={`wp-player ${hasStarted ? 'wp-player--active' : ''}`}>
           {(embedUrl || m3u8Url) ? (
             <>
               <div ref={slotCallbackRef} className="wp-player__slot" />
@@ -333,7 +333,7 @@ export default function WatchPage() {
         {movie.content && (
           <p className="wp-desc"
             dangerouslySetInnerHTML={{
-              __html: movie.content.slice(0, 380) + (movie.content.length > 380 ? '...' : '')
+              __html: movie.content
             }}
           />
         )}
