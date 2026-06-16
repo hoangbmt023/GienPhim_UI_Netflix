@@ -9,6 +9,7 @@
   cursor: pointer;
   text-decoration: none;
   display: block;
+  position: relative;
   transition: transform 0.28s cubic-bezier(.25, .46, .45, .94);
   will-change: transform;
 }
@@ -50,9 +51,7 @@
   opacity: 1;
 }
 
-.movie-card:hover .movie-card__img {
-  transform: scale(1.08);
-}
+
 
 .movie-card__quality {
   position: absolute;
@@ -66,6 +65,7 @@
   border-radius: 3px;
   letter-spacing: 0.5px;
   z-index: 2;
+  pointer-events: none;
 }
 
 .movie-card__ep {
@@ -92,7 +92,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.25s;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 3;
 }
 
@@ -109,8 +109,8 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.25s, transform 0.25s cubic-bezier(.34, 1.56, .64, 1);
+  transform: scale(0.7);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .movie-card:hover .movie-card__play {
@@ -219,6 +219,7 @@
   padding: 2px 6px;
   border-radius: 3px;
   z-index: 2;
+  pointer-events: none;
 }
 
 .ranked-card__ep {

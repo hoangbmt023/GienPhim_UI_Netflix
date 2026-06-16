@@ -2,7 +2,71 @@ import { useEffect, useRef } from 'react';
 import Artplayer from 'artplayer';
 import Hls from 'hls.js';
 
-export default function ArtplayerPlayer({ url, onReady, className, style }) {
+const PROGRESS_KEY = 'gienphim_playback_progress';
+const MAX_PROGRESS_RECORDS = 200;
+
+// Lấy tiến trình đã lưu
+function getSavedProgress(movieSlug, epSlug, fallbackUrl) {
+  try {
+    const dataStr = localStorage.getItem(PROGRESS_KEY);
+    if (!dataStr) return 0;
+    const data = JSON.parse(dataStr);
+    const key = (movieSlug && epSlug) ? `${movieSlug}_${epSlug}` : fallbackUrl;
+    return data[key]?.time || 0;
+  } catch (_) {
+    return 0;
+  }
+}
+
+// Lưu tiến trình (LRU Cache tối đa 200 tập gần nhất)
+function saveProgress(movieSlug, epSlug, fallbackUrl, time) {
+  try {
+    const dataStr = localStorage.getItem(PROGRESS_KEY);
+    let data = {};
+    if (dataStr) {
+      try {
+        data = JSON.parse(dataStr);
+      } catch (_) {
+        data = {};
+      }
+    }
+
+    const key = (movieSlug && epSlug) ? `${movieSlug}_${epSlug}` : fallbackUrl;
+    data[key] = {
+      time,
+      updatedAt: Date.now()
+    };
+
+    const keys = Object.keys(data);
+    if (keys.length > MAX_PROGRESS_RECORDS) {
+      const sortedKeys = keys.sort((a, b) => (data[a].updatedAt || 0) - (data[b].updatedAt || 0));
+      while (sortedKeys.length > MAX_PROGRESS_RECORDS) {
+        const oldestKey = sortedKeys.shift();
+        delete data[oldestKey];
+      }
+    }
+
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
+  } catch (err) {
+    console.error('Failed to save progress in localStorage', err);
+  }
+}
+
+// Xóa tiến trình
+function removeProgress(movieSlug, epSlug, fallbackUrl) {
+  try {
+    const dataStr = localStorage.getItem(PROGRESS_KEY);
+    if (!dataStr) return;
+    const data = JSON.parse(dataStr);
+    const key = (movieSlug && epSlug) ? `${movieSlug}_${epSlug}` : fallbackUrl;
+    if (data[key]) {
+      delete data[key];
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(data));
+    }
+  } catch (_) {}
+}
+
+export default function ArtplayerPlayer({ url, movieSlug, epSlug, onReady, className, style }) {
   const artContainerRef = useRef(null);
   const artRef = useRef(null);
 
@@ -11,6 +75,20 @@ export default function ArtplayerPlayer({ url, onReady, className, style }) {
 
     // Destroy existing instance if the URL changed
     if (artRef.current) {
+      try {
+        const video = artRef.current.video;
+        if (video) {
+          video.pause();
+          video.removeAttribute('src');
+          video.load();
+        }
+      } catch (_) {}
+      if (artRef.current.hls) {
+        try {
+          artRef.current.hls.detachMedia();
+          artRef.current.hls.destroy();
+        } catch (_) {}
+      }
       artRef.current.destroy(true);
       artRef.current = null;
     }
@@ -29,7 +107,7 @@ export default function ArtplayerPlayer({ url, onReady, className, style }) {
       pip: true,
       miniProgressBar: true,
       playsInline: true,
-      autoPlayback: true,
+      autoPlayback: false,
       airplay: true,
       hotkey: true,
       moreVideoAttr: {
@@ -39,14 +117,23 @@ export default function ArtplayerPlayer({ url, onReady, className, style }) {
       },
       customType: {
         m3u8: function (videoEl, m3u8Url, player) {
+          if (player.isDestroy) return;
           if (Hls.isSupported()) {
-            if (player.hls) player.hls.destroy();
+            if (player.hls) {
+              try {
+                player.hls.detachMedia();
+                player.hls.destroy();
+              } catch (_) {}
+            }
             const hls = new Hls();
             hls.loadSource(m3u8Url);
             hls.attachMedia(videoEl);
             player.hls = hls;
             player.on('destroy', () => {
-              hls.destroy();
+              try {
+                hls.detachMedia();
+                hls.destroy();
+              } catch (_) {}
             });
           } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
             videoEl.src = m3u8Url;
@@ -57,17 +144,52 @@ export default function ArtplayerPlayer({ url, onReady, className, style }) {
 
     artRef.current = art;
 
+    // Tự động khôi phục tiến trình phát (Auto Resume) không hiển thị banner
+    art.once('ready', () => {
+      const time = getSavedProgress(movieSlug, epSlug, url);
+      if (time > 5 && time < art.duration - 10) {
+        art.currentTime = time;
+      }
+    });
+
+    // Tự động lưu tiến trình phát
+    art.on('video:timeupdate', () => {
+      const currentTime = art.currentTime;
+      if (currentTime > 5 && art.duration && currentTime < art.duration - 10) {
+        saveProgress(movieSlug, epSlug, url, currentTime);
+      }
+    });
+
+    // Xóa tiến trình khi xem hết phim
+    art.on('video:ended', () => {
+      removeProgress(movieSlug, epSlug, url);
+    });
+
     if (onReady) {
       onReady(art);
     }
 
     return () => {
       if (artRef.current) {
+        try {
+          const video = artRef.current.video;
+          if (video) {
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+          }
+        } catch (_) {}
+        if (artRef.current.hls) {
+          try {
+            artRef.current.hls.detachMedia();
+            artRef.current.hls.destroy();
+          } catch (_) {}
+        }
         artRef.current.destroy(true);
         artRef.current = null;
       }
     };
-  }, [url]);
+  }, [url, movieSlug, epSlug]);
 
   // Global keyboard shortcut: F key to toggle Fullscreen
   useEffect(() => {
