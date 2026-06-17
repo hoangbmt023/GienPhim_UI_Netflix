@@ -165,6 +165,17 @@ const AnnouncementBar = () => {
   const bar = visibleBars[currentBarIndex];
   const box = visibleBoxes[currentBoxIndex];
 
+  useEffect(() => {
+    if (bar) {
+      document.body.classList.add('has-ann-bar');
+    } else {
+      document.body.classList.remove('has-ann-bar');
+    }
+    return () => {
+      document.body.classList.remove('has-ann-bar');
+    };
+  }, [bar]);
+
   return (
     <>
       {bar && (

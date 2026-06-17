@@ -51,18 +51,21 @@
   z-index: 0;
 }
 
-.header.scrolled {
+.header.scrolled,
+body.has-ann-bar .header {
   backdrop-filter: blur(16px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55),
     inset 0 -1px 0 rgba(255, 255, 255, 0.07);
 }
 
 /* Khi scrolled: ẩn gradient, hiện nền đặc */
-.header.scrolled::before {
+.header.scrolled::before,
+body.has-ann-bar .header::before {
   opacity: 0;
 }
 
-.header.scrolled::after {
+.header.scrolled::after,
+body.has-ann-bar .header::after {
   opacity: 1;
 }
 
