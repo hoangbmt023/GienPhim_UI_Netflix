@@ -115,6 +115,7 @@ export default function ArtplayerPlayer({ url, movieSlug, epSlug, onReady, class
         playsInline: true,
         'webkit-playsinline': true,
       },
+      lock: true,
       customType: {
         m3u8: function (videoEl, m3u8Url, player) {
           if (player.isDestroy) return;
@@ -130,10 +131,10 @@ export default function ArtplayerPlayer({ url, movieSlug, epSlug, onReady, class
             hls.attachMedia(videoEl);
             player.hls = hls;
             player.on('destroy', () => {
-              try {
-                hls.detachMedia();
-                hls.destroy();
-              } catch (_) {}
+               try {
+                 hls.detachMedia();
+                 hls.destroy();
+               } catch (_) {}
             });
           } else if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
             videoEl.src = m3u8Url;
