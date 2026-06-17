@@ -314,7 +314,7 @@ export default function AnnouncementPanel() {
                     }}
                     required
                     rows="3"
-                    style={{ resize: 'none', overflow: 'hidden', minHeight: '80px', wordBreak: 'break-all' }}
+                    style={{ resize: 'none', overflow: 'hidden', minHeight: '80px' }}
                   />
                   <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
                     Nhấn <strong>Shift + Enter</strong> nếu muốn xuống dòng.
@@ -596,7 +596,7 @@ export default function AnnouncementPanel() {
 
             <div className="detail-modal-row">
               <span className="detail-modal-label">{s.content || 'Nội dung'}:</span>
-              <div className="detail-modal-val" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{selectedDetail.text?.trim()}</div>
+              <div className="detail-modal-val" style={{ whiteSpace: 'pre-wrap' }}>{selectedDetail.text?.trim()}</div>
             </div>
 
             <div className="detail-modal-row">
