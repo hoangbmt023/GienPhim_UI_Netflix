@@ -63,7 +63,7 @@
 
   /* Nav arrows */
   --nav-arrow-bg: rgba(15, 15, 15, 0.92);
-  --nav-arrow-border: rgba(255, 255, 255, 0.1);
+  --nav-arrow-border: rgba(255, 255, 255, 0.4);
   --nav-arrow-color: #fff;
 
   /* See-all links */
@@ -154,7 +154,7 @@ body.dark-night {
 
   /* Nav arrows */
   --nav-arrow-bg: rgba(255, 255, 255, 0.95);
-  --nav-arrow-border: rgba(0, 0, 0, 0.1);
+  --nav-arrow-border: rgba(0, 0, 0, 0.6);
   --nav-arrow-color: #111111;
 
   /* See-all links */
@@ -388,6 +388,100 @@ body.gp-theme-changing * {
   transition: none !important;
 }
 
+/* ── ARTPLAYER MOBILE LOCK CONTROLS ── */
 
+/* Base styling for lock overlay button */
+.art-layer-lockBtn {
+  display: none !important;
+  /* Hide by default on desktop */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.2s ease !important;
+  transform: translateY(-50%) scale(0.9);
+}
 
-
+/* Only show on mobile/touch interfaces (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .art-layer-lockBtn {
+    display: block !important;
+  }
+
+  /* Show when player controls are visible */
+  .artplayer.art-control-show .art-layer-lockBtn {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+/* Custom design for lock button */
+.art-lock-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(15, 15, 15, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  outline: none;
+  padding: 0;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.art-lock-btn:active {
+  transform: scale(0.9);
+  background: rgba(0, 0, 0, 0.9) !important;
+}
+
+.art-lock-btn svg {
+  display: block;
+  stroke: currentColor;
+}
+
+/* LOCKED STATE STYLING */
+
+/* Hide all controls, seekbars, play buttons, and layers when locked */
+.artplayer.art-is-locked .art-control,
+.artplayer.art-is-locked .art-mask,
+.artplayer.art-is-locked .art-state,
+.artplayer.art-is-locked .art-layers:not(.art-layer-lockBtn) {
+  display: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* Keep lock button alive but transparent by default when locked */
+.artplayer.art-is-locked .art-layer-lockBtn {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.9);
+}
+
+/* Flash (reveal) lock button on touch/tap when locked */
+.artplayer.art-is-locked.art-lock-flash .art-layer-lockBtn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}
+
+/* Toggle icons inside button based on lock state */
+.artplayer.art-is-locked .art-icon-unlock {
+  display: none !important;
+}
+
+.artplayer.art-is-locked .art-icon-lock {
+  display: block !important;
+  color: var(--netflix-red) !important;
+}
+
+.artplayer:not(.art-is-locked) .art-icon-lock {
+  display: none !important;
+}
+
+.artplayer:not(.art-is-locked) .art-icon-unlock {
+  display: block !important;
+}
