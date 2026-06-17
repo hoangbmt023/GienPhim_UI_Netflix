@@ -250,8 +250,8 @@
   font-weight: 400;
   text-align: left;
   word-wrap: break-word;
-  word-break: break-all;
-  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-wrap: break-word;
   white-space: pre-wrap;
   max-height: 250px;
   overflow-y: auto;
