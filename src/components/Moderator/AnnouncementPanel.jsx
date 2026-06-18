@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { announcementApi } from '@/services/announcementApi';
 import { Plus, Trash2, CheckCircle, XCircle, RotateCcw, Flame } from 'lucide-react';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
@@ -45,6 +45,23 @@ export default function AnnouncementPanel() {
   const [statusModal, setStatusModal] = useState({ open: false, type: 'success', title: '', description: '' });
   const [activeDatePickerField, setActiveDatePickerField] = useState(null);
   const [tempDate, setTempDate] = useState({ day: '1', month: '1', year: '2026', hour: '12', minute: '00', ampm: 'AM' });
+  const textareaRef = useRef(null);
+
+  const autoResizeTextarea = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+
+  // Auto-resize textarea whenever the form opens or text changes
+  useEffect(() => {
+    if (showForm) {
+      // Small delay to ensure DOM is rendered
+      const timer = setTimeout(() => autoResizeTextarea(), 10);
+      return () => clearTimeout(timer);
+    }
+  }, [showForm, formData.text, autoResizeTextarea]);
 
   const fetchAnnouncements = async (page = 1) => {
     setLoading(true);
@@ -93,6 +110,8 @@ export default function AnnouncementPanel() {
       endAt: item.endAt ? new Date(item.endAt).toISOString().slice(0, 16) : ''
     });
     setShowForm(true);
+    // Reset textarea height on next tick after state is set
+    setTimeout(() => autoResizeTextarea(), 0);
   };
 
   const handleSubmit = async (e) => {
@@ -269,22 +288,42 @@ export default function AnnouncementPanel() {
               <div className="admin-form-grid">
                 <div>
                   <label>{s.title || 'Tên nội bộ (Title)'}</label>
-                  <input type="text" value={formData.title} onChange={e => {setFormData({ ...formData, title: e.target.value }); setFormErrors(prev => ({...prev, title: null}))}} required />
+                  <input type="text" value={formData.title} onChange={e => { setFormData({ ...formData, title: e.target.value }); setFormErrors(prev => ({ ...prev, title: null })) }} required />
                   {formErrors.title && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.title}</span>}
                 </div>
                 <div>
                   <label>{s.badge || 'Badge (nhãn)'}</label>
-                  <input type="text" value={formData.badge} onChange={e => {setFormData({ ...formData, badge: e.target.value }); setFormErrors(prev => ({...prev, badge: null}))}} required />
+                  <input type="text" value={formData.badge} onChange={e => { setFormData({ ...formData, badge: e.target.value }); setFormErrors(prev => ({ ...prev, badge: null })) }} required />
                   {formErrors.badge && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.badge}</span>}
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label>{s.content || 'Nội dung hiển thị (Text)'}</label>
-                  <textarea value={formData.text} onChange={e => {setFormData({ ...formData, text: e.target.value }); setFormErrors(prev => ({...prev, text: null}))}} required rows="3"></textarea>
+                  <textarea
+                    ref={textareaRef}
+                    value={formData.text}
+                    onChange={e => {
+                      setFormData({ ...formData, text: e.target.value });
+                      setFormErrors(prev => ({ ...prev, text: null }));
+                      autoResizeTextarea();
+                    }}
+                    onKeyDown={e => {
+                      // Block plain Enter — only Shift+Enter creates a real line break
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                      }
+                    }}
+                    required
+                    rows="3"
+                    style={{ resize: 'none', overflow: 'hidden', minHeight: '80px' }}
+                  />
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
+                    Nhấn <strong>Shift + Enter</strong> nếu muốn xuống dòng.
+                  </span>
                   {formErrors.text && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.text}</span>}
                 </div>
                 <div>
                   <label>{s.link || 'Đường dẫn (Link)'}</label>
-                  <input type="url" value={formData.link} onChange={e => {setFormData({ ...formData, link: e.target.value }); setFormErrors(prev => ({...prev, link: null}))}} />
+                  <input type="url" value={formData.link} onChange={e => { setFormData({ ...formData, link: e.target.value }); setFormErrors(prev => ({ ...prev, link: null })) }} />
                   {formErrors.link && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{formErrors.link}</span>}
                 </div>
                 <div>

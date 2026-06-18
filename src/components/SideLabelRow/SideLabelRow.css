@@ -51,17 +51,28 @@
   position: relative;
 }
 
-.side-row__list {
-  display: flex;
-  gap: 12px;
+.side-row__clip-pad {
   overflow-x: auto;
+  overflow-y: hidden;    /* Ngăn cuộn dọc tuyệt đối */
+  padding-top: 14px;     /* không gian để card scale không bị clip trên */
+  margin-top: -14px;
+  padding-left: 12px;    /* không gian để card đầu không bị clip trái */
+  margin-left: -12px;
+  padding-right: 12px;
+  margin-right: -12px;
   scrollbar-width: none;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
+}
+
+.side-row__clip-pad::-webkit-scrollbar { display: none; }
+
+.side-row__list {
+  display: flex;
+  gap: 12px;
   padding-bottom: 8px;
 }
 
-.side-row__list::-webkit-scrollbar { display: none; }
 .side-row__list > *               { scroll-snap-align: start; flex-shrink: 0; }
 
 /* ── NAV ARROWS ── */
@@ -73,7 +84,7 @@
   width: 36px;
   height: 68px;
   background: var(--nav-arrow-bg);
-  border: 1px solid var(--nav-arrow-border);
+  border: 1.5px solid var(--nav-arrow-border);
   border-radius: 6px;
   color: var(--nav-arrow-color);
   font-size: 20px;
@@ -83,7 +94,6 @@
   cursor: pointer;
   opacity: 0;
   transition: background 0.2s, opacity 0.2s;
-  border: none;
   outline: none;
 }
 

@@ -63,7 +63,8 @@ export default function MovieRow({
           ‹
         </button>
 
-        <div className="movie-row__list" ref={listRef}>
+        <div className="movie-row__clip-pad" ref={listRef}>
+          <div className="movie-row__list">
           {loading ? (
             <SkeletonRow count={skeletonCount} />
           ) : ranked ? (
@@ -75,6 +76,7 @@ export default function MovieRow({
               <MovieCard key={m._id} movie={m} />
             ))
           )}
+          </div>
         </div>
 
         <button

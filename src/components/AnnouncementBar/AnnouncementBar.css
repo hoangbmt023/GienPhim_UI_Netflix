@@ -4,8 +4,9 @@
 
 /* ---------- 1. BAR STYLE (Top Marquee) ---------- */
 .ann-bar {
-  position: relative;
-  margin-top: var(--header-height);
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
   z-index: 99;
   width: 100%;
   color: #fff;
@@ -181,7 +182,7 @@
 }
 
 .ann-box__body {
-  padding: 0 40px 16px;
+  padding: 0 30px 16px;
   text-align: center;
 }
 
@@ -240,11 +241,14 @@
   background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
 }
 
+
+
 .ann-box__text {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
-  color: #efefef;
-  font-weight: 500;
+  color: #ababab;
+  font-weight: 400;
+  text-align: left;
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -370,7 +374,7 @@
 /* Mobile Adjustment */
 @media (max-width: 768px) {
   .ann-bar {
-    margin-top: 60px;
+    top: 60px;
     min-height: 38px;
     padding: 0 34px 0 12px;
   }

@@ -63,12 +63,14 @@ export default function SideLabelRow({
             ‹
           </button>
 
-          <div className="side-row__list" ref={listRef}>
-            {loading ? (
-              <SkeletonRow count={skeletonCount} />
-            ) : (
-              items.map((m) => <MovieCard key={m._id} movie={m} />)
-            )}
+          <div className="side-row__clip-pad" ref={listRef}>
+            <div className="side-row__list">
+              {loading ? (
+                <SkeletonRow count={skeletonCount} />
+              ) : (
+                items.map((m) => <MovieCard key={m._id} movie={m} />)
+              )}
+            </div>
           </div>
 
           <button

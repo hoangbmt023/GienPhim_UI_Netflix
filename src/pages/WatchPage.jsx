@@ -204,12 +204,13 @@ export default function WatchPage() {
   };
 
   const embedUrl = currentEp?.link_embed || '';
+  const m3u8Url = currentEp?.link_m3u8 || '';
 
   useEffect(() => {
-    if (embedUrl && movie?.name) {
-      registerVideo(embedUrl, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
+    if ((embedUrl || m3u8Url) && movie?.name) {
+      registerVideo(embedUrl, m3u8Url, movie.name, slug, currentEp?.name || '', currentEp?.slug || '', selServer);
     }
-  }, [embedUrl, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
+  }, [embedUrl, m3u8Url, movie?.name, slug, currentEp?.name, currentEp?.slug, selServer, registerVideo]);
 
   useEffect(() => {
     if (movie?.name) {
@@ -268,8 +269,8 @@ export default function WatchPage() {
           </div>
         </div>
 
-        <div className="wp-player">
-          {embedUrl ? (
+        <div className={`wp-player ${hasStarted ? 'wp-player--active' : ''}`}>
+          {(embedUrl || m3u8Url) ? (
             <>
               <div ref={slotCallbackRef} className="wp-player__slot" />
               {!hasStarted && (
@@ -332,7 +333,7 @@ export default function WatchPage() {
         {movie.content && (
           <p className="wp-desc"
             dangerouslySetInnerHTML={{
-              __html: movie.content.slice(0, 380) + (movie.content.length > 380 ? '...' : '')
+              __html: movie.content
             }}
           />
         )}

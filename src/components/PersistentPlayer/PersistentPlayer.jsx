@@ -11,6 +11,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePiP } from '@/contexts/PiPContext';
 import { useLang } from '@/utils/lang';
+import ArtplayerPlayer from '@/components/Artplayer/Artplayer';
 import './PersistentPlayer.css';
 
 const CloseIcon = () => (
@@ -48,6 +49,8 @@ export default function PersistentPlayer() {
 
   const isMobile = useMemo(() => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 1024, []);
 
+  const useArtplayer = !!video.m3u8Url;
+
   /* ── Đo slot khi watch mode ──
    * Đo bất kể isPiP vì effectiveIsPiP xử lý display.
    * Khi playerSlot có → đo ngay, sẵn sàng cho watch mode. */
@@ -56,11 +59,35 @@ export default function PersistentPlayer() {
 
     const update = () => {
       const r = playerSlot.getBoundingClientRect();
-      // Tính tọa độ tuyệt đối so với Document để dùng position: absolute
-      // giúp video cuộn mượt mà cùng trang web mà không cần dùng scroll event.
-      const absTop = r.top + window.pageYOffset;
-      const absLeft = r.left + window.pageXOffset;
-      setSlotRect({ top: absTop, left: absLeft, width: r.width, height: r.height });
+      const dpr = window.devicePixelRatio || 1;
+
+      // Lấy border-radius thực tế của .wp-player từ computed styles
+      const parentEl = playerSlot.parentElement;
+      let borderRadius = '12px';
+      if (parentEl) {
+        borderRadius = window.getComputedStyle(parentEl).borderRadius;
+      }
+
+      // Snap tọa độ vào pixel vật lý (physical pixel) theo DPR
+      // để tránh hoàn toàn hở sub-pixel ở mọi mức zoom (100%, 110%, 125%, 150%, 175%...)
+      const left   = r.left   + window.pageXOffset;
+      const top    = r.top    + window.pageYOffset;
+      const right  = r.right  + window.pageXOffset;
+      const bottom = r.bottom + window.pageYOffset;
+
+      // Snap về pixel vật lý: nhân với dpr → floor → chia lại
+      const snLeft   = Math.floor(left   * dpr) / dpr;
+      const snTop    = Math.floor(top    * dpr) / dpr;
+      const snRight  = Math.ceil (right  * dpr) / dpr;
+      const snBottom = Math.ceil (bottom * dpr) / dpr;
+
+      setSlotRect({
+        top:    snTop,
+        left:   snLeft,
+        width:  snRight  - snLeft,
+        height: snBottom - snTop,
+        borderRadius,
+      });
     };
     update();
     const ro = new ResizeObserver(update);
@@ -158,7 +185,7 @@ export default function PersistentPlayer() {
   ══════════════════════════════════════════ */
   const containerStyle = useMemo(() => {
     // Chưa bắt đầu hoặc chưa có video → ẩn hoàn toàn
-    if (!hasStarted || !video.embedUrl) return { display: 'none' };
+    if (!hasStarted || (!video.embedUrl && !video.m3u8Url)) return { display: 'none' };
 
     if (effectiveIsPiP) {
       const pos = pipPos.x !== null
@@ -168,7 +195,7 @@ export default function PersistentPlayer() {
         position: 'fixed',
         width: 340,
         zIndex: 9999,
-        borderRadius: 12,
+        borderRadius: 10, // Bo góc nhẹ cho khung PiP
         background: '#0e0e0e',
         overflow: 'hidden',
         boxShadow: isDragging
@@ -185,19 +212,18 @@ export default function PersistentPlayer() {
     }
 
     if (slotRect) {
-      // Watch mode: dùng absolute để cuộn tự nhiên theo document
-      const isMobile = window.innerWidth <= 767;
+      // Watch mode: dùng absolute với top/left cố định để tránh lệch do transform sub-pixel
       return {
         position: 'absolute',
-        top: 0,
-        left: 0,
+        top: slotRect.top,
+        left: slotRect.left,
         width: slotRect.width,
         height: slotRect.height,
-        transform: `translate3d(${slotRect.left}px, ${slotRect.top}px, 0)`,
         zIndex: 10,
         overflow: 'hidden',
-        borderRadius: isMobile ? 0 : 12,
-        background: '#000',
+        borderRadius: slotRect.borderRadius || '12px',
+        background: 'transparent',
+        boxShadow: '0 16px 48px rgba(0, 0, 0, 0.5)', // Bóng đổ trực tiếp trên player để khớp góc bo
         pointerEvents: 'none',    // iframe tự xử lý events
       };
     }
@@ -210,10 +236,10 @@ export default function PersistentPlayer() {
       overflow: 'hidden', opacity: 0,
       pointerEvents: 'none', zIndex: -1,
     };
-  }, [hasStarted, video.embedUrl, effectiveIsPiP, slotRect, pipPos, pipVisible, isDragging]);
+  }, [hasStarted, video.embedUrl, video.m3u8Url, effectiveIsPiP, slotRect, pipPos, pipVisible, isDragging]);
 
   /* Không render gì nếu chưa có URL video */
-  if (!video.embedUrl) return null;
+  if (!video.embedUrl && !video.m3u8Url) return null;
 
   /**
    * iframeSrc: thêm autoplay=1 vào URL.
@@ -221,12 +247,13 @@ export default function PersistentPlayer() {
    * - Không thay đổi giữa các lần render khác → iframe không reload.
    * - autoplay=1 hoạt động trên desktop và iPhone khi có user gesture trước.
    */
-  const sep = video.embedUrl.includes('?') ? '&' : '?';
-  const iframeSrc = `${video.embedUrl}${sep}autoplay=1`;
+  const iframeSrc = video.embedUrl
+    ? `${video.embedUrl}${video.embedUrl.includes('?') ? '&' : '?'}autoplay=1`
+    : '';
 
   const screenStyle = effectiveIsPiP
-    ? { position: 'relative', aspectRatio: '16/9', width: '100%', background: '#000', touchAction: 'auto' }
-    : { position: 'absolute', inset: 0, pointerEvents: 'auto', touchAction: 'auto' };
+    ? { position: 'relative', aspectRatio: '16/9', width: '100%', background: 'transparent', borderRadius: 0, overflow: 'hidden', touchAction: 'auto' }
+    : { position: 'absolute', inset: 0, width: '100%', height: '100%', borderRadius: 'inherit', overflow: 'hidden', pointerEvents: 'auto', touchAction: 'auto' };
 
   return (
     <div
@@ -269,21 +296,31 @@ export default function PersistentPlayer() {
       */}
       <div key="pp-screen" className="pp-screen" style={screenStyle}>
         {hasStarted && (
-          <iframe
-            src={iframeSrc}
-            title={video.movieName}
-            allowFullScreen
-            disablePictureInPicture
-            allow="accelerometer; autoplay *; clipboard-write; encrypted-media; gyroscope; fullscreen"
-            referrerPolicy="no-referrer"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              border: 'none',
-            }}
-          />
+          useArtplayer ? (
+            <ArtplayerPlayer
+              key={video.m3u8Url}
+              url={video.m3u8Url}
+              movieSlug={video.movieSlug}
+              epSlug={video.epSlug}
+            />
+          ) : (
+            <iframe
+              key={iframeSrc}
+              src={iframeSrc}
+              title={video.movieName}
+              allowFullScreen
+              disablePictureInPicture
+              allow="accelerometer; autoplay *; clipboard-write; encrypted-media; gyroscope; fullscreen"
+              referrerPolicy="no-referrer"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                border: 'none',
+              }}
+            />
+          )
         )}
       </div>
 
