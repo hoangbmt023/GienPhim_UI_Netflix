@@ -139,8 +139,16 @@
   .side-row__list    { gap: 10px; }
   .side-row__nav     { display: none; }
 
-  /* 3 cards on mobile */
-  .side-row__list > * { width: calc((100% - 20px) / 3) !important; }
+  /* Căn lề trái cho list ở mobile */
+  .side-row__clip-pad {
+    margin-left: 0;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 6px;
+  }
+
+  /* 3 + 1/5 peek: hiện 3 card đầy + 1/5 card kế để gợi ý scroll */
+  .side-row__list > * { width: calc((100% - 22px) / 3.2) !important; }
 }
 
 /* Small mobile ≤480 */
@@ -150,8 +158,17 @@
     padding-right: 12px;
     padding-bottom: 32px;
   }
+
+  /* Căn lề trái cho list ở small mobile */
+  .side-row__clip-pad {
+    margin-left: 0;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 6px;
+  }
+
   .side-row__list { gap: 8px; }
-  .side-row__list > * { width: calc((100% - 16px) / 3) !important; }
+  .side-row__list > * { width: calc((100% - 18px) / 3.2) !important; }
   .side-row__title { font-size: 20px; }
 }
 
