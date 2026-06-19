@@ -11,9 +11,11 @@ import {
   parseItems,
 } from "@/services/ophimApi";
 import { useLang } from "@/utils/lang";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export default function HomePage() {
   const { t } = useLang();
+  const isMobile = useIsMobile();
   const [heroMovies, setHeroMovies] = useState([]);
   const [newMovies, setNewMovies] = useState([]);
   const [seriesMovies, setSeriesMovies] = useState([]);
@@ -75,7 +77,8 @@ export default function HomePage() {
       .finally(() => done("single"));
 
     /* Phim chiếu rạp */
-    getMovieList("phim-chieu-rap", { page: 1 })
+    const theaterLimit = isMobile ? 8 : 24;
+    getMovieList("phim-chieu-rap", { page: 1, limit: theaterLimit })
       .then((r) => setTheaterMovies(parseItems(r)))
       .catch(() => {})
       .finally(() => done("theater"));

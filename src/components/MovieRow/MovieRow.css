@@ -144,8 +144,20 @@
     display: none;
   }
 
+  .movie-row__clip-pad {
+    margin-left: 0;
+    padding-left: 0;
+    margin-right: 0;
+    padding-right: 6px;
+  }
+
   .movie-row__list {
     gap: 12px;
+  }
+
+  .movie-row__list::after {
+    content: '';
+    flex: 0 0 1px;
   }
 
   .movie-row__list>* {

@@ -485,3 +485,74 @@ body.gp-theme-changing * {
 .artplayer:not(.art-is-locked) .art-icon-unlock {
   display: block !important;
 }
+
+/* Touch device overrides */
+@media (hover: none) and (pointer: coarse) {
+
+  /* Tắt transition & animation */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+  }
+
+  /* Giữ lại skeleton shimmer */
+  .skeleton,
+  .skeleton--light {
+    animation-duration: 1.4s !important;
+  }
+
+  /* Tắt cursor pointer */
+  * {
+    cursor: default !important;
+  }
+
+  /* Tắt hover state tích lũy sau khi tap */
+  *:hover {
+    pointer-events: none;
+  }
+
+  /* Cho phép tương tác trên các phần tử clickable */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [tabindex],
+  label {
+    pointer-events: auto !important;
+  }
+
+  /* Card phim */
+  .movie-card:hover,
+  .ranked-card:hover,
+  .movie-card:hover .movie-card__img,
+  .ranked-card:hover .ranked-card__img {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Spotlight thumbnails */
+  .spotlight-section__thumb:hover {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Nav arrows */
+  .movie-row__nav:hover,
+  .side-row__nav:hover {
+    background: var(--nav-arrow-bg) !important;
+  }
+
+  /* Artplayer play icon */
+  .art-state:hover .art-icon-play {
+    transform: translateX(2px) !important;
+  }
+
+  /* Ẩn scrollbar custom, dùng native */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
