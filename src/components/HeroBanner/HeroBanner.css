@@ -41,6 +41,16 @@
   opacity: var(--hero-backdrop-opacity);
 }
 
+/* Dedicated swipe-only zone, sits above backdrop but below content */
+.hero__swipe-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 80px; /* leave thumbs area unaffected */
+  z-index: 1;
+}
+
 /* Gradient overlays – lighter so poster shows through */
 .hero__grad-left {
   position: absolute;
@@ -125,6 +135,17 @@
   background: rgba(70, 211, 105, 0.18);
   border-color: rgba(70, 211, 105, 0.55);
   color: var(--green-active);
+}
+
+.hero__badge--imdb {
+  border-color: #f5c518;
+  background: rgba(245, 197, 24, 0.1);
+  color: var(--text-primary);
+}
+
+.hero__badge--imdb .imdb-text {
+  color: #f5c518;
+  font-weight: 700;
 }
 
 /* Title */
@@ -323,64 +344,7 @@
   }
 }
 
-/* Mobile <768 */
-@media (max-width: 767px) {
-  .hero {
-    max-height: 600px;
-    min-height: 480px;
-  }
 
-  /* Gradient phủ từ dưới lên trên mobile */
-  .hero__grad-left {
-    background: linear-gradient(to bottom,
-        rgba(8, 8, 8, 0.10) 0%,
-        rgba(8, 8, 8, 0.62) 55%,
-        rgba(20, 20, 20, 0.98) 100%);
-  }
-
-  .hero__content {
-    padding: 0 18px 24px;
-    padding-top: calc(var(--header-height) + 8px);
-    max-width: 100%;
-    justify-content: flex-end;
-    /* nội dung ở phía dưới */
-  }
-
-  .hero__title {
-    font-size: 22px;
-    letter-spacing: -0.3px;
-  }
-
-  .hero__origin {
-    font-size: 12px;
-  }
-
-  .hero__desc {
-    -webkit-line-clamp: 2;
-    font-size: 12px;
-  }
-
-  .hero__meta {
-    gap: 10px;
-    font-size: 11px;
-  }
-
-  .hero__thumbs {
-    display: none;
-  }
-
-  /* ẩn thumbnail strip trên mobile */
-
-  .hero__play-btn {
-    padding: 10px 22px;
-    font-size: 13.5px;
-  }
-
-  .hero__info-btn {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-}
 
 /* TV ≥1920 */
 @media (min-width: 1920px) {
@@ -450,6 +414,12 @@
   flex-shrink: 0;
   transition: opacity 0.22s, border-color 0.22s, transform 0.25s,
     width 0.28s ease, height 0.28s ease;
+  /* Button resets */
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  display: block;
+  outline: none;
 }
 
 .hero__thumb-wrap:hover {
@@ -557,4 +527,165 @@ body.dark-night .hero__info-btn {
 
 body.dark-night .hero__info-btn:hover {
   background: rgba(255, 255, 255, 0.404) !important;
+}
+
+/* =========================================
+   MOBILE OVERRIDES (Matches specific design)
+   ========================================= */
+@media (max-width: 767px) {
+  .hero {
+    height: 50vh !important;
+    min-height: 360px !important;
+    max-height: 420px !important;
+    touch-action: pan-y !important; /* Prevent browser from hijacking horizontal swipes */
+  }
+
+  .hero__grad-left {
+    background: linear-gradient(to bottom,
+        rgba(8, 8, 8, 0.0) 0%,
+        rgba(8, 8, 8, 0.2) 40%,
+        rgba(20, 20, 20, 1) 90%) !important;
+  }
+
+  .hero__grad-bottom {
+    display: none !important;
+  }
+
+  /* Text rests near the bottom gradient */
+  .hero__content {
+    position: relative !important;
+    bottom: auto !important;
+    height: 100% !important;
+    padding: 0 18px 0 !important;
+    padding-top: calc(var(--header-height) + 10px) !important;
+    padding-bottom: 82px !important;
+    /* Space for thumbs */
+    max-width: 100% !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+  }
+
+  .hero__text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .hero__title {
+    order: 1 !important;
+    font-size: 26px !important;
+    /* Scaled down for smaller banner */
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    text-align: center !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9) !important;
+    width: 100% !important;
+    margin-bottom: 4px !important;
+    line-height: 1.15 !important;
+  }
+
+  .hero__origin {
+    order: 2 !important;
+    font-size: 14px !important;
+    color: #e5b366 !important;
+    text-align: center !important;
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  .hero__badge-row {
+    order: 3 !important;
+    justify-content: center !important;
+    margin-bottom: 0 !important;
+    gap: 5px !important;
+  }
+
+  .hero__meta,
+  .hero__tags,
+  .hero__desc,
+  .hero__actions {
+    display: none !important;
+  }
+
+  /* Thumbs at bottom */
+  .hero__thumbs {
+    display: flex !important;
+    position: absolute !important;
+    bottom: 20px !important;
+    left: 0 !important;
+    right: 0 !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    z-index: 20 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    padding: 0 18px !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important; /* Firefox */
+    pointer-events: auto !important;
+  }
+
+  .hero__thumbs::-webkit-scrollbar {
+    display: none !important; /* Chrome/Safari */
+  }
+
+  .hero__thumb-wrap {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    border: 2px solid transparent !important;
+    opacity: 0.5 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .hero__thumb-wrap.active {
+    width: 44px !important;
+    height: 44px !important;
+    border-color: #fff !important;
+    opacity: 1 !important;
+    transform: none !important;
+    border-radius: 50% !important;
+    pointer-events: auto !important;
+  }
+
+  .hero__thumb-img {
+    border-radius: 50% !important;
+    object-fit: cover !important;
+  }
+
+  .hero__badge {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+
+  body .hero__badge--imdb,
+  body.dark-night .hero__badge--imdb {
+    border-color: #f5c518 !important;
+    color: #fff !important;
+    background: transparent !important;
+  }
+
+  body .hero__badge--imdb .imdb-text,
+  body.dark-night .hero__badge--imdb .imdb-text {
+    color: #f5c518 !important;
+    font-weight: 700 !important;
+  }
+
+  body .hero__badge--ep,
+  body.dark-night .hero__badge--ep {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #fff !important;
+  }
+
+  body .hero__badge--quality,
+  body.dark-night .hero__badge--quality {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    color: #fff !important;
+  }
 }

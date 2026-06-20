@@ -42,7 +42,7 @@ const ClockSvg = () => (
   </svg>
 );
 
-const AUTO_INTERVAL = 6500;
+const AUTO_INTERVAL = 8000;
 
 /**
  * HeroBanner
@@ -56,8 +56,9 @@ export default function HeroBanner({ movies = [], loading = false }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [backdropCache, setBackdropCache] = useState({});
   const timerRef = useRef(null);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const heroRef = useRef(null);
+  const swipeStartX = useRef(null);
+  const swipeStartY = useRef(null);
 
   // Fetch hình ảnh bổ sung nếu thiếu hình ngang hoặc trên Desktop
   useEffect(() => {
@@ -94,22 +95,43 @@ export default function HeroBanner({ movies = [], loading = false }) {
     setActiveIdx(i => (i - 1 + items.length) % items.length);
   }, [items.length]);
 
-  /* Touch handlers */
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.changedTouches[0].screenX;
-    touchEndX.current = e.changedTouches[0].screenX; // Reset on new touch
-  };
-  const handleTouchMove = (e) => {
-    touchEndX.current = e.changedTouches[0].screenX;
-  };
-  const handleTouchEnd = (e) => {
-    // Check if the user clicked on a button or link
-    if (e.target.closest('a') || e.target.closest('button')) return;
+  /* Swipe detection via imperative listeners on hero element.
+   * Using refs avoids stale closures and re-render interference. */
+  const nextRef = useRef(next);
+  const prevRef = useRef(prev);
+  useEffect(() => { nextRef.current = next; }, [next]);
+  useEffect(() => { prevRef.current = prev; }, [prev]);
 
-    const distance = touchStartX.current - touchEndX.current;
-    if (distance > 80) next();
-    else if (distance < -80) prev();
-  };
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+
+    const onStart = (e) => {
+      // Ignore touches starting inside the thumbnail strip
+      if (e.target.closest('.hero__thumbs')) return;
+      swipeStartX.current = e.touches[0].clientX;
+      swipeStartY.current = e.touches[0].clientY;
+    };
+
+    const onEnd = (e) => {
+      if (swipeStartX.current === null) return;
+      const dx = e.changedTouches[0].clientX - swipeStartX.current;
+      const dy = e.changedTouches[0].clientY - swipeStartY.current;
+      swipeStartX.current = null;
+      // Trigger if horizontal movement exceeds threshold and is more horizontal than vertical
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) nextRef.current();
+        else prevRef.current();
+      }
+    };
+
+    el.addEventListener('touchstart', onStart, { passive: true });
+    el.addEventListener('touchend', onEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', onStart);
+      el.removeEventListener('touchend', onEnd);
+    };
+  }, [items.length]); // re-attach when movies load (heroRef is null during skeleton)
 
   /* Auto-advance – luôn chạy, không pause khi hover */
   useEffect(() => {
@@ -146,11 +168,9 @@ export default function HeroBanner({ movies = [], loading = false }) {
 
   return (
     <section 
+      ref={heroRef}
       className="hero" 
       aria-label={t.common.featuredMovies}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
     >
       {/* Crossfade backdrops */}
       <div className="hero__backdrop-wrap" aria-hidden="true">
@@ -175,12 +195,17 @@ export default function HeroBanner({ movies = [], loading = false }) {
 
           {/* Badges */}
           <div className="hero__badge-row">
-            {movie.quality && (
-              <span className="hero__badge hero__badge--quality">{movie.quality}</span>
+            {imdb > 0 && (
+              <span className="hero__badge hero__badge--imdb">
+                <span className="imdb-text">IMDb:</span> {imdb.toFixed(1)}
+              </span>
             )}
-            {movie.year && <span className="hero__badge">{movie.year}</span>}
             {movie.episode_current && (
               <span className="hero__badge hero__badge--ep">{movie.episode_current}</span>
+            )}
+            {movie.year && <span className="hero__badge">{movie.year}</span>}
+            {movie.quality && (
+              <span className="hero__badge hero__badge--quality">{movie.quality}</span>
             )}
             {movie.lang && <span className="hero__badge">{movie.lang}</span>}
           </div>
@@ -209,7 +234,7 @@ export default function HeroBanner({ movies = [], loading = false }) {
           )}
 
           {/* Meta row: thời lượng / quốc gia / rating */}
-          {(movie.time || countries || imdb > 0 || tmdb > 0) && (
+          {(movie.time || countries || tmdb > 0) && (
             <div className="hero__meta">
               {movie.time && (
                 <span className="hero__meta-item hero__meta-item--time">
@@ -219,11 +244,6 @@ export default function HeroBanner({ movies = [], loading = false }) {
               {countries && (
                 <span className="hero__meta-item hero__meta-item--land">
                   <MapPinSvg /> {countries}
-                </span>
-              )}
-              {imdb > 0 && (
-                <span className="hero__meta-item hero__meta-item--imdb">
-                  <StarSvg /> IMDB {imdb.toFixed(1)}
                 </span>
               )}
               {!imdb && tmdb > 0 && (
@@ -252,11 +272,12 @@ export default function HeroBanner({ movies = [], loading = false }) {
       {/* Thumbnail strip – ẩn trên mobile bằng CSS */}
       <div className="hero__thumbs" aria-label={t.common.selectMovie}>
         {items.map((m, i) => (
-          <div
+          <button
             key={m._id}
+            type="button"
             className={`hero__thumb-wrap ${i === activeIdx ? 'active' : ''}`}
             title={m.name}
-            onClick={() => goTo(i)}
+            onClick={(e) => { goTo(i); e.currentTarget.blur(); }}
           >
             <ImageWithFallback
               key={m._id}
@@ -264,7 +285,7 @@ export default function HeroBanner({ movies = [], loading = false }) {
               alt={m.name}
               className="hero__thumb-img"
             />
-          </div>
+          </button>
         ))}
       </div>
     </section>
